@@ -1,0 +1,27 @@
+<div class="relative flex flex-col sm:flex-col md:flex-row lg:flex-row items-center">
+    <ng-container *ngFor="let item of list; let i = index;">
+        <ng-container 
+            *ngIf="(item.type != 'filter' && item.type != 'sort') || 
+            (item.type == 'filter' && !showFilters) || 
+            (item.type == 'sort' && !showSort)">
+            <div class="px-5 py-1 flex items-center hover:cursor-pointer mb-4 sm:mb-4 md:mb-0 lg:mb-0" 
+                [ngClass]="{
+                    'border border-l-1 border-t-0 border-r-0 border-b-0 border-[#677173]': (item.type != 'filter' && !showFilters) && !isMobile,
+                    'pl-0': i == 0
+                }"
+                (click)="handleFilterClick(item.type)">
+                <img width="36" height="36" 
+                    class="w-6 h-auto object-cover"
+                    [src]="item.icon" alt="" />
+                <div class="pl-4 font-medium text-base capitalize"
+                    [ngStyle]="{'color': (
+                        (item.type == 'chat' && showChat) || 
+                        (item.type == 'voice_call' && showVoiceCall) || 
+                        (item.type == 'video_call' && showVideoCall)
+                    ) ? buttonColor : '#677173'}">
+                    {{ item.text }}
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

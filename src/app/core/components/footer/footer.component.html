@@ -1,0 +1,294 @@
+<footer
+    *ngIf="company?.id == 67"
+    class="container mx-auto w-full max-w-full flex-shrink-0 p-0"
+    [ngStyle]="{
+        'background-color': footerBackgroundColor,
+        color: footerTextColor
+    }"
+>
+    <div
+        class="w-screen-3xl max-w-screen-3xl container flex flex-col justify-between gap-2 border-b border-gray-500 border-opacity-50 pb-4 pt-8 md:px-6"
+    >
+        <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row w-full justify-between gap-6">
+            <div class="ml-0 sm:ml-0 md:ml-2 lg:ml-2 px-0">
+                <app-logo [logoSrc]="logoSource"></app-logo>
+                <p
+                    class="mt-4 line-clamp-3 max-w-sm overflow-hidden text-ellipsis lg:max-w-md"
+                    [ngStyle]="{
+                        'background-color': footerBackgroundColor,
+                        color: footerTextColor
+                    }"
+                >
+                    {{ company?.entity_description }}
+                </p>
+            </div>
+            <div class="px-0">
+                <div
+                    class="flex flex-col gap-3"
+                    [ngStyle]="{
+                        'background-color': footerBackgroundColor,
+                        color: footerTextColor
+                    }"
+                >
+                    <div
+                        *ngIf="contactUsDetails?.email_address"
+                        class="flex flex-col"
+                    >
+                        <div
+                            class="font-bold pb-4"
+                            [ngStyle]="{ 'border-color': footerTextColor }"
+                        >
+                            {{ getContactUsText(contactUsDetails) }}
+                        </div>
+                        <p class="opacity-50 mb-2">{{ 'footer.writetous' | translate }}</p>
+                        <a
+                            class="flex"
+                            [ngStyle]="{ color: footerTextColor }"
+                            target="_blank"
+                            href="mailto:{{ contactUsDetails?.email_address }}"
+                        >
+                            <span class="text-base font-bold">{{
+                                contactUsDetails?.email_address
+                            }}</span>
+                        </a>
+                        <!-- TODO -->
+                        <div class="opacity-50 mt-2">{{ 'footer.signup' | translate }}</div>
+                    </div>
+                    <div class="flex gap-5 py-2">
+                        <div>
+                            <p class="font-bold">{{ 'footer.users' | translate }}</p>
+                            <a href="/auth/signup" class="hover:underline">{{ 'footer.registrationlink' | translate }}</a>
+                        </div>
+                        <div>
+                            <p class="font-bold">{{ 'footer.professionals' | translate }}</p>
+                            <a href="#" class="hover:underline">{{ 'footer.registrationlink' | translate }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-0" *ngIf="companyId == 32">
+                <div class="py-1 pb-4 pr-10 font-semibold">
+                    {{ 'footer.linkstitle' | translate }}
+                </div>
+                <ng-container *ngFor="let link of additionalLinks">
+                    <div class="py-1">
+                        <a
+                            [ngStyle]="{ color: footerTextColor }"
+                            target="_blank"
+                            [href]="link.link"
+                            >{{ getLinkText(link) }}</a
+                        >
+                    </div>
+                </ng-container>
+            </div>
+            <div class="px-0">
+                <div class="pb-4 font-bold">Transparencia</div>
+                <div
+                    *ngIf="
+                        (canShowTermsAndConditions && termsAndConditions) ||
+                        !canShowTermsAndConditions ||
+                        termsAndConditionsURL
+                    "
+                    class="py-1"
+                    (click)="openTermsAndConditions()"
+                >
+                    <a
+                        [ngStyle]="{ color: footerTextColor }"
+                        href="javascript:;"
+                        >{{ getTermsAndConditionsText() }}</a
+                    >
+                </div>
+                <div
+                    *ngIf="
+                        (canShowPrivacyPolicy && privacyPolicy) ||
+                        !canShowPrivacyPolicy ||
+                        privacyPolicyURL
+                    "
+                    class="py-1"
+                    (click)="openPrivacyPolicy()"
+                >
+                    <a
+                        [ngStyle]="{ color: footerTextColor }"
+                        href="javascript:;"
+                        >{{ getPrivacyPolicyText() }}</a
+                    >
+                </div>
+                <div
+                    *ngIf="
+                        (canShowCookiePolicy && cookiePolicy) ||
+                        !canShowCookiePolicy ||
+                        cookiePolicyURL
+                    "
+                    class="py-1"
+                    (click)="openCookiePolicy()"
+                >
+                    <a
+                        [ngStyle]="{ color: footerTextColor }"
+                        href="javascript:;"
+                        >{{ getCookiePolicyText() }}</a
+                    >
+                </div>
+            </div>
+            <div class="mb-10" *ngIf="hasSocials">
+                <h4
+                    class="pb-4 font-bold"
+                >
+                    Siguenos
+                </h4>
+                <div class="mb-6 flex items-center">
+                    <a
+                        target="_blank"
+                        *ngIf="instagram"
+                        [href]="instagram"
+                        class="text-dark hover:border-primary hover:bg-primary border-stroke dark:border-dark-3 dark:hover:border-primary mr-3 flex h-8 w-8 items-center justify-center hover:text-white dark:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                    >
+                        <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path fill="currentColor" fill-rule="evenodd" d="M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Zm5-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm7.597 2.214a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2h-.01a1 1 0 0 1-1-1ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z" clip-rule="evenodd"/>
+                        </svg>         
+                    </a>
+                    <a
+                        target="_blank"
+                        *ngIf="facebook"
+                        [href]="facebook"
+                        class="text-dark hover:border-primary hover:bg-primary border-stroke dark:border-dark-3 dark:hover:border-primary mr-3 flex h-8 w-8 items-center justify-center hover:text-white dark:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                    >
+                        <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M13.135 6H15V3h-1.865a4.147 4.147 0 0 0-4.142 4.142V9H7v3h2v9.938h3V12h2.021l.592-3H12V6.591A.6.6 0 0 1 12.592 6h.543Z" clip-rule="evenodd"/>
+                        </svg>                      
+                    </a>
+                    <a
+                        target="_blank"
+                        *ngIf="twitter"
+                        [href]="twitter"
+                        class="text-dark hover:border-primary hover:bg-primary border-stroke dark:border-dark-3 dark:hover:border-primary mr-3 flex h-8 w-8 items-center justify-center hover:text-white dark:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                    >
+                        <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M22 5.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.343 8.343 0 0 1-2.605.981A4.13 4.13 0 0 0 15.85 4a4.068 4.068 0 0 0-4.1 4.038c0 .31.035.618.105.919A11.705 11.705 0 0 1 3.4 4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 6.1 13.635a4.192 4.192 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 2 18.184 11.732 11.732 0 0 0 8.291 20 11.502 11.502 0 0 0 19.964 8.5c0-.177 0-.349-.012-.523A8.143 8.143 0 0 0 22 5.892Z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </div>
+                <a
+                    class="inline-block h-[40px] rounded-[10px] px-6 py-2.5 text-sm font-semibold text-white focus:outline-none focus:ring-4 focus:ring-offset-black"
+                    [ngStyle]="{ 'background-color': buttonColor }"
+                    href="/support-tickets"
+                >
+                    Ayuda
+                </a>
+            </div>
+            <div class="grid grid-flow-col grid-rows-3 px-6 md:px-0 lg:px-0">
+                <div *ngFor="let menu of menus" class="hover:underline">
+                    <a
+                        [ngStyle]="{ color: footerTextColor }"
+                        [routerLink]="['/', menu.path]"
+                        *ngIf="menu?.path"
+                    >
+                        {{ getMenuTitle(menu) }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8 flex w-full flex-wrap justify-between font-bold">
+            <select
+                [(ngModel)]="selectedLanguage"
+                [ngModelOptions]="{ standalone: true }"
+                (change)="onLanguageChange()"
+                class="text-sm font-medium border-none active:outline-none focus:outline-none border-transparent focus:border-transparent focus:ring-0"
+                [ngStyle]="{
+                    'background-color': footerBackgroundColor,
+                    color: footerTextColor
+                }"
+            >
+                <option
+                    *ngFor="let lang of languages"
+                    [value]="lang.code"
+                    [ngStyle]="{
+                        'background-color': footerBackgroundColor,
+                        color: footerTextColor
+                    }"
+                    [selected]="language === lang.code"
+                >
+                    {{ getLanguage(lang) }}
+                </option>
+            </select>
+            <a class="font-medium text-sm" href="#">{{ 'footer.aboutus' | translate }}</a>
+            <a class="font-medium text-sm" href="#">{{ 'footer.registration' | translate }}</a>
+            <a class="font-medium text-sm" href="#">{{ 'footer.pricingpolicy' | translate }}</a>
+            <a class="font-medium text-sm" href="#">{{ 'footer.securepayments' | translate }}</a>
+            <a class="font-medium text-sm" href="#">{{ 'footer.verifiedastrologers' | translate }}</a>
+        </div>
+    </div>
+    <span
+        class="w-screen-3xl max-w-screen-3xl container block py-4 text-right text-sm"
+        [ngStyle]="{'background-color': footerBackgroundColor}"
+    >
+        {{ 'landing.allrightsreserved' | translate }}.
+        {{ packageJson.version }} - {{ companyName }} © {{ currentYear }}
+    </span>
+</footer>
+<footer 
+    *ngIf="company?.id != 67"
+    class="w-full max-w-full container mx-auto flex-shrink-0 p-0"
+    [ngStyle]="{
+        'background-color': footerBackgroundColor,
+        'color': footerTextColor
+    }"
+>
+    <div class="container w-screen-3xl max-w-screen-3xl px-0 py-4 justify-between">
+        <div class="flex grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full py-8">
+            <div class="px-6 md:px-0 lg:px-0 ml-2">
+                <app-logo [logoSrc]="logoSource"></app-logo>
+                <div 
+                    class="py-4" 
+                    [ngStyle]="{'background-color': footerBackgroundColor,'color': footerTextColor}"
+                >
+                    <ng-container *ngIf="contactUsDetails?.email_address">
+                        <div 
+                            class="font-bold text-sm"
+                            [ngStyle]="{'border-color': footerTextColor}"
+                        >
+                            {{ getContactUsText(contactUsDetails) }}
+                        </div>
+                        <div>
+                            <a class="flex" [ngStyle]="{'color': footerTextColor}" target="_blank" href="mailto:{{ contactUsDetails?.email_address }}">
+                                <fa-icon class="fa flex items-center" [icon]="envelopeIcon"></fa-icon>
+                                <span class="pl-4 text-sm">{{ contactUsDetails?.email_address }}</span>
+                            </a>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-6 md:px-0 lg:px-0" *ngIf="companyId == 32">
+                <div class="font-semibold py-1 pr-10 pb-4">{{'footer.linkstitle' | translate}}</div>
+                <ng-container *ngFor="let link of additionalLinks">
+                    <div class="py-1">
+                        <a [ngStyle]="{'color': footerTextColor}" target="_blank" [href]="link.link">{{ getLinkText(link) }}</a>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="px-6 md:px-0 lg:px-0">
+                <div *ngIf="(canShowTermsAndConditions && termsAndConditions) || (!canShowTermsAndConditions || termsAndConditionsURL)" class="py-1" (click)="openTermsAndConditions()">
+                    <a [ngStyle]="{'color': footerTextColor}" href="javascript:;">{{ getTermsAndConditionsText() }}</a>
+                </div>
+                <div *ngIf="(canShowPrivacyPolicy && privacyPolicy) || (!canShowPrivacyPolicy || privacyPolicyURL)"  class="py-1" (click)="openPrivacyPolicy()">
+                    <a [ngStyle]="{'color': footerTextColor}" href="javascript:;">{{ getPrivacyPolicyText() }}</a>
+                </div>
+                <div *ngIf="(canShowCookiePolicy && cookiePolicy) || (!canShowCookiePolicy || cookiePolicyURL)" class="py-1" (click)="openCookiePolicy()">
+                    <a [ngStyle]="{'color': footerTextColor}" href="javascript:;">{{ getCookiePolicyText() }}</a>
+                </div>
+            </div>
+            <div class="px-6 md:px-0 lg:px-0 grid grid-rows-3 grid-flow-col">
+                <div *ngFor="let menu of menus" class="hover:underline">
+                    <a [ngStyle]="{'color': footerTextColor}" [routerLink]="['/', menu.path]" *ngIf="menu?.path">
+                        {{ getMenuTitle(menu) }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <span 
+        class="block py-4 text-sm text-center"
+        [ngStyle]="{'background-color': primaryColor, 'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}"
+    >
+        {{companyName}} © {{ currentYear }} {{ 'landing.allrightsreserved' | translate }}. {{ packageJson.version }} - {{ 'landing.poweredby' | translate }} 🍀
+    </span>
+</footer>

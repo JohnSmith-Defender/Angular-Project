@@ -1,0 +1,26 @@
+<div class="relative flex items-center">
+    <svg class="w-6 h-6 hover:cursor-pointer"
+        (click)="showFilter()"
+        [ngStyle]="{'color': isActiveFilter ? buttonColor : '#1e1e1e'}"
+        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h14M1 6h14M1 11h7"/>
+    </svg>
+    <ng-container *ngIf="isActiveFilter || defaultActiveFilter">
+        <div class="ml-14" *ngIf="list?.length > 0 && showIcon">
+            <app-icon-filter 
+                [mode]="mode"
+                [list]="list"
+                (filterList)="filteredCity($event)"
+            >
+            </app-icon-filter>
+        </div>
+        <div class="ml-14" *ngIf="buttonList?.length > 0 && showButton">
+            <app-type-filter 
+                [mode]="mode"
+                [list]="buttonList"
+                (filterList)="filteredType($event)"
+            >
+            </app-type-filter>
+        </div>
+    </ng-container>
+</div>

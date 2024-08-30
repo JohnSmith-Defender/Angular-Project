@@ -1,0 +1,68 @@
+<app-company-logo [logoSource]="logoSource" />
+<h1 class="text-2xl font-semibold text-center uppercase mb-8">{{ 'member-type.chooseplan' | translate }}</h1>
+<div class="flex items-center justify-center">
+    <div class="grid gap-6 grid-cols-1"
+        [ngClass]="{'md:grid-cols-3 lg:grid:cols-3': memberTypes?.length >= 3,
+            'md:grid-cols-2 lg:grid:cols-2': memberTypes?.length == 2}">
+        <ng-container *ngFor="let type of memberTypes; let i = index;">
+            <div 
+                class="w-full mt-0 max-w-sm h-full p-4 sm:p-8 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                [ngClass]="{
+                    'md:mt-8 lg:mt-8': memberTypes?.length == 3 && (i == 0 || i == 2),
+                    'md:p-12 lg:p-12': memberTypes?.length == 3 && i == 1,
+                    'md:h-[110%] lg:h-[110%]': memberTypes?.length == 3 && i == 1
+                }"
+            >
+                <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ language == 'en' ? type?.type_en : type?.type_es }}</h5>
+                <div class="flex items-baseline text-gray-900 dark:text-white">
+                    <span class="text-3xl font-semibold">{{ type?.price > 0 ? '€' : ''}}</span>
+                    <span class="text-5xl font-extrabold tracking-tight">{{ getPrice(type) }}</span>
+                    <span class="ml-1 text-xl font-normal text-gray-500 dark:text-gray-400">{{ (type.payment_type == 2 && mode != 'trial' ? ' / mes' : (type.payment_type == 3 && mode != 'trial' ? ' / año' : '')) }}</span>
+                </div>
+                <p class="text-sm font-semibold text-gray-600/75 dark:text-gray-500/75 mt-4">
+                    {{ type?.tax_include == 1 ? ('member-type.taxesnotincluded' | translate) : '' }}
+                    {{ type?.tax_include == 2 ? ('member-type.taxesincluded' | translate) : '' }}
+                </p>
+                <p class="text-xs font-semibold text-slate-600/75 dark:text-slate-500/75 mt-4">
+                    {{type?.description }}
+                </p>
+                <ng-container *ngIf="hasPricingDetails(type?.id)?.length == 0">
+                    <ng-container *ngIf="type?.show_list != 1">
+                        <ul role="list" class="space-y-5 my-7">
+                            <li class="flex space-x-3 items-center" *ngFor="let permission of type?.permissions">
+                                <svg class="flex-shrink-0 w-4 h-4 text-blue-600 dark:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                </svg>
+                                <span class="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
+                                    {{ getPermissionText(permission) }}
+                                </span>
+                            </li>
+                        </ul>
+                    </ng-container>
+                    <ng-container *ngIf="type?.show_list == 1">
+                        <div class="my-8" [innerHtml]="type?.list | safeContentHtml: 'html'"></div>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="hasPricingDetails(type?.id)?.length > 0">
+                    <ul role="list" class="space-y-5 my-7">
+                        <li class="flex space-x-3 items-center" *ngFor="let detail of hasPricingDetails(type?.id)">
+                            <svg class="flex-shrink-0 w-4 h-4 text-green-400 dark:text-green-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                            </svg>
+                            <span class="text-base font-normal leading-tight text-gray-500 dark:text-gray-400">
+                                {{ getPricingDetailText(detail) }}
+                            </span>
+                        </li>
+                    </ul>
+                </ng-container>
+                <button 
+                    (click)="selectPlan(type)" 
+                    type="button" class="text-white focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center"
+                    [ngStyle]="{'background-color': buttonColor}"
+                >
+                    {{ 'member-type.select' | translate }}
+                </button>
+            </div>
+        </ng-container>
+    </div>
+</div>

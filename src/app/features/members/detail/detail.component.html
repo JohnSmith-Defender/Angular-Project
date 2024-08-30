@@ -1,0 +1,347 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="pt-10 flex flex-col sm:flex-col md:flex-row lg:flex-row pb-20">
+    <div *ngIf="!alternativeCardDesign" class="w-full max-w-full sm:w-full sm:max-w-full md:min-w-[461px] md:w-[461px] md:max-w-[461px] lg:w-[461px] lg:min-w-[461px] lg:max-w-[461px]">
+        <div class="h-full max-h-full">
+            <img width="347" height="300" *ngIf="member?.image" [ngSrc]="member?.image" alt="" 
+                class="object-top mr-4 object-cover rounded-[30px] w-full max-w-full h-full max-h-full min-h-[559px]">
+        </div>
+    </div>
+    <div class="py-6 h-full max-h-full sm:h-full sm:max-h-full md:h-[591px] md:max-h-[591px] lg:h-[591px] lg:max-h-[591px] w-full max-w-full sm:w-full sm:max-w-full md:w-5/12 md:max-w-5/12 lg:w-5/12 lg:max-w-5/12 flex flex-col px-10">
+        <div class="flex items-center">
+            <div class="flex-shrink-0" *ngIf="alternativeCardDesign">
+                <img class="w-32 h-32 rounded-full object-cover object-top" width="128" height="128" [ngSrc]="member?.image" alt="{{ member?.display_name }}">
+            </div>
+            <div [ngClass]="{'flex-1 min-w-0 ms-4': alternativeCardDesign}">
+                <div class="text-2xl leading-6 pb-2 font-bold">{{member?.display_name}}</div>
+            </div>
+        </div>
+        <div class="py-4">
+            <span>{{member?.city}}</span>
+            <span *ngIf="member?.city && member?.sector" class="px-6">•</span>
+            <span>{{member?.sector}}</span>
+        </div>
+        <div id="accordion-flush" data-accordion="open" data-active-classes="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" data-inactive-classes="text-gray-500 dark:text-gray-400">
+            <h2 id="accordion-flush-heading-1">
+                <button type="button" class="flex items-center justify-between w-full py-5 font-bold rtl:text-right text-gray-500 border-t border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 gap-3" 
+                    data-accordion-target="#accordion-flush-body-1" 
+                    aria-expanded="false" aria-controls="accordion-flush-body-1">
+                    <span class="text-black">{{member?.questions?.length}} <span class="lowercase">{{'member-type-registration.questions' | translate}}</span></span>
+                    <svg data-accordion-icon [ngStyle]="{'color': buttonColor}" class="font-bold w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                </button>
+            </h2>
+            <div id="accordion-flush-body-1" class="hidden" aria-labelledby="accordion-flush-heading-1">
+                <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+                    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-2 py-1">
+                                    {{ 'plan-details.name' | translate }}
+                                </th>
+                                <th scope="col" class="px-2 py-1">
+                                    {{ 'members.message' | translate }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of member?.questions;" class="bg-white border-t dark:bg-gray-800 dark:border-gray-700">
+                                <td class="text-xs px-2 py-1">
+                                    {{item?.first_name ? (item?.first_name + ' ' + item?.last_name) : item?.name}}</td>
+                                <td class="text-xs px-2 py-1 py-4">
+                                    {{item?.message}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <ng-container *ngIf="companyId != 66">
+                <h2 id="accordion-flush-heading-2">
+                    <button type="button" class="flex items-center justify-between w-full py-5 font-bold rtl:text-right text-gray-900 dark:text-gray-400 gap-3" 
+                        data-accordion-target="#accordion-flush-body-2" 
+                        aria-expanded="false" aria-controls="accordion-flush-body-2">
+                        <span class="text-black">{{member?.references?.length}} <span class="lowercase">{{'members.references' | translate}}</span></span>
+                        <svg data-accordion-icon [ngStyle]="{'color': buttonColor}" class="font-bold w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                        </svg>
+                    </button>
+                </h2>
+                <div id="accordion-flush-body-2" class="hidden" aria-labelledby="accordion-flush-heading-2">
+                    <div class="py-5 border-b border-gray-200 dark:border-gray-700">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'plan-details.name' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'members.description' | translate }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of member?.references;" class="bg-white border-t dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="text-xs px-2 py-1">
+                                        {{item?.name}}</td>
+                                    <td class="text-xs px-2 py-1 py-4">
+                                        {{item?.description}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-6 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': createQuestionHover ? 1.5 : 1,
+                    'filter': createQuestionHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (click)="handleCreateQuestion()"
+                (mouseover)="toggleCreateQuestionHover(true)"
+                (mouseleave)="toggleCreateQuestionHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                </svg>
+                <span class="text-white font-semibold uppercase"
+                    [ngClass]="{'text-base': companyId != 66, 'text-sm': companyId == 66}">{{ companyId == 66 ? ('landing.sendmeamessage' | translate) : ('members.newquestion' | translate) }}</span>
+            </button>
+            <button
+                *ngIf="companyId != 66" 
+                class="h-[52px] flex items-center p-3.5 px-6 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': createReferenceHover ? 1.5 : 1,
+                    'filter': createReferenceHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (click)="handleCreateReference()"
+                (mouseover)="toggleCreateReferenceHover(true)"
+                (mouseleave)="toggleCreateReferenceHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                </svg>
+                <span class="text-white text-base font-semibold uppercase">{{ 'members.newreference' | translate }}</span>
+            </button>
+        </div>
+    </div>
+    <div class="text-lg leading-6 pb-2 py-6 flex flex-col bg-[#F8F4F4] px-16 rounded-lg w-full sm:w-full md:w-2/6 lg:w-2/6">
+        <div class="text-2xl leading-6 pb-2 font-bold border border-1 pb-4 mb-4 border-[#c7c7c7] border-t-0 border-l-0 border-r-0 pr-8">{{alternativeCardDesign ? ('plan-details.details' | translate) : ('members.moreinformation' | translate) }}</div>
+        <div class="text-sm" [ngClass]="{'border border-2 border-t-0 border-l-0 border-r-0': moreFieldValues?.length > 0}">
+            <div *ngIf="member?.email_display && showEmail" class="mb-4 flex items-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                    </svg>
+                </div>
+                <div>{{member?.email_display}}</div>
+            </div>
+            <div *ngIf="member?.phone_display && showPhone" class="mb-4 flex items-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
+                        <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z"/>
+                    </svg>
+                </div>
+                <div>{{member?.phone_display}}</div>
+            </div>
+            <div *ngIf="member?.website && member?.website != 'null' && showWebsite" class="mb-4 flex items-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 19">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.013 7.962a3.519 3.519 0 0 0-4.975 0l-3.554 3.554a3.518 3.518 0 0 0 4.975 4.975l.461-.46m-.461-4.515a3.518 3.518 0 0 0 4.975 0l3.553-3.554a3.518 3.518 0 0 0-4.974-4.975L10.3 3.7"/>
+                    </svg>
+                </div>
+                <div>{{member?.website}}</div>
+            </div>
+            <div *ngIf="member?.sector && showSector" class="mb-4 flex items-center align-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M19.728 10.686c-2.38 2.256-6.153 3.381-9.875 3.381-3.722 0-7.4-1.126-9.571-3.371L0 10.437V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-7.6l-.272.286Z"/>
+                        <path d="m.135 7.847 1.542 1.417c3.6 3.712 12.747 3.7 16.635.01L19.605 7.9A.98.98 0 0 1 20 7.652V6a2 2 0 0 0-2-2h-3V3a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H2a2 2 0 0 0-2 2v1.765c.047.024.092.051.135.082ZM10 10.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5ZM7 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H7V3Z"/>
+                    </svg>
+                </div>
+                <div>{{member?.sector}}</div>
+            </div>
+        </div>
+        <div *ngIf="moreFieldValues?.length > 0 && !alternativeCardDesign"
+            class="text-sm my-4">
+            <ng-container *ngFor="let field of moreFieldValues; let i = index;">
+                <div *ngIf="field?.value" class="mb-4">
+                    <span class="font-semibold mb-8 mr-2">{{field?.label}}:</span><span [innerHtml]="field?.value"></span>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="text-lg leading-6 pb-2 py-6 flex flex-col bg-[#F8F4F4] px-16 rounded-lg w-full sm:w-full md:w-2/6 lg:w-2/6" *ngIf="alternativeCardDesign">
+        <div class="text-2xl leading-6 pb-2 font-bold border border-1 pb-4 mb-4 border-[#c7c7c7] border-t-0 border-l-0 border-r-0 pr-8">{{'members.moreinformation' | translate}}</div>
+        <div *ngIf="moreFieldValues?.length > 0"
+            class="text-sm my-4">
+            <ng-container *ngFor="let field of moreFieldValues; let i = index;">
+                <div *ngIf="field?.value" class="mb-4">
+                    <span class="font-semibold mb-8 mr-2">{{field?.label}}:</span><span class="break-words" [innerHtml]="field?.value"></span>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'question'">
+                    <div class="flex justify-between">
+                        <div class="flex items-center">
+                            <div>
+                                <img 
+                                    class="mr-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="user?.image ? (apiPath + user?.image) : './assets/images/empty_avatar.png'">
+                            </div>
+                            <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ user?.name ? user?.name : ((user?.first_name ? user?.first_name : '') + ' ' + (user?.last_name ? user?.last_name : '')) }}
+                        </div>
+                        <div class="flex items-center">
+                            <span class="font-semibold mr-2">{{ 'buddy.to' | translate }}</span> {{ member?.display_name }}
+                            <div>
+                                <img 
+                                    class="ml-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="member?.image || './assets/images/empty_avatar.png'">
+                            </div>
+                        </div>
+                    </div>
+                    <form class="space-y-6"
+                        [ngClass]="{'submitted': questionFormSubmitted}"
+                    >
+                        <div class="flex items-center justify-center my-4">
+                            <textarea name="" id="" cols="30" rows="3"
+                                class="w-full rounded-lg p-4 border border-gray-300"
+                                placeholder="{{ companyId == 66 ? ('landing.sendmeamessage' | translate) : ('members.askaquestion' | translate) }}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': questionFormSubmitted && !message }"
+                                [(ngModel)]="message"
+                                [ngModelOptions]="{standalone: true}">
+                            </textarea>
+                        </div>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button 
+                                class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{'background-color': !message ? '#c7c7c7' : buttonColor}"
+                                [disabled]="!message"
+                                (click)="sendNewQuestion()"
+                            >
+                                {{ 'buddy.send' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'reference'">
+                    <div class="flex justify-between">
+                        <div class="flex items-center">
+                            <div>
+                                <img 
+                                    class="mr-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="user?.image ? (apiPath + user?.image) : './assets/images/empty_avatar.png'">
+                            </div>
+                            <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ user?.name ? user?.name : ((user?.first_name ? user?.first_name : '') + ' ' + (user?.last_name ? user?.last_name : '')) }}
+                        </div>
+                        <div class="flex items-center">
+                            <span class="font-semibold mr-2">{{ 'buddy.to' | translate }}</span> {{ member?.display_name }}
+                            <div>
+                                <img 
+                                    class="ml-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="member?.image || './assets/images/empty_avatar.png'">
+                            </div>
+                        </div>
+                    </div>
+                    <form class="space-y-6"
+                        [formGroup]="sendReferenceForm" 
+                        (ngSubmit)="sendReference()" 
+                        [ngClass]="{'submitted': sendReferenceFormSubmitted}"
+                    >
+                        <div class="flex items-center justify-center my-4 relative">
+                            <input
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': sendReferenceFormSubmitted && sendReferenceForm.get('name').errors }"
+                                placeholder="{{ 'members.name' | translate }}*"
+                                formControlName="name"
+                                required
+                            />
+                        </div>
+                        <div class="flex items-center justify-center my-4 relative">
+                            <input
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': sendReferenceFormSubmitted && sendReferenceForm.get('email').errors }"
+                                placeholder="{{ 'members.email' | translate }}*"
+                                formControlName="email"
+                                required
+                            />
+                        </div>
+                        <div class="flex items-center justify-center my-4 relative">
+                            <input
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': sendReferenceFormSubmitted && sendReferenceForm.get('phone').errors }"
+                                placeholder="{{ 'members.phone' | translate }}*"
+                                formControlName="phone"
+                                required
+                            />
+                        </div>
+                        <div class="flex items-center justify-center my-4">
+                            <textarea name="" id="" cols="30" rows="3"
+                                class="w-full rounded-lg p-4 border border-gray-300"
+                                placeholder="{{ 'members.description' | translate }}*"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': sendReferenceFormSubmitted && sendReferenceForm.get('description').errors }"
+                                formControlName="description"
+                                required>
+                            </textarea>
+                        </div>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button 
+                                class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{'background-color': processingSendReference ? '#c7c7c7' : buttonColor}"
+                                [disabled]="processingSendReference"
+                                (click)="sendReference()"
+                            >
+                                {{ 'buddy.send' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

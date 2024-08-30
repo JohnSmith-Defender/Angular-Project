@@ -1,0 +1,101 @@
+<div class="bg-white relative mb-6 relative p-6 rounded-[16px]">
+    <div class="flex items-center">
+         <div class="font-semibold text-lg">{{ 'wall.recentlyactive' | translate }}</div>
+         <svg (click)="goToMembers()" class="hover:cursor-pointer ml-4 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+         </svg>
+    </div>
+    <div class="my-8">
+        <ng-container *ngFor="let member of members">
+            <ng-container *ngIf="getMemberName(member) != 'undefined undefined'">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <img class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                            [ngSrc]="getMemberImage(member)"
+                        />
+                        <div class="font-semibold text-sm">{{ getMemberName(member) }} {{ checkCurrent(member) }}</div>
+                    </div>
+                    <div *ngIf="superAdmin || isTutor" (click)="showEmailForm(member)">
+                        <img class="w-6 object-contain mr-4 hover:cursor-pointer" 
+                            src="./assets/community-icons/email.png" />
+                    </div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'sidebar.send' | translate }} <span class="lowercase">{{ 'login.emailaddress' | translate }}</span>
+                </h3>
+                <div class="flex justify-between">
+                    <div class="flex items-center">
+                        <div>
+                            <img 
+                                class="mr-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                width="32" 
+                                height="32" 
+                                [ngSrc]="user?.image == 'default-avatar.jpg' || user?.image == 'empty_avatar.png' ? './assets/images/default-profile.png' : (imageSrc + user?.image)">
+                        </div>
+                        <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ user?.name ? user?.name : ((user?.first_name ? user?.first_name : '') + ' ' + (user?.last_name ? user?.last_name : '')) }}
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-semibold mr-2">{{ 'buddy.to' | translate }}</span> {{ member?.name ? member?.name : ((member?.first_name ? member?.first_name : '') + ' ' + (member?.last_name ? member?.last_name : '')) }}
+                        <div *ngIf="member?.image">
+                            <img 
+                                class="ml-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                width="32" 
+                                height="32" 
+                                [ngSrc]="member?.image == 'default-avatar.jpg' || member?.image == 'empty_avatar.png' ? './assets/images/default-profile.png' : (imageSrc + member?.image)">
+                        </div>
+                    </div>
+                </div>
+                <form class="space-y-6"
+                    [formGroup]="sendEmailForm" 
+                    (ngSubmit)="sendEmail()" 
+                    [ngClass]="{'submitted': sendEmailFormSubmitted}"
+                >
+                    <div class="flex items-center justify-center my-4 relative">
+                        <input
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': sendEmailFormSubmitted && sendEmailForm.get('subject').errors }"
+                            placeholder="{{ 'your-support-cases.subject' | translate }}*"
+                            formControlName="subject"
+                            required
+                        />
+                    </div>
+                    <div class="flex items-center justify-center my-4">
+                        <textarea name="" id="" cols="30" rows="3"
+                            class="w-full rounded-lg p-4 border border-gray-300"
+                            placeholder="{{ 'notification-popup.message' | translate }}*"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': sendEmailFormSubmitted && sendEmailForm.get('message').errors }"
+                            formControlName="message"
+                            required>
+                        </textarea>
+                    </div>
+                    <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                        <button 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            [ngStyle]="{'background-color': processingSendEmail ? '#c7c7c7' : buttonColor}"
+                            [disabled]="processingSendEmail"
+                        >
+                            {{ 'buddy.send' | translate }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

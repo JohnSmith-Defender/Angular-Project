@@ -1,0 +1,44 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-6">
+    <div class="flex flex-wrap items-center w-full max-w-full">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+    </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-8">
+    <ng-container *ngFor="let plan of events | paginate: {itemsPerPage: 16, currentPage: p}">
+        <app-plan-card
+            [image]="getImage(plan)"
+            [title]="getEventTitle(plan)"
+            [date]="getActivityDate(plan)"
+            [id]="plan?.id"
+            [planTypeId]="plan?.plan_type_id"
+            [privacy]="plan?.privacy"
+            [privateType]="plan?.private_type"
+            [featuredTitle]=""
+            [excerpt]="plan?.excerpt"
+            [address]="plan?.address"
+            [credits]="plan?.credits"
+            [price]="plan?.price"
+            [buttonColor]="buttonColor"
+            [companyId]="companyId"
+            page="category"
+            (handleDetailsClick)="goToEventRegistration(plan?.slug)"
+        >
+        </app-plan-card>
+    </ng-container>
+</div>
+<div *ngIf="events?.length > 0" class="text-center">
+    <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+</div>
+<div *ngIf="events?.length == 0 && isLoading" class="text-center">
+    {{'your-admin-area.nodata' | translate}}
+</div>

@@ -1,0 +1,91 @@
+<div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+    <div class="mb-6">
+        <div class="flex items-center w-full max-w-full">
+            <div class="flex-auto">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearch($event)"
+                    (doSearch)="handleSearch($event)"
+                >
+                </app-search>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list">
+            <ng-container matColumnDef="date_display">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.date' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="date_display">
+                   {{ row?.date_display }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="from_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.from' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="from_name">
+                    {{ row?.from_name }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="to_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.to' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="to_name">
+                    {{ row?.to_name }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="reference_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="reference_name">
+                    {{ row?.name }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="email">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.email' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="email">
+                    {{ row?.email }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="phone">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.phonenumber' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="phone">
+                    {{ row?.phone }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="reference_description">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'landing.description' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="reference_description">
+                    {{ row?.description }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="reference_action">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.action' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="reference_action">
+                    <svg (click)="confirmDeleteItem(row)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                        <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                    </svg>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator
+        #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+        (page)="getPageDetails($event)"
+        [showFirstLastButtons]="true"
+    ></mat-paginator>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

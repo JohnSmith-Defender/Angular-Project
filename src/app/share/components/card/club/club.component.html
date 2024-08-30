@@ -1,0 +1,44 @@
+<div class="h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px] lg:max-h-[267px] flex flex-col items-center bg-white rounded-lg shadow md:flex-row">
+    <img class="hover:cursor-pointer  object-cover rounded-t-lg h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px] w-full md:rounded-none md:rounded-l-lg" 
+        *ngIf="image" [ngSrc]="image?.indexOf('http') >= 0 ? image : (apiPath + '/get-image-group/' + image)" [alt]="title" width="192" height="256"
+        [ngStyle]="{'border-color': '#F8F4F4', 'max-width': '338px'}"
+        (click)="goToClubDetails(group)">
+    <div class="w-full flex flex-col justify-evenly px-8 py-4 leading-normal h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px]"
+        [ngStyle]="{'background-color': '#F8F4F4'}"
+    >
+        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white hover:cursor-pointer" 
+            (click)="goToClubDetails(group)">{{ title }}</h5>
+        <div class="uppercase h-[52px] border rounded-[10px] cursor-pointer w-44 p-3 text-center text-base font-bold transition duration-700 ease-in-out"
+            *ngIf="!parentComponent && !isMember"
+            [ngStyle]="{
+                'border-color': hover && selectedClubId == id ? 'transparent' : buttonColor,
+                'background-color': hover && selectedClubId == id ? buttonColor : 'transparent',
+                'color': hover && selectedClubId == id ? '#fff' : buttonColor
+            }"
+            (mouseover)="toggleHover(true, group)"
+            (mouseleave)="toggleHover(false, group)"
+            (click)="goToClubDetails(group)"
+        >
+            {{ 'club-details.join' | translate }}
+        </div>
+        <div class="flex text-sm">
+            <span>{{ category }}</span> <span *ngIf="city" class="px-3">•</span> <span>{{ city }}</span>
+        </div>
+        <div class="flex">
+            <ng-container *ngIf="contactEmail">
+                <a [href]="mailto" target="_blank">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 2-8.4 7.05a1 1 0 0 1-1.2 0L1 2m18 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1m18 0v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2"/>
+                    </svg>
+                </a>
+            </ng-container>
+            <ng-container *ngIf="contactInstagram">
+                <a [href]="contactInstagram" target="_blank">
+                    <img class="w-5 h-5 ml-4 object-contain" 
+                        src="./assets/icons/instagram-colored.png" />
+                </a>
+            </ng-container>
+            
+        </div>
+    </div>
+</div>

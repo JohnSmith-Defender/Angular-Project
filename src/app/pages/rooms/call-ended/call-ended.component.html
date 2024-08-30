@@ -1,0 +1,14 @@
+<div class="container flex items-center justify-center h-screen">
+    <div class="grid w-full sm:w-full md:w-96 lg:w-96 mx-auto p-6 text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur">
+        <div class="grid mb-8 rounded-full w-28 h-28 place-items-center">
+            <img class="w-full h-[90px] object-contain" width="64" height="64" src="./assets/professional-icons/call-ended.png" />
+        </div>
+        <h1 class="mb-8 text-3xl text-white">{{ 'professionals.callended' | translate }}</h1>
+        <a
+            href="javascript:;" class="btn bg-sky-950 text-white"
+            (click)="goHome()"
+        >
+            {{ 'landing.returntohome' | translate }}
+        </a>
+    </div>
+</div>

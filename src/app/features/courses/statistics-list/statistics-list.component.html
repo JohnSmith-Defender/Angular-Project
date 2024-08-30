@@ -1,0 +1,174 @@
+<div class="grid gap-6 grid-cols-1">
+    <div class="mb-6">
+        <div class="flex items-center w-full max-w-full">
+            <div class="flex-auto">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearch($event)"
+                    (doSearch)="handleSearch($event)"
+                >
+                </app-search>
+            </div>
+            <!-- <div class="px-5">
+                <app-icon-filter 
+                    [list]="list"
+                    (filterList)="filterCity($event)"
+                >
+                </app-icon-filter>
+            </div> -->
+            <!-- <div class="ml-6">
+                <div class="flex-auto -mb-5">
+                    <mat-form-field class="datetime-picker-field">
+                        <mat-label>{{ 'plan-details.selectdate' | translate }}</mat-label>
+                        <mat-date-range-input [rangePicker]="picker" [formGroup]="dateRange">
+                          <input (dateChange)="handleDateChange('start', $event)" matStartDate formControlName="start" placeholder="{{ 'company-reports.startdate' | translate }}">
+                          <input (dateChange)="handleDateChange('end', $event)" matEndDate formControlName="end" placeholder="{{ 'plan-create.enddate' | translate }}">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+                </div>
+            </div> -->
+            <div class="ml-8">
+                <button 
+                    class="h-[40px] flex items-center py-1.5 p-2.5 px-4 rounded-[10px] justify-evenly hover:bg-black"
+                    [ngStyle]="{'background-color': '#1e1e1e'}" 
+                    (click)="downloadExcel()"
+                >
+                    <svg class="w-3 h-3 text-white mr-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 1v4a1 1 0 0 1-1 1H1m8-2h3M9 7h3m-4 3v6m-4-3h8m3-11v16a.969.969 0 0 1-.932 1H1.934A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.829 1h8.239A.969.969 0 0 1 15 2ZM4 10h8v6H4v-6Z"/>
+                    </svg>
+                    <span class="text-white text-sm">{{ 'your-admin-area.downloadtoexcel' | translate }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <mat-paginator
+    #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" class="mb-5"
+    *ngIf="pageSize == 200" class="mb-5"
+    (page)="getPageDetails($event)"
+    [showFirstLastButtons]="true"
+></mat-paginator>
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list">
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="title">
+                    <a [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer hover:underline" href="javascript:;" (click)="viewItem(row?.id)">
+                        {{ row?.title }}
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="students">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'courses.students' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="students">
+                    <div class="flex flex-col w-full max-w-full" *ngIf="row?.students?.length > 0">
+                        <div class="w-full max-w-full rounded-[10px] flex flex-row py-2 px-3 mb-[7px]">
+                            <div class="font-bold w-4/12">
+                                {{row?.students?.length}} {{'courses.students' | translate}}
+                            </div>
+                            <div class="hover:cursor-pointer">
+                                <ng-container *ngIf="expandedCourseId != row.id">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}" 
+                                        (click)="expandStudents(row)"
+                                        [ngStyle]="{'color': buttonColor}"
+                                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                                    </svg>
+                                </ng-container>
+                                <ng-container *ngIf="expandedCourseId == row.id">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}"
+                                        (click)="expandStudents(row)"
+                                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                    </svg>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="expandedCourseId == row.id">
+                            <div class="w-full max-w-full">
+                                <table *ngIf="row?.students?.length > 0" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'your-admin-area.name' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'your-admin-area.email' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'general-details.progress' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'tutors.completed' | translate }}
+                                            </th>
+                                            <ng-container *ngIf="company?.id == 32">
+                                                <th scope="col" class="px-2 py-1">
+                                                    {{ 'course-create.credits' | translate }}
+                                                </th>
+                                                <th scope="col" class="px-2 py-1">
+                                                    {{ 'wall.rating' | translate }}
+                                                </th>
+                                            </ng-container>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let student of row?.students; let i = index;" 
+                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <th scope="row" class="text-xs px-2 py-1 max-w-[80px] font-medium text-gray-900 dark:text-white">
+                                                {{student?.name}}
+                                            </th>
+                                            <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                {{student?.email}}
+                                            </td>
+                                            <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                {{student?.progress}}
+                                            </td>
+                                            <td class="text-xs px-2 py-1 flex items-center max-w-[80px]">
+                                                <ng-container>
+                                                    <svg
+                                                        *ngIf="student?.progress < 100"
+                                                        class="mr-2 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                                    </svg>
+                                                    <svg
+                                                        *ngIf="student?.progress == 100"
+                                                        [ngStyle]="{'color': '#5cb85c'}" class="mr-2 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                                    </svg>
+                                                </ng-container>
+                                            </td>
+                                            <ng-container *ngIf="company?.id == 32">
+                                                <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                    {{ student?.credits }}
+                                                </td>
+                                                <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                    {{ student?.ratings }}
+                                                </td>
+                                            </ng-container>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ng-container>
+                    </div>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator
+        #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" 
+        *ngIf="pageSize < 200"
+        (page)="getPageDetails($event)"
+        [showFirstLastButtons]="true"
+    ></mat-paginator>
+</div>

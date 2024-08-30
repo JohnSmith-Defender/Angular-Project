@@ -1,0 +1,63 @@
+<div [routerLink]="path" class="w-full max-w-md bg-white border border-gray-200 rounded-lg shadow p-6 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flow-root">
+        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+            <li>
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <img class="w-20 h-20 rounded-full object-cover" width="75" height="75" [ngSrc]="image" alt="{{ name || (first_name + ' ' + last_name) }}">
+                    </div>
+                    <div class="flex-1 min-w-0 ms-4">
+                        <p class="text-base text-gray2 font-bold text-gray-900 truncate dark:text-white">
+                            {{ name || (first_name + ' ' + last_name) }}
+                        </p>
+                        <div class="leading-4">
+                            <div *ngIf="!rating" class="text-xs text-gray-600">{{ 'tutors.noratingsyet' | translate }}</div>
+                            <app-star-rating [rating]="rating" [align]="'left'"></app-star-rating>
+                        </div>
+                        <p class="font-medium text-gray3 truncate dark:text-gray-400">
+                            <span class="text-sm">{{city}}</span>
+                        </p>
+                        <p class="leading-4 truncate">
+                            <span class="text-xs uppercase">{{languages || ('tutors.spanish' | translate)}}</span>
+                        </p>
+                        <p class="leading-4 text-gray3 truncate dark:text-gray-400">
+                            <span class="font-medium text-xs">{{ types }}</span>
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+   </div>
+</div>
+<!-- <div [routerLink]="path">
+    <img width="347" height="300" *ngIf="image" [ngSrc]="image" alt="" loading="lazy"
+        class="object-top mr-4 object-cover rounded-[30px] w-full max-w-full"
+        [ngClass]="{
+            'h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]': page != 'list' && page != 'detail',
+            'h-full max-h-full sm:h-full sm:max-h-full md:h-[339px] md:max-h-[339px] lg:h-[339px] lg:max-h-[339px]': page == 'list',
+            'h-full max-h-full min-h-[559px]': page == 'detail'}">
+    <div *ngIf="page != 'detail'" class="absolute inset-0 bg-gray-800 opacity-60 rounded-[30px] w-full max-w-full">
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="absolute inset-0 flex items-end  p-4">
+            <div class="flex flex-col w-full w-max-full">
+                <p class="text-white text-lg leading-6 pb-2 text-center font-bold">{{ name || (first_name + ' ' + last_name) }}</p>
+                <app-star-rating [rating]="rating" [align]="'center'"></app-star-rating>
+                <ng-container *ngIf="page == 'list'">
+                    <div class="flex justify-center py-3 text-sm text-white font-semibold flex-wrap">
+                        <span>{{city}}</span>
+                        <span class="px-2">{{ (languages || ('tutors.spanish' | translate)) ? '•' : '' }}</span>
+                        <span class="capitalize">{{languages || ('tutors.spanish' | translate)}}</span>
+                    </div>
+                    <div class="flex justify-center pb-8 flex-wrap">
+                        <ng-container *ngFor="let type of types; let i = index;">
+                            <div class="types border border-white rounded-xl px-4 py-[3px] mr-2 mb-1" *ngIf="i < 4">
+                                <div class="text-white text-xs" title="{{type}}">{{ type }}</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div> -->

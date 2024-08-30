@@ -1,0 +1,269 @@
+<div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[620px] md:max-h-[620px] lg:h-[620px] lg:max-h-[620px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-6 lg:grid-cols-6 gap-4 justify-evenly relative mb-4"> 
+    <div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[620px] md:max-h-[620px] lg:h-[620px] lg:max-h-[620px] col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 row-span-2 rounded-lg relative cursor-pointer"
+        *ngIf="course1Data?.id > 0">
+        <app-course-card
+            [id]="course1Data?.id"
+            [path]="course1Data?.path"
+            [title]="course1Data?.title"
+            [category]="course1Data?.category"
+            [price]="course1Data?.price"
+            [image]="course1Data?.image"
+            [progress]="course1Data?.progress"
+            [buttonText]="course1Data?.button_text"
+            [showDetails]="course1Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [companyId]="company?.id"
+            [courseButtonColor]="course1Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+    <ng-container *ngIf="coursesData?.length < 6 && tutorsData?.length == 0">
+        <div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[620px] md:max-h-[620px] lg:h-[620px] lg:max-h-[620px] col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 row-span-2 rounded-lg relative cursor-pointer"
+        *ngIf="course3Data?.id > 0">
+        <app-course-card
+            [id]="course3Data?.id"
+            [path]="course3Data?.path"
+            [title]="course3Data?.title"
+            [category]="course3Data?.category"
+            [price]="course3Data?.price"
+            [image]="course3Data?.image"
+            [progress]="course3Data?.progress"
+            [buttonText]="course3Data?.button_text"
+            [showDetails]="course3Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [companyId]="company?.id"
+            [courseButtonColor]="course3Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+    </ng-container>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor1Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor1Data?.id"
+            [path]="tutor1Data?.path"
+            [image]="tutor1Data?.image"
+            [name]="tutor1Data?.name"
+            [first_name]="tutor1Data?.first_name"
+            [last_name]="tutor1Data?.last_name"
+            [rating]="tutor1Data?.rating"
+            [city]="tutor1Data?.city"
+            [languages]="tutor1Data?.languages"
+            [types]="tutor1Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor2Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor2Data?.id"
+            [path]="tutor2Data?.path"
+            [image]="tutor2Data?.image"
+            [name]="tutor2Data?.name"
+            [first_name]="tutor2Data?.first_name"
+            [last_name]="tutor2Data?.last_name"
+            [rating]="tutor2Data?.rating"
+            [city]="tutor2Data?.city"
+            [languages]="tutor2Data?.languages"
+            [types]="tutor2Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor5Data?.id > 0 && !(course2Data?.id > 0)">
+        <app-tutor-card
+            [id]="tutor5Data?.id"
+            [path]="tutor5Data?.path"
+            [image]="tutor5Data?.image"
+            [name]="tutor5Data?.name"
+            [first_name]="tutor5Data?.first_name"
+            [last_name]="tutor5Data?.last_name"
+            [rating]="tutor5Data?.rating"
+            [city]="tutor5Data?.city"
+            [languages]="tutor5Data?.languages"
+            [types]="tutor5Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor7Data?.id > 0 && !(course2Data?.id > 0)">
+        <app-tutor-card
+            [id]="tutor7Data?.id"
+            [path]="tutor7Data?.path"
+            [image]="tutor7Data?.image"
+            [name]="tutor7Data?.name"
+            [first_name]="tutor7Data?.first_name"
+            [last_name]="tutor7Data?.last_name"
+            [rating]="tutor7Data?.rating"
+            [city]="tutor7Data?.city"
+            [languages]="tutor7Data?.languages"
+            [types]="tutor7Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="coursesData?.length >= 6 && course3Data?.id > 0">
+        <app-course-card
+            [id]="course3Data?.id"
+            [path]="course3Data?.path"
+            [title]="course3Data?.title"
+            [category]="course3Data?.category"
+            [price]="course3Data?.price"
+            [image]="course3Data?.image"
+            [progress]="course3Data?.progress"
+            [buttonText]="course3Data?.button_text"
+            [showDetails]="course3Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [mode]="'small'"
+            [companyId]="company?.id"
+            [courseButtonColor]="course3Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="course4Data?.id > 0">
+        <app-course-card
+            [id]="course4Data?.id"
+            [path]="course4Data?.path"
+            [title]="course4Data?.title"
+            [category]="course4Data?.category"
+            [price]="course4Data?.price"
+            [image]="course4Data?.image"
+            [progress]="course4Data?.progress"
+            [buttonText]="course4Data?.button_text"
+            [showDetails]="course4Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [mode]="'small'"
+            [companyId]="company?.id"
+            [courseButtonColor]="course4Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+    <div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[620px] md:max-h-[620px] lg:h-[620px] lg:max-h-[620px] col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 row-span-2 rounded-lg relative cursor-pointer"
+        *ngIf="course2Data?.id > 0">
+        <app-course-card
+            [id]="course2Data?.id"
+            [path]="course2Data?.path"
+            [title]="course2Data?.title"
+            [category]="course2Data?.category"
+            [price]="course2Data?.price"
+            [image]="course2Data?.image"
+            [progress]="course2Data?.progress"
+            [buttonText]="course2Data?.button_text"
+            [showDetails]="course2Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [companyId]="company?.id"
+            [courseButtonColor]="course2Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor3Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor3Data?.id"
+            [path]="tutor3Data?.path"
+            [image]="tutor3Data?.image"
+            [name]="tutor3Data?.name"
+            [first_name]="tutor3Data?.first_name"
+            [last_name]="tutor3Data?.last_name"
+            [rating]="tutor3Data?.rating"
+            [city]="tutor3Data?.city"
+            [languages]="tutor3Data?.languages"
+            [types]="tutor3Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor4Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor4Data?.id"
+            [path]="tutor4Data?.path"
+            [image]="tutor4Data?.image"
+            [name]="tutor4Data?.name"
+            [first_name]="tutor4Data?.first_name"
+            [last_name]="tutor4Data?.last_name"
+            [rating]="tutor4Data?.rating"
+            [city]="tutor4Data?.city"
+            [languages]="tutor4Data?.languages"
+            [types]="tutor4Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor6Data?.id > 0 && !(course2Data?.id > 0)">
+        <app-tutor-card
+            [id]="tutor6Data?.id"
+            [path]="tutor6Data?.path"
+            [image]="tutor6Data?.image"
+            [name]="tutor6Data?.name"
+            [first_name]="tutor6Data?.first_name"
+            [last_name]="tutor6Data?.last_name"
+            [rating]="tutor6Data?.rating"
+            [city]="tutor6Data?.city"
+            [languages]="tutor6Data?.languages"
+            [types]="tutor6Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="tutor8Data?.id > 0 && !(course2Data?.id > 0)">
+        <app-tutor-card
+            [id]="tutor8Data?.id"
+            [path]="tutor8Data?.path"
+            [image]="tutor8Data?.image"
+            [name]="tutor8Data?.name"
+            [first_name]="tutor8Data?.first_name"
+            [last_name]="tutor8Data?.last_name"
+            [rating]="tutor8Data?.rating"
+            [city]="tutor8Data?.city"
+            [languages]="tutor8Data?.languages"
+            [types]="tutor8Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="course5Data?.id > 0">
+        <app-course-card
+            [id]="course5Data?.id"
+            [path]="course5Data?.path"
+            [title]="course5Data?.title"
+            [category]="course5Data?.category"
+            [price]="course5Data?.price"
+            [image]="course5Data?.image"
+            [progress]="course5Data?.progress"
+            [buttonText]="course5Data?.button_text"
+            [showDetails]="course5Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [mode]="'small'"
+            [companyId]="company?.id"
+            [courseButtonColor]="course5Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+    <div class="rounded-lg row-span-1 cursor-pointer relative" 
+        *ngIf="course6Data?.id > 0">
+        <app-course-card
+            [id]="course6Data?.id"
+            [path]="course6Data?.path"
+            [title]="course6Data?.title"
+            [category]="course6Data?.category"
+            [price]="course6Data?.price"
+            [image]="course6Data?.image"
+            [progress]="course6Data?.progress"
+            [buttonText]="course6Data?.button_text"
+            [showDetails]="course6Data?.show_details"
+            [page]="'home'"
+            [buttonColor]="buttonColor"
+            [mode]="'small'"
+            [companyId]="company?.id"
+            [courseButtonColor]="course6Data?.assigned_button_color"
+        >
+        </app-course-card>
+    </div>
+</div>

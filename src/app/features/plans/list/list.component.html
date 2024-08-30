@@ -1,0 +1,176 @@
+<app-page-title [title]="title" [subtitle]="subtitle"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4" *ngIf="view != 'joined' && mode != 'history'">
+   <button 
+        class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+        *ngIf="canCreatePlan" 
+        [ngStyle]="{
+            'background-color': buttonColor,
+            'opacity': createHover ? 1.5 : 1,
+            'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+        }" 
+        (click)="handleCreateRoute()"
+        (mouseover)="toggleCreateHover(true)"
+        (mouseleave)="toggleCreateHover(false)"
+    >
+        <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+        <span class="text-white text-md font-semibold uppercase">{{ createNewTitle(pageName) }}</span>
+    </button>
+    <button 
+        class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 border flex items-center h-[52px] p-3.5 px-8 rounded-[15px] justify-center transition duration-700 ease-in-out"
+        *ngIf="isMyActivitiesActive && myActivities?.title_es && userId > 0"
+        [ngStyle]="{
+            'border-color': myActivitiesHover ? 'transparent' : buttonColor,
+            'background-color': myActivitiesHover ? buttonColor : '#fff',
+        }"
+        (click)="goToDashboard()"
+        (mouseover)="toggleMyActivitiesHover(true)"
+        (mouseleave)="toggleMyActivitiesHover(false)"
+    >
+        <span class="text-md font-semibold uppercase" 
+            [ngStyle]="{'color': myActivitiesHover ? '#fff' : buttonColor}">
+            {{ getMyActivitiesTitle() }}
+        </span>
+    </button>
+</div>
+<div class="pt-6" *ngIf="!parentComponent && searchByCityOrKeyword">
+    <div class="flex flex-wrap items-center w-full max-w-full"
+        [ngClass]="{'justify-between': filterTypeControl == 'button'}">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0 flex items-center" *ngIf="showFilters">
+            <ng-container *ngFor="let setting of filterSettings">
+                <ng-container *ngIf="setting?.field == 'category' && setting?.filter_type == 'dropdown'">
+                    <app-filter
+                        [mode]="'plans'"
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        [list]="list"
+                        [defaultActiveFilter]="defaultActiveFilter"
+                        [filterSettings]="filterSettings"
+                        (filterList)="filteredCity($event)"
+                        (onButtonClick)="filteredCategory($event)"
+                        (onFilterClick)="filterViewChanged($event)"
+                    ></app-filter>
+                </ng-container>
+                <ng-container *ngIf="setting?.field != 'category' && setting?.active == 1">
+                    <ng-container *ngIf="defaultActiveFilter">
+                        <div class="ml-14" *ngIf="setting?.field == 'age_group'">
+                            <app-age-group-filter 
+                                [mode]="'agegroup'"
+                                [ageGroupList]="ageGroupList"
+                                (filterList)="filteredAgeGroupList($event)"
+                            >
+                            </app-age-group-filter>
+                        </div>
+                        <div class="ml-14" *ngIf="setting?.field == 'group'">
+                            <app-group-filter 
+                                [mode]="'group'"
+                                [groupList]="groupList"
+                                (filterList)="filteredGroupList($event)"
+                            >
+                            </app-group-filter>
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="setting?.field == 'category' && setting?.active == 1 && setting?.filter_type != 'dropdown'">
+                    <app-button-group
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        (onButtonClick)="filteredCategory($event)"
+                    ></app-button-group>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-8">
+    <div *ngIf="showEventsCalendar && !parentComponent" class="w-full max-w-full rounded-lg py-4 bg-transparent">
+        <app-plans-calendar
+            [hasDateSelected]="hasDateSelected"
+            [showPastEvents]="mode == 'history' ? true : showPastEvents"
+            [joinedPlan]="joinedPlan"
+            [courses]="courses"
+            [groups]="groups"
+            [courseCategoriesAccessRoles]="courseCategoriesAccessRoles"
+            [allCourseCategories]="allCourseCategories"
+            [courseCategoryMapping]="courseCategoryMapping"
+            [admin1]="admin1"
+            [admin2]="admin2"
+            [superAdmin]="superAdmin"
+            [calendarFilterMode]="calendarFilterMode"
+            [canCreatePlan]="canCreatePlan"
+            (handleCalendarDateChange)="handleCalendarDateChanged($event)" 
+            (handleJoinChange)="handleJoinChanged($event)"
+            (handleExitCalendarFilter)="exitCalendarEventMode()"
+            [notifier]="childNotifier"
+            [isUESchoolOfLife]="isUESchoolOfLife"
+            [campus]="campus"
+            [mode]="mode"
+        >
+        </app-plans-calendar>
+    </div>
+    <ng-container *ngIf="companyId != 32">
+        <ng-container *ngFor="let plan of filteredPlan | paginate: {itemsPerPage: (userId && showEventsCalendar && !parentComponent ? 15 : 16), currentPage: p}">
+            <app-plan-card
+                [image]="apiPath + plan.path + plan.image"
+                [title]="getEventTitle(plan)"
+                [date]="getActivityDate(plan)"
+                [id]="plan?.id"
+                [planTypeId]="plan?.plan_type_id"
+                [privacy]="plan?.privacy"
+                [privateType]="plan?.private_type"
+                [featuredTitle]="getFeaturedTitle()"
+                [excerpt]="plan?.excerpt"
+                [address]="plan?.address"
+                [credits]="plan?.credits"
+                [price]="plan?.price"
+                [buttonColor]="buttonColor"
+                [page]="'list'"
+                [companyId]="companyId"
+                [bottomEventTitles]="bottomEventTitles"
+                (handleDetailsClick)="handleDetailsClickRoute($event)"
+            >
+            </app-plan-card>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngIf="companyId == 32">
+        <ng-container *ngFor="let plan of filteredPlan">
+            <app-plan-card
+                [image]="apiPath + plan.path + plan.image"
+                [title]="getEventTitle(plan)"
+                [date]="getActivityDate(plan)"
+                [id]="plan?.id"
+                [planTypeId]="plan?.plan_type_id"
+                [privacy]="plan?.privacy"
+                [privateType]="plan?.private_type"
+                [featuredTitle]="getFeaturedTitle()"
+                [excerpt]="plan?.excerpt"
+                [address]="plan?.address"
+                [credits]="plan?.credits"
+                [price]="plan?.price"
+                [buttonColor]="buttonColor"
+                [page]="'list'"
+                [companyId]="companyId"
+                [bottomEventTitles]="bottomEventTitles"
+                (handleDetailsClick)="handleDetailsClickRoute($event)"
+            >
+            </app-plan-card>
+        </ng-container>
+    </ng-container>
+</div>
+<div *ngIf="filteredPlan?.length > 0 && companyId != 32" class="text-center">
+    <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+</div>
+<div *ngIf="!isloading && filteredPlan?.length == 0 && !showEventsCalendar" class="text-center">
+    {{'club-details.noevents' | translate}}
+</div>

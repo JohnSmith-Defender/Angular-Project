@@ -1,0 +1,41 @@
+<div class="mx-auto my-auto max-w-screen-md flex justify-center items-center align-center">
+    <div class="p-4 bg-[#F8F4F4] w-full max-w-full rounded-lg pb-8">
+        <div class="text-center font-bold">{{'contract.review' | translate}}</div>
+        <div class="bg-white mt-3 rounded-lg py-4 px-8">
+            <div class="mb-4 text-sm">{{'contract.pleasereview' | translate}}</div>
+            <div class="p-2 border border-1 border-[#c7c7c7] h-[300px] overflow-y-auto text-sm" 
+                [innerHtml]="contract">
+            </div>
+            <div class="mb-10 mt-2">
+                <label class="checkbox-container">
+                    <div class="flex mb-4 align-center items-center">
+                        <input 
+                            id="terms-conditions" 
+                            type="checkbox"
+                            [(ngModel)]="acceptTermsAndConditions" 
+                            [ngModelOptions]="{standalone: true}"
+                            [ngStyle]="{'color': acceptTermsAndConditions ? 'text-blue-500' : 'text-gray-900'}"
+                            class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        >
+                        <label for="terms-conditions" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                            {{ 'footer.iacceptthe' | translate }} {{ 'register.termsandconditions' | translate }}
+                        </label>
+                    </div>
+                </label>
+            </div>
+        </div>
+        <div class="flex justify-end">
+            <button 
+                (click)="goHome()"
+                class="mt-6 w-auto text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-not-allowed"
+                [disabled]="!acceptTermsAndConditions"
+                [ngClass]="{'cursor-not-allowed': !acceptTermsAndConditions}"
+                [ngStyle]="{
+                    'background-color': acceptTermsAndConditions ? buttonColor : '#c7c7c7'
+                }"
+            >
+                {{ 'job-offers.agree' | translate }}
+            </button>
+        </div>
+    </div>
+</div>

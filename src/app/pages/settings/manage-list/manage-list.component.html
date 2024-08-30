@@ -1,0 +1,210 @@
+<app-page-title title="{{ 'company-settings.managelanding' | translate }}"></app-page-title>
+<app-manage-users *ngIf="list == 'users'"></app-manage-users>
+<app-manage-membertypes *ngIf="list == 'membertypes'"></app-manage-membertypes>
+<app-manage-cities *ngIf="list == 'cities'"></app-manage-cities>
+<ng-container *ngIf="list == 'plans' || list == 'clubs' || list == 'canalempleo' || list == 'cityguide' || list == 'commissions' || list == 'testimonials' || list == 'tutors' || list == 'courses' || list == 'discounts' || list == 'services' || list == 'blogs' || list == 'credits' || list == 'references' || list == 'buddy'">
+    <div class="mb-8 container flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3 border border-b-2 border-l-0 border-r-0 border-t-0"
+        *ngIf="(list == 'commissions' && superAdmin) || list != 'commissions'">
+        <app-breadcrumb 
+            [level1Title]="level1Title"
+            [level2Title]="level2Title"
+            [level3Title]="level3Title"
+            [level4Title]="level4Title"
+            [buttonColor]="buttonColor"
+            (goBack)="handleGoBack()"
+        />
+        <div class="pt-1.5 mb-6">
+            <app-button-group class="flex justify-end"
+                [hiddenMainList]="list == 'commissions' || list == 'buddy' ? false : true"
+                [buttonColor]="buttonColor"
+                [buttonList]="buttonList"
+                [subcategoryList]="subButtonList"
+                (onButtonClick)="filterByType($event)"
+                (onSubButtonClick)="filterByStatus($event)"
+            >
+            </app-button-group>
+        </div>
+    </div>
+    <app-plans-admin-list 
+        *ngIf="list == 'plans' && !isLoading"
+        [list]="citiesList"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreatePlan]="canCreatePlan"
+        [plansTitle]="plansTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="status"
+        [isUESchoolOfLife]="isUESchoolOfLife"
+    >
+    </app-plans-admin-list>
+    <app-clubs-admin-list 
+        *ngIf="list == 'clubs' && !isLoading"
+        [list]="citiesList"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateClub]="canCreateClub"
+        [clubsTitle]="clubsTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="status"
+    >
+    </app-clubs-admin-list>
+    <app-job-offers-admin-list 
+        *ngIf="list == 'canalempleo' && !isLoading"
+        [list]="citiesList"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateJobOffer]="canCreateJobOffer"
+        [jobOffersTitle]="jobOffersTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="status"
+    >
+    </app-job-offers-admin-list>
+    <app-city-guide-admin-list 
+        *ngIf="list == 'cityguide' && !isLoading"
+        [list]="citiesList"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateCityGuide]="canCreateCityGuide"
+        [cityGuideTitle]="cityGuideTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="status"
+    >
+    </app-city-guide-admin-list>
+    <app-commissions-admin-list
+        *ngIf="list == 'commissions' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+    >
+    </app-commissions-admin-list>
+    <app-testimonials-admin-list
+        *ngIf="list == 'testimonials' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateTestimonial]="canCreateTestimonial"
+        [testimonialsTitle]="testimonialsTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+    >
+    </app-testimonials-admin-list>
+    <app-tutors-admin-list
+        *ngIf="list == 'tutors' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [tutorsTitle]="tutorsTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+    >
+    </app-tutors-admin-list>
+    <app-courses-admin-list
+        *ngIf="list == 'courses' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateCourse]="canCreateCourse"
+        [coursesTitle]="coursesTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+        [isUESchoolOfLife]="isUESchoolOfLife"
+    >
+    </app-courses-admin-list>
+    <app-offers-admin-list
+        *ngIf="list == 'discounts' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateDiscount]="canCreateDiscount"
+        [testimonialsTitle]="discountsTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+    >
+    </app-offers-admin-list>
+    <app-services-admin-list
+        *ngIf="list == 'services' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateService]="canCreateService"
+        [servicesTitle]="servicesTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+    >
+    </app-services-admin-list>
+    <app-blogs-admin-list
+        *ngIf="list == 'blogs' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateBlog]="canCreateBlog"
+        [blogsTitle]="blogsTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="status"
+    >
+    </app-blogs-admin-list>
+    <app-credits-admin-list
+        *ngIf="list == 'credits' && !isLoading"
+        [list]="citiesList"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [isUESchoolOfLife]="isUESchoolOfLife"
+    >
+    </app-credits-admin-list>
+    <app-references-admin-list
+        *ngIf="list == 'references' && !isLoading"
+        [list]="citiesList"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+    >
+    </app-references-admin-list>
+    <app-buddy-admin-list
+        *ngIf="list == 'buddy' && !isLoading"
+        [company]="company"
+        [buttonColor]="buttonColor"
+        [primaryColor]="primaryColor"
+        [canCreateTestimonial]="canCreateTestimonial"
+        [testimonialsTitle]="testimonialsTitle"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [language]="language"
+        [status]="filter"
+    >
+    </app-buddy-admin-list>
+</ng-container>

@@ -1,0 +1,27 @@
+<div class="pb-3 mt-2 mb-8 text-xl">
+    <h1>{{ 'company-settings.settings' | translate }}</h1>
+</div>
+<div class="relative mb-6">
+    <app-search
+        [searchText]="searchText"
+        [placeholderText]="placeholderText"
+        [buttonColor]="buttonColor"
+        (onEnterPressed)="handleSearchChanged($event)"
+        (doSearch)="handleSearchChanged($event)"
+    >
+    </app-search>
+</div>
+<div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid:cols-4 mb-12">
+    <div *ngFor="let menu of mainMenuItems" class="w-full rounded-lg shadow bg-white dark:bg-gray-800 dark:border-gray-700">
+        <div class="flex p-3 rounded-t-lg items-center" 
+            [ngStyle]="{'background-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? buttonColor : primaryColor}">
+            <img class="w-8 object-contain mr-4" [src]="menu.icon" />
+            <div [ngClass]="{'text-white': menuColor != '#000000'}" class="uppercase text-base font-bold">{{ menu?.text }}</div>
+        </div>
+        <div class="p-3 py-5 min-h-[150px]">
+            <div *ngFor="let submenu of menu?.submenus" class="text-sm hover:underline hover:cursor-pointer" (click)="showContent(submenu?.value, menu)">
+                {{ submenu?.text }}
+            </div>
+        </div>
+    </div>
+</div>

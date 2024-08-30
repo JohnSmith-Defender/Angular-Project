@@ -1,0 +1,213 @@
+<app-page-title title="{{ mode == 'view' ? ('member-type-registration.viewguests' | translate) : ('company-settings.myinvitations' | translate) }}"></app-page-title>
+<div class="pt-6">
+    <div *ngIf="categories?.length > 0 && mode != 'view'" class="p-6" [ngStyle]="{'background-color': '#F8F4F4', 'box-shadow': '0px 40px 54px -45px #00000099'}">
+        <div class="flex row flex-wrap justify-center">
+            <ng-container *ngFor="let category of categories;let i = index;">
+                <div class="mb-4 px-4">
+                    <div class="text-center mb-2">
+                        <a target="_blank" [href]="category?.link" target="_blank" class="text-center hover:cursor-pointer">
+                            {{ language == 'en' ? (category?.name_en || category?.name_EN) : (category?.name_es || category?.name_ES) }}
+                        </a>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-center px-8">
+                            <span (click)="copyToClipboard(category?.link)" class="flex flex-col items-center justify-center mr-4 hover:cursor-pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 4h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3m0 3h6m-6 5h6m-6 4h6M10 3v4h4V3h-4Z"/>
+                                </svg>
+                            </span>
+                            <a target="_blank" [href]="category?.link" target="_blank" class="flex flex-col items-center justify-center mr-4 hover:cursor-pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 19">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.013 7.962a3.519 3.519 0 0 0-4.975 0l-3.554 3.554a3.518 3.518 0 0 0 4.975 4.975l.461-.46m-.461-4.515a3.518 3.518 0 0 0 4.975 0l3.553-3.554a3.518 3.518 0 0 0-4.974-4.975L10.3 3.7"/>
+                                </svg>
+                            </a>
+                            <a target="_blank" [href]="category?.whatsapplink" class="flex flex-col items-center justify-center mr-4 hover:cursor-pointer">
+                                <img width="36" height="36" class="object-contain" src="./assets/images/icons/whatsapp.png">
+                            </a>
+                            <a target="_blank" [href]="category?.emaillink" class="flex flex-col items-center justify-center hover:cursor-pointer">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                                    <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                                    <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="flex items-center flex-wrap max-w-[65px]">
+                            <ng-container *ngIf="userAliases">
+                                <ng-container *ngFor="let alias of userAliases;let x = index;">
+                                    <a target="_blank" 
+                                        [href]="category?.aliasLink + alias.new_alias" 
+                                        class="text-xs"
+                                        [ngClass]="{'mr-1': x < userAliases?.length - 1}"
+                                    >
+                                        {{ alias.new_alias }}
+                                    </a>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </div>
+                    
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3">
+        <div class="relative mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+        <div class="relative col-span-2 pt-1.5 mb-6">
+            <app-button-group class="relative flex justify-end"
+                [buttonColor]="buttonColor"
+                [buttonList]="buttonList"
+                (onButtonClick)="filterCategory($event)"
+            >
+            </app-button-group>
+        </div>
+    </div>
+</div>
+<div class="py-6">
+    <div class="w-full min-w-full">
+        <div class="mat-table-responsive users-table-container">
+            <div *ngIf="isloading" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                <svg aria-hidden="true" class="w-8 h-8 mr-2 mt-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+            <mat-table *ngIf="!isloading" [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="plan_title">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.title' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="plan_title">
+                        {{ row?.plan_title }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="plan_date">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.eventdate' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="plan_date">
+                        {{ row?.plan_date | date: 'd MMM yyyy': 'UTC' }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="category">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.category' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="category">
+                        {{ row?.category }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="subcategory">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.subcategory' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="subcategory">
+                        {{ row?.subcategory }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="guest_name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.name' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="guest_name">
+                        {{ row?.guest_name }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="invited_by">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.invitedby' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="invited_by">
+                        {{ row?.invited_by }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="alias">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.alias' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="alias">
+                        {{ row?.alias }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="guest_phone">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.phone' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="guest_phone">
+                        {{ row?.guest_phone }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="guest_zip_code">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.zipcode' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="guest_zip_code">
+                        {{ row?.guest_zip_code }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="guest_email">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.email' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="guest_email">
+                        {{ row?.guest_email }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="attended">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'crm.attended' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="status">
+                        <svg
+                            [ngStyle]="{'color': row?.attended == 1 ? '#5cb85c' : '#c7c7c7'}" class="mr-2 hover:cursor-pointer w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                        </svg>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="member">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'guests.member' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="member">
+                        <svg
+                            [ngStyle]="{'color': row?.converted == 1 ? '#5cb85c' : '#c7c7c7'}" class="mr-2 hover:cursor-pointer w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                        </svg>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="sp_name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'crm.salesperson' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="sp_name">
+                        {{ row?.sp_name }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.status' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="status">
+                        <ng-container *ngIf="row?.converted != 1 && (row?.crm_status == 'Contacted' || row?.crm_status == 'Contactado')">
+                            <div class="status-btn-wrapper" style="position: absolute;margin-top: 7px;margin-left: 20px;">
+                                <div class="status-btn info contacted" style="width: 22px !important;height: 22px !important;"></div>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngIf="row?.converted != 1 && (row?.crm_status == 'Contact' || row?.crm_status == 'Contactar')">
+                              <div class="status-btn-wrapper" style="position: absolute;margin-top: 7px;margin-left: 20px;">
+                                  <div class="status-btn info contact" style="width: 22px !important;height: 22px !important;"></div>
+                              </div>
+                          </ng-container>
+                          <ng-container *ngIf="row?.converted != 1 && (row?.crm_status == 'Not to contact' || row?.crm_status == 'No contactar')">
+                              <div class="status-btn-wrapper" style="position: absolute;margin-top: 7px;margin-left: 20px;">
+                                  <div class="status-btn info nottocontact" style="width: 22px !important;height: 22px !important;"></div>
+                              </div>
+                          </ng-container>
+                          <ng-container *ngIf="!row.crm_status && row?.converted != 1">
+                              <div class="status-btn-wrapper" style="position: absolute;margin-top: 7px;margin-left: 20px;">
+                                  <div class="status-btn info nostatus" style="width: 22px !important;height: 22px !important;"></div>
+                              </div>
+                          </ng-container>
+                          <ng-container *ngIf="row?.converted == 1">
+                              <div class="status-btn-wrapper" style="position: absolute;margin-top: 7px;margin-left: 20px;">
+                                  <div class="status-btn info converted" style="width: 22px !important;height: 22px !important;"></div>
+                              </div>
+                          </ng-container>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+        </div>
+        <mat-paginator
+            #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+            (page)="getPageDetails($event)"
+            [showFirstLastButtons]="true"
+        ></mat-paginator>
+    </div>
+</div>

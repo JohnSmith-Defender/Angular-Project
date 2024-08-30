@@ -1,0 +1,190 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div 
+    class="border border-t-4 border-l-0 border-r-0 border-b-0 w-full mt-8  mx-auto" 
+    [ngStyle]="{'border-top-color': primaryColor}"
+>
+    <div class="bg-white shadow-xl px-6 py-14">
+        <form [formGroup]="stripeForm" (ngSubmit)="pay()" [ngClass]="{'submitted': submitted || hasError || isInvalidForm}">
+            <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-5 lg:grid:cols-5">
+                <div class="col-span-3">
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-8">
+                        <div class="flex items-center">
+                            <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/lock-check.png" />
+                            <div class="text-sm font-bold">{{ 'signup.securepayment' | translate }}</div>
+                        </div>
+                        <div class="flex">
+                            <img class="w-7 object-contain mr-4" src="./assets/images/new-design/icons/award.png" />
+                            <div class="text-sm font-bold">{{ 'signup.moneybackguarantee' | translate }}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-6">
+                        <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/id-card-alt.png" />
+                        <div class="font-light text-xl">{{ 'signup.yourcontactdetails' | translate }}</div>
+                    </div>
+                    <div class="flex items-center justify-center mb-4 relative">
+                        <input 
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('name')?.errors }"
+                            type="text" 
+                            [readonly]="id > 0 ? true : false"
+                            [value]="id > 0 ? (user?.name ? user?.name : (user?.first_name + ' ' + user?.last_name)) : ''"
+                            class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                            formControlName="name" 
+                            placeholder="{{ 'signup.name' | translate }}*" 
+                            required>
+                    </div>
+                    <div class="flex items-center justify-center mb-4 relative">
+                        <input 
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('email')?.errors }"
+                            type="text" 
+                            [readonly]="id > 0 ? true : false"
+                            [value]="id > 0 ? user?.email : ''"
+                            class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                            formControlName="email" 
+                            placeholder="{{ 'signup.email' | translate }}*" 
+                            required>
+                    </div>
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('phone')?.errors }"
+                                type="text" 
+                                [value]="id > 0 ? user?.phone : ''"
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="phone" 
+                                placeholder="{{ 'signup.phone' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('nif')?.errors }"
+                                type="text" 
+                                [value]="user?.nif"
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="nif" 
+                                placeholder="NIF">
+                        </div>
+                    </div>
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('personal_address')?.errors }"
+                                type="text" 
+                                [value]="user?.personal_address"
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="personal_address" 
+                                placeholder="{{ 'signup.direccion' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('province')?.errors }"
+                                type="text" 
+                                [value]="user?.province"
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="province" 
+                                placeholder="{{ 'signup.province' | translate }}">
+                        </div>
+                    </div>
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('city')?.errors }"
+                                type="text" 
+                                [value]="user?.city"
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="city" 
+                                placeholder="{{ 'guests.city' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('zip_code')?.errors }"
+                                type="text" 
+                                [value]="user?.zip_code"
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="zip_code" 
+                                placeholder="{{ 'guests.zipcode' | translate }}">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center relative mb-4">
+                        <select 
+                            id="country" 
+                            formControlName="country"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': stripeForm.get('country')?.errors }"
+                            class="bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                            <option value="">{{ 'profile-settings.country' | translate }}</option>
+                            <option
+                                *ngFor="let country of countries"                                
+                                [value] ="country.country_name"
+                            >{{country.country_name}}</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-6">
+                        <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Price.png" />
+                        <div class="font-light text-xl">{{ 'signup.paymentmethod' | translate }}</div>
+                    </div>
+                    <div class="flex items-center pb-4">
+                        <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/card.png" />
+                        <div class="text-base font-light">{{ 'signup.creditcard' | translate }}</div>
+                    </div>
+                    <div class="border bt-2 bl-0 br-0 px-1 rounded-lg" *ngIf="changedKey">
+                        <ngx-stripe-card
+                            [options]="cardOptions"
+                            [elementsOptions]="elementsOptions"
+                        ></ngx-stripe-card>
+                    </div>
+                    <div class="flex items-center justify-center mb-6">
+                        <button
+                            type="submit"
+                            class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                            [ngStyle]="{'background-color': buttonColor}"
+                            [ngClass]="{'disabled:opacity-75': submitted}"
+                            [disabled]="submitted"
+                        >
+                            {{ "signup.finalizepurchase" | translate }}
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <img class="h-6 object-contain" src="./assets/images/new-design/icons/payment-methods.png" />
+                    </div>
+                    <div class="flex items-center justify-center mb-6 text-sm mt-2">
+                        {{ 'signup.securepayment' | translate }}
+                    </div>
+                </div>
+                <div class="col-span-2">
+                    <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mt-2 mb-6">
+                        <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Tag.png" />
+                        <div class="font-light text-xl">{{ 'signup.detailsofyourpurchase' | translate }}</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-6">
+                        <div>{{ event?.name }}</div>
+                        <div class="font-bold">{{ getPrice('', '') }}</div>
+                    </div>
+                    <div class="w-full rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                        <div 
+                            class="rounded-t-lg p-2 px-4 text-white text-sm font-bold" 
+                            [ngStyle]="{'background-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? buttonColor : primaryColor}">
+                            {{ 'signup.paynow' | translate }}
+                        </div>
+                        <div class="p-2 px-4">
+                            <div class="flex justify-between items-center py-2">
+                                <div class="text-base font-bold" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ?  buttonColor : primaryColor}">{{ 'signup.total' | translate }}</div>
+                                <div class="text-base font-bold" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ?  buttonColor : primaryColor}"><b>{{ getPrice('', '') }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<button #modalbutton data-modal-target="staticModal" data-modal-toggle="staticModal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<app-modal
+    [title]="popupTitle"
+    [text]="popupMessage"
+    [buttonColor]="buttonColor"
+    [acceptButtonText]="popupButtonText"
+    [cancelButtonText]=""
+    (continue)="continue()"
+>
+</app-modal>

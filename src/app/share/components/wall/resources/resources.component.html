@@ -1,0 +1,14 @@
+<div class="bg-white relative mb-6 relative p-6 rounded-[16px]">
+    <div class="flex items-center justify-between">
+        <div>{{resource?.filename}}</div>
+        <div class="flex items-center">
+            <img class="w-6 object-contain hover:cursor-pointer" 
+                (click)="viewCourseResource(resource)"
+                src="./assets/community-icons/search.png" />
+            <a [href]="downloadCourseUnitSrc + resource?.id + '/' + resource?.file" class="hover:cursor-pointer">
+                <img class="w-6 object-contain ml-4 hover:cursor-pointer" 
+                    src="./assets/community-icons/download.png" />
+            </a>
+        </div>
+    </div>
+</div>

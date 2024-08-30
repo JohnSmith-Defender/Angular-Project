@@ -1,0 +1,147 @@
+<app-page-title *ngIf="!parentComponent" [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div *ngIf="!parentComponent" class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4">
+    <div class="relative w-full">
+        <div>   
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out"
+                *ngIf="canCreateCourse" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': createHover ? 1.5 : 1,
+                    'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (click)="handleCreateRoute()"
+                (mouseover)="toggleCreateHover(true)"
+                (mouseleave)="toggleCreateHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                </svg>
+                <span class="text-white text-md font-semibold uppercase">{{ 'dashboard.new' | translate }} {{ pageName }}</span>
+            </button>
+        </div>
+        <div class="max-w-full sm:max-w-full md:max-w-lg lg:max-w-lg relative sm:relative md:absolute lg:absolute right-0 sm:right-0 md:right-5 lg:right-5 top-0 sm:top-0 md:-top-8 lg:-top-8"
+            *ngIf="isUESchoolOfLife && category == 'nivelacion'">
+            <blockquote class="rounded-lg p-4 py-2 my-4 border-s-4 shadow border-[#FF3228] bg-[#f5f6f8]">
+                <svg class="w-4 h-4 mx-auto mb-1 text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 14">
+                    <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z"/>
+                </svg>
+                <p class="font-medium text-gray-900 text-sm">
+                    {{ 'course-details.levelingcoursesdescription' | translate }}
+                </p>
+                <div class="font-medium mt-2 opacity-60 text-sm">
+                    {{ 'course-details.levelingcoursesduration' | translate }}
+                </div>
+            </blockquote>
+        </div>
+    </div>
+</div>
+<div *ngIf="!parentComponent" class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3">
+        <div class="relative mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearchChanged($event)"
+                        (doSearch)="handleSearchChanged($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf="!newSection">
+    <div class="pt-6">
+        <div class="py-2 pb-20 flex flex-wrap">
+            <ng-container *ngFor="let course of courses">
+                <app-course-card
+                    class="pb-[24px]"
+                    [id]="course?.id"
+                    [path]="course?.path"
+                    [title]="course?.title_language || course?.title"
+                    [category]="course?.category"
+                    [price]="course?.price"
+                    [image]="course?.image"
+                    [progress]="course?.progress"
+                    [buttonText]="course?.button_text"
+                    [showDetails]="course?.show_details"
+                    [buyNow]="course?.buy_now_shown"
+                    [page]="'list'"
+                    [buttonColor]="buttonColor"
+                    [companyId]="companyId"
+                    [userId]="userId"
+                    [courseButtonColor]="course?.assigned_button_color"
+                    [courseIntro]="course?.course_intro"
+                >
+                </app-course-card>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="newSection">
+    <div class="py-6">
+        <div *ngIf="parentComponent == 'home'"
+            class="items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-8">
+            <div class="font-semibold text-xl">{{ pageName }}</div>
+        </div>
+        <div class="py-2 pb-8 flex flex-wrap">
+            <ng-container *ngFor="let course of accessCourses">
+                <app-course-card
+                    class="pb-[24px]"
+                    [id]="course?.id"
+                    [path]="course?.path"
+                    [title]="course?.title"
+                    [category]="course?.category"
+                    [price]="course?.price"
+                    [image]="course?.image"
+                    [progress]="course?.progress"
+                    [buttonText]="course?.button_text"
+                    [showDetails]="course?.show_details"
+                    [buyNow]="course?.buy_now_shown"
+                    [page]="'list'"
+                    [buttonColor]="buttonColor"
+                    [companyId]="companyId"
+                    [userId]="userId"
+                    [courseButtonColor]="course?.assigned_button_color"
+                    [courseIntro]="course?.course_intro"
+                >
+                </app-course-card>
+            </ng-container>
+        </div>
+    </div>
+    <div class="py-6" *ngIf="nonAccessCourses?.length > 0">
+        <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-8">
+            <div class="font-semibold text-xl">{{'wall.more' | translate}} {{ pageName }}</div>
+        </div>
+        <div class="py-2 pb-8 flex flex-wrap">
+            <ng-container *ngFor="let course of nonAccessCourses">
+                <app-course-card
+                    class="pb-[24px]"
+                    [id]="course?.id"
+                    [path]="course?.path"
+                    [title]="course?.title"
+                    [category]="course?.category"
+                    [price]="course?.price"
+                    [image]="course?.image"
+                    [progress]="course?.progress"
+                    [buttonText]="course?.button_text"
+                    [showDetails]="course?.show_details"
+                    [buyNow]="course?.buy_now_shown"
+                    [page]="'list'"
+                    [buttonColor]="buttonColor"
+                    [companyId]="companyId"
+                    [userId]="userId"
+                    [courseButtonColor]="course?.assigned_button_color"
+                    [section]="'more'"
+                    [ctaPath]="course?.cta_path"
+                    [courseIntro]="course?.course_intro"
+                >
+                </app-course-card>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>

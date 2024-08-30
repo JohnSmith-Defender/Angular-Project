@@ -1,0 +1,30 @@
+<div class="bg-white relative mb-6 relative p-6 rounded-[16px]">
+   <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div class="font-semibold text-lg">{{ 'wall.tutors' | translate }}</div>
+            <svg *ngIf="isTutorsMenuActive" (click)="goToTutors()" class="hover:cursor-pointer ml-4 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+        </div>
+        <div *ngIf="superAdmin" (click)="toggleTutorSectionVisibility()">
+            <img class="w-6 object-contain mr-4 hover:cursor-pointer" 
+                [src]="tutorSectionVisible ? './assets/community-icons/eye-open.png' : './assets/community-icons/eye-closed.png'" />
+        </div>
+    </div>
+    <div class="my-8">
+        <ng-container *ngFor="let tutor of courseTutors">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <img class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                        [ngSrc]="tutor?.image == 'default-avatar.jpg' || tutor?.image == 'empty_avatar.png' ? './assets/images/default-profile.png' : getTutorImage(tutor?.image)"
+                    />
+                    <div class="font-semibold text-sm">{{getTutorName(tutor)}}</div>
+                </div>
+                <div *ngIf="superAdmin" (click)="toggleTutorVisibility(tutor)">
+                    <img class="w-6 object-contain mr-4 hover:cursor-pointer" 
+                        [src]="getTutorVisibleStatus(tutor) ? './assets/community-icons/eye-open.png' : './assets/community-icons/eye-closed.png'" />
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,185 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="pb-10">
+    <div class="w-full max-w-full sm:w-full sm:max-w-full md:w-6/12 md:max-w-6/12 lg:w-6/12 lg:max-w-6/12">
+        <div class="flex justify-between items-center align-center pt-24 sm:pt-24 md:pt-4 lg:pt-4">
+            <div class="text-4xl font-semibold">{{ courseUnitTitle }}</div>
+            <div class="flex items-center">
+                <div 
+                    [ngStyle]="{'background-color': buttonColor}"
+                    class="text-sm rounded-[15px] text-white py-2 uppercase px-4 hover:cursor-pointer" 
+                    (click)="markComplete(courseUnit?.id, true)" 
+                    *ngIf="courseUnit?.Company_Course_Unit_Users[0]?.progress != 100 && !isModuleLocked && canAccessLesson()"
+                >
+                    {{ 'course-details.completebutton' | translate }}
+                </div>
+                <div class="flex items-center align-center uppercase bg-white text-sm mr-8" *ngIf="courseUnit?.Company_Course_Unit_Users[0]?.progress == 100">
+                    <img class="w-4 h-4 mr-2" src="./assets/images/new-design/icons/Progress-completed.png" />
+                    {{ 'courses.completed' | translate }}
+                </div>
+                <div 
+                    *ngIf="courseUnit?.Company_Course_Unit_Users[0]?.progress == 100"
+                    [ngStyle]="{'background-color': buttonColor}"
+                    class="text-sm rounded-[15px] text-white py-2 uppercase px-4 hover:cursor-pointer" 
+                    (click)="resetStatus(courseUnit.id, true)" 
+                >
+                    {{ 'company-reports.reset' | translate }}
+                </div>
+        </div>
+        </div>
+        <p *ngIf="courseUnit && !isModuleLocked" [innerHTML]="getVideoDescription(courseUnit)" class="pt-8"></p>
+    </div>
+</div>
+<div>
+    <div class="flex grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 w-full max-w-full">
+        <div>
+            <ng-container *ngIf="courseUnitType?.type == 'video'">
+                <ng-container *ngIf="courseUnit?.option == 'YouTube' || courseUnit?.option == 'Vimeo' || courseUnit?.option == 'External' || courseUnit?.option == 'Vidalytics'">
+                    <div class="video-wrap" *ngIf="course?.video_cover || courseUnit?.video_cover">
+                        <div class="box-video" [ngClass]="{'open': playCurrentVideo}">
+                            <ng-container *ngIf="!courseUnit?.video_cover">
+                                <div class="bg-video" style="background-image: url('{{ courseVideoCoverSrc }}');opacity:0.25;">
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="courseUnit?.video_cover">
+                                <div class="bg-video" style="background-image: url('{{ courseUnitVideoCoverSrc }}');opacity:0.25;">
+                                </div>
+                            </ng-container>
+                            <div class="cover-title-container">
+                                <div class="video-title" *ngIf="showTitle">
+                                    <p>{{ language == 'eu' ? courseUnit?.title_eu : (language == 'en' ? courseUnit?.title_en : ( language == 'ca' ? courseUnit?.title_ca : (language == 'de' ? courseUnit?.title_de : (language == 'fr' ? courseUnit?.title_fr : courseUnit?.title)) ) ) }}</p>
+                                </div>
+                                <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                            </div>
+                            <div *ngIf="!playCurrentVideo" class="blur"></div>
+                            <div 
+                                class="video-container" 
+                                style="opacity:0;" 
+                                [innerHtml]="playCurrentVideo ? (addAutoPlay(selectedLesson) | safeContentHtml: 'html') : (selectedLesson | safeContentHtml: 'html')" 
+                                *ngIf="courseUnit?.url?.indexOf('iframe') >= 0 || courseUnit?.vimeo_id > 0">
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="!course?.video_cover && !courseUnit?.video_cover">
+                        <div class="video-container" 
+                            [innerHtml]="selectedLesson | safeContentHtml: 'html'" 
+                            *ngIf="courseUnit?.url?.indexOf('iframe') >= 0 || courseUnit?.vimeo_id > 0">
+                        </div>
+                    </div>
+                    <ng-container *ngIf="(course?.video_cover || courseUnit?.video_cover) && courseUnit?.url?.indexOf('iframe') < 0 && !courseUnit?.vimeo_id">
+                        <div class="video-wrap">
+                            <div class="box-video" [ngClass]="{'open': playCurrentVideo}">
+                                <div *ngIf="!courseUnit?.video_cover"  class="bg-video" style="background-image: url('{{ courseVideoCoverSrc }}');">
+                                    <div class="video-title" *ngIf="showTitle">
+                                        <p>{{ language == 'eu' ? courseUnit?.title_eu : (language == 'en' ? courseUnit?.title_en : ( language == 'ca' ? courseUnit?.title_ca : (language == 'de' ? courseUnit?.title_de : (language == 'fr' ? courseUnit?.title_fr : courseUnit?.title)) ) ) }}</p>
+                                    </div>
+                                    <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                                </div>
+
+                                <div *ngIf="courseUnit?.video_cover" class="bg-video" style="background-image: url('{{ courseUnitVideoCoverSrc }}');">
+                                    <div class="video-title" *ngIf="showTitle">
+                                        <p>{{ language == 'eu' ? courseUnit?.title_eu : (language == 'en' ? courseUnit?.title_en : ( language == 'ca' ? courseUnit?.title_ca : (language == 'de' ? courseUnit?.title_de : (language == 'fr' ? courseUnit?.title_fr : courseUnit?.title)) ) ) }}</p>
+                                    </div>
+                                    <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                                </div>
+                                <div *ngIf="!playCurrentVideo" class="blur"></div>
+                                <div class="video-container">
+                                    <iframe 
+                                        class="iframe-ctrl"
+                                        id="{{ 'iframe-' + courseUnit.id }}"
+                                        [src]="safeLessonURL" 
+                                        width="100%" 
+                                        height="50vh"
+                                        *ngIf="courseUnit?.url?.indexOf('iframe') < 0"
+                                        allowfullscreen="allowfullscreen" 
+                                        mozallowfullscreen="mozallowfullscreen" 
+                                        msallowfullscreen="msallowfullscreen" 
+                                        oallowfullscreen="oallowfullscreen" 
+                                        webkitallowfullscreen="webkitallowfullscreen"
+                                        allow=autoplay
+                                        [ngStyle]="{
+                                            'height': courseUnit?.option == 'Vidalytics' ? '560px' : '456px', 
+                                            'background-color': courseUnit?.option == 'Vidalytics' ? 'transparent' : 'initial',
+                                            'border': courseUnit?.option == 'Vidalytics' ? 'none' : 'initial'
+                                        }"
+                                    >
+                                    </iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="(!course?.video_cover && !courseUnit?.video_cover) && !courseUnit?.vimeo_id">
+                        <iframe 
+                            class="iframe-ctrl"
+                            id="{{ 'iframe-' + courseUnit.id }}"
+                            [src]="safeLessonURL" 
+                            width="100%" 
+                            height="50vh"
+                            *ngIf="courseUnit?.url?.indexOf('iframe') < 0"
+                            allowfullscreen="allowfullscreen" 
+                            mozallowfullscreen="mozallowfullscreen" 
+                            msallowfullscreen="msallowfullscreen" 
+                            oallowfullscreen="oallowfullscreen" 
+                            webkitallowfullscreen="webkitallowfullscreen"
+                            allow=autoplay
+                            scrolling="no"
+                            [ngStyle]="{
+                                'height': courseUnit?.option == 'Vidalytics' ? '560px' : '456px', 
+                                'background-color': courseUnit?.option == 'Vidalytics' ? 'transparent' : 'initial',
+                                'border': courseUnit?.option == 'Vidalytics' ? 'none' : 'initial'
+                            }"
+                        >
+                        </iframe>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="courseUnit?.option == 'Self-hosted'">
+                    <ng-container *ngIf="course?.video_cover && !courseUnit?.video_cover">
+                        <video controls controlsList="nodownload" width="100%" height="195px" id="video-{{ courseUnit.id }}" poster="{{ courseVideoCoverSrc }}" #selfHostedVideo>
+                            <source src="{{selfHostedVideoSrc}}" type="video/mp4" />
+                        </video>
+                    </ng-container>
+                    <ng-container *ngIf="courseUnit?.video_cover">
+                        <video controls controlsList="nodownload" width="100%" height="195px" id="video-{{ courseUnit.id }}" poster="{{ courseUnitVideoCoverSrc }}" #selfHostedVideo>
+                            <source src="{{selfHostedVideoSrc}}" type="video/mp4" />
+                        </video>
+                    </ng-container>
+                    <ng-container *ngIf="(!course?.video_cover && !courseUnit?.video_cover)">
+                        <video controls controlsList="nodownload" width="100%" height="195px" id="video-{{ courseUnit.id }}" #selfHostedVideo>
+                            <source src="{{selfHostedVideoSrc}}" type="video/mp4" />
+                        </video>
+                    </ng-container>
+                </ng-container> 
+            </ng-container>
+        </div>
+        <div *ngIf="courseUnitDownloads?.length > 0">
+            <div class="text-lg font-semibold my-8">{{'course-details.coursecontent' | translate}}</div>
+            <div *ngFor="let download of courseUnitDownloads" class="flex flex-wrap" (click)="downloadFileResource(download)">
+                <div class="mr-4 mb-4 hover:cursor-pointer">
+                    <svg *ngIf="download?.file?.indexOf('pdf') >= 0" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 18a.969.969 0 0 0 .933 1h12.134A.97.97 0 0 0 15 18M1 7V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2v5M6 1v4a1 1 0 0 1-1 1H1m0 9v-5h1.5a1.5 1.5 0 1 1 0 3H1m12 2v-5h2m-2 3h2m-8-3v5h1.375A1.626 1.626 0 0 0 10 13.375v-1.75A1.626 1.626 0 0 0 8.375 10H7Z"/>
+                    </svg>
+                    <svg *ngIf="download?.file?.indexOf('mp4') >= 0" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z"/>
+                      </svg>
+                    <svg *ngIf="download?.file?.indexOf('mp3') >= 0" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                        <path d="M5 5V.13a2.98 2.98 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Zm1.5 10c.828 0 1.5-.448 1.5-1s-.672-1-1.5-1-1.5.448-1.5 1 .672 1 1.5 1Z"/>
+                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM12 10a1 1 0 0 1-1-1 2.971 2.971 0 0 0-1-2.237V13.5a.963.963 0 0 1-.037.185c.019.104.031.21.037.315a3.283 3.283 0 0 1-3.5 3A3.283 3.283 0 0 1 3 14a3.283 3.283 0 0 1 3.5-3 3.942 3.942 0 0 1 1.5.3V5a1 1 0 0 1 1.316-.948C9.467 4.1 13 5.321 13 9a1 1 0 0 1-1 1Z"/>
+                    </svg>
+                    <svg *ngIf="!(download?.file?.indexOf('pdf') >= 0 || download?.file?.indexOf('mp3') >= 0 || download?.file?.indexOf('mp4') >= 0)" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                        <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M6 1v4a1 1 0 0 1-1 1H1m14-4v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"/>
+                    </svg>
+                </div>
+                <div>{{ download?.filename }}</div>
+            </div>
+        </div>
+    </div>
+</div>

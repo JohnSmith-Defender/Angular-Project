@@ -1,0 +1,41 @@
+<ng-container *ngIf="navigation == 'side-menu'">
+    <button (click)="login()" type="button" 
+        [ngStyle]="{'color': buttonColor, 'border-color': buttonColor}"
+        class="mr-4 bg-white hover:bg-gray-100 border focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200 me-2"
+        [ngClass]="{'mb-2': navigation != 'top-menu'}">
+        {{ 'landing.login' | translate }}
+    </button>
+    <button (click)="signup()" type="button" 
+        *ngIf="canRegister"
+        [ngStyle]="{
+            'background-color': buttonColor,
+            'opacity': signupHover ? 1.5 : 1,
+            'filter': signupHover ? 'brightness(0.8)' : 'brightness(1)'
+        }"
+        class="text-white border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-800 dark:bg-white dark:border-gray-700 dark:text-gray-900 dark:hover:bg-gray-200 me-2 mb-2"
+        (mouseover)="toggleSignupHover(true)"
+        (mouseleave)="toggleSignupHover(false)">
+        {{ 'login.signup' | translate }}
+    </button>
+</ng-container>
+<ng-container *ngIf="navigation == 'top-menu'">
+    <div class="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse pr-9">
+        <ng-container *ngIf="canRegister">
+           <a href="javascript:;" 
+                (click)="login()" class="text-white font-medium text-sm px-9 py-2 md:px-5 md:py-2.5 focus:outline-none border-transparent focus:border-transparent focus:ring-0">
+                {{ 'landing.login' | translate }}
+            </a>
+            <a href="javascript:;" class="text-white hover:bg-[#A77FE0] font-medium rounded-lg text-sm px-5 py-1.5 focus:outline-none border border-white border-1 focus:border-transparent focus:ring-0"
+                (click)="signup()">
+                {{ 'login.signup' | translate }}
+            </a> 
+        </ng-container>
+        <ng-container *ngIf="!canRegister">
+            <a href="javascript:;" class="text-white hover:bg-black font-medium rounded-lg text-sm px-5 py-1.5 focus:outline-none border-transparent focus:border-transparent focus:ring-0"
+                [ngStyle]="{'background-color': primaryColor}"
+                (click)="login()">
+                {{ 'landing.login' | translate }}
+            </a> 
+        </ng-container>
+    </div>
+</ng-container>

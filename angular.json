@@ -1,0 +1,199 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "vcp-web": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "standalone": true
+        },
+        "@schematics/angular:directive": {
+          "standalone": true
+        },
+        "@schematics/angular:pipe": {
+          "standalone": true
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser-esbuild",
+          "options": {
+            "preserveSymlinks": true,
+            "allowedCommonJsDependencies": [
+              "@tweenjs/tween.js",
+              "core-js/modules/es.promise.js",
+              "core-js/modules/es.array.index-of.js",
+              "core-js/modules/es.array.iterator.js",
+              "core-js/modules/es.array.reduce.js",
+              "core-js/modules/es.array.reverse.js",
+              "core-js/modules/es.string.ends-with.js",
+              "core-js/modules/es.string.includes.js",
+              "core-js/modules/es.string.match.js",
+              "core-js/modules/es.string.replace.js",
+              "core-js/modules/es.string.split.js",
+              "core-js/modules/es.string.starts-with.js",
+              "core-js/modules/es.string.trim.js",
+              "core-js/modules/es.regexp.to-string.js",
+              "core-js/modules/web.dom-collections.iterator.js",
+              "crypto-js",
+              "file-saver",
+              "filepond-plugin-file-validate-size",
+              "filepond-plugin-file-validate-type",
+              "filepond-plugin-image-edit",
+              "filepond-plugin-image-preview",
+              "html2canvas",
+              "lodash",
+              "querystring",
+              "url",
+              "raf",
+              "rgbcolor",
+              "survey-angular",
+              "survey-core",
+              "secure-web-storage",
+              "survey-creator-knockout",
+              "surveyjs-widgets",
+              "xlsx",
+              "dayjs",
+              "dayjs/plugin/localeData",
+              "dayjs/plugin/localizedFormat",
+              "dayjs/plugin/objectSupport",
+              "dayjs/plugin/utc",
+              "messageformat",
+              "moment"
+            ],
+            "outputPath": "dist/vcp-web",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico", 
+              "src/assets",
+              "src/manifest.webmanifest"
+            ],
+            "styles": [
+              "src/theme/styles.css",
+              "./node_modules/filepond/dist/filepond.min.css",
+              "./node_modules/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css",
+              "./node_modules/filepond-plugin-media-preview/dist/filepond-plugin-media-preview.min.css",
+              "./node_modules/cookieconsent/build/cookieconsent.min.css",
+              "./node_modules/@videogular/ngx-videogular/fonts/videogular.css",
+              "./node_modules/quill/dist/quill.core.css",
+              "./node_modules/quill/dist/quill.bubble.css",
+              "./node_modules/quill/dist/quill.snow.css",
+              
+              "./node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+              "./node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
+              "src/styles.scss"
+            ],
+            "scripts": [
+              "node_modules/apexcharts/dist/apexcharts.min.js",
+              "node_modules/cookieconsent/build/cookieconsent.min.js",
+              "node_modules/pusher-js/dist/web/pusher.min.js",
+              "node_modules/quill/dist/quill.min.js"
+            ],
+            "vendorChunk": true,
+            "extractLicenses": false,
+            "buildOptimizer": false,
+            "sourceMap": true,
+            "optimization": false,
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "vcp-web:build:production"
+            },
+            "development": {
+              "browserTarget": "vcp-web:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "vcp-web:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.webmanifest",
+              "src/manifest.webmanifest"
+            ],
+            "styles": [
+              "src/theme/styles.css",
+              "./node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.carousel.min.css",
+              "./node_modules/ngx-owl-carousel-o/lib/styles/prebuilt-themes/owl.theme.default.min.css",
+              "src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ],
+    "analytics": false
+  }
+}

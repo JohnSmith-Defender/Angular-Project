@@ -1,0 +1,33 @@
+<div class="pointer-events-auto hover:cursor-pointer">
+    <div class="bg-[#F8F4F4] border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700 relative my-8 sm:my-8 md:mb-0 lg:my-0 rounded-[30px] h-full max-h-full sm:h-full sm:max-h-full md:h-[280px] md:max-h-[260px] lg:h-[260px] lg:max-h-[260px] flex flex-col">
+        <div class="flex justify-end px-4 pt-4">
+            <button id="dropdownButton-{{id}}" [attr.data-dropdown-toggle]="'dropdown-' + id" 
+                class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" 
+                type="button">
+                <span class="sr-only">Open dropdown</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                    <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                </svg>
+            </button>
+            <div id="dropdown-{{id}}" class="z-10 {{showDropdown ? '' : 'hidden'}} text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                <ul class="py-2" aria-labelledby="dropdownButton">
+                <li>
+                    <a href="javascript:;" (click)="handleEdit()" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{'landing.edit' | translate}}</a>
+                </li>
+                <li>
+                    <a href="javascript:;" (click)="handleDelete()" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">{{'plan-details.delete' | translate}}</a>
+                </li>
+                </ul>
+            </div>
+        </div>    
+        <div class="flex justify-center py-4">
+            <img class="px-4 object-contain w-48 object-center" 
+                width="219" height="219" *ngIf="image" [ngSrc]="image" alt=""
+                [ngClass]="{'bg-[#525252] rounded-lg my-4 h-20': id == 20 || id == 32 || id == 52 || id == 57 || id == 64,
+                    'py-6': id == 32,
+                    'py-4':  id == 20 || id == 52 || id == 57 || id == 64,
+                    'h-24':  id != 20 && id != 32 && id != 52 && id != 57 && id != 64}">
+        </div>
+        <div class="text-center text-xl font-semibold px-4 mb-4 sm:mb-4 md:mb-0 lg:mb-0" [routerLink]="[path]">{{name}}</div>
+    </div>
+</div>

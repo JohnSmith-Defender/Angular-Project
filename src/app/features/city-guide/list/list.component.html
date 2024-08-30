@@ -1,0 +1,112 @@
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4">
+    <div>
+        <button 
+            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out"
+            *ngIf="canCreateCityGuide" 
+            [ngStyle]="{
+                'background-color': buttonColor,
+                'opacity': createHover ? 1.5 : 1,
+                'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (click)="handleCreateRoute()"
+            (mouseover)="toggleCreateHover(true)"
+            (mouseleave)="toggleCreateHover(false)"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+            </svg>
+            <span class="text-white text-md font-semibold uppercase">{{ 'dashboard.new' | translate }} {{ pageName }}</span>
+        </button>
+    </div>
+</div>
+<div class="pt-10" *ngIf="searchByKeyword">
+    <div class="flex flex-wrap items-center w-full max-w-full">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0 flex items-center" *ngIf="showFilters">
+            <ng-container *ngFor="let setting of filterSettings">
+                <ng-container *ngIf="setting?.field != 'category'">
+                    <app-filter
+                        [mode]="'city-guides'"
+                        [list]="list"
+                        (filterList)="filteredCity($event)"
+                        [defaultActiveFilter]="defaultActiveFilter"
+                        [filterSettings]="filterSettings"
+                        (onFilterClick)="filterViewChanged($event)"
+                    ></app-filter>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-[85px] pb-20">
+        <ng-container *ngFor="let guide of cityGuides | paginate: {itemsPerPage: 6, currentPage: p}"> 
+            <div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[339px] md:max-h-[339px] lg:h-[339px] lg:max-h-[339px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0 sm:gap-0 md:gap-8 lg:gap-8 justify-evenly"
+                [ngStyle]="{'background-color': '#F5F5F5'}"
+            >
+                <div>
+                    <img 
+                        class="rounded-l-[10px] object-cover object-top w-full max-w-full h-full max-h-full sm:h-full sm:max-h-full md:h-[339px] md:max-h-[339px] lg:h-[339px] lg:max-h-[339px]"
+                        width="526"
+                        height="339"
+                        [ngSrc]="guide.image"
+                    />
+                </div>
+                <div class="flex flex-col justify-between pl-4 pt-4 pr-4 pb-4 sm:pl-4 sm:pt-4 sm:pr-4 sm:pb-4 md:pl-0 md:pt-4 md:pr-4 md:pb-4 lg:pl-0 lg:pt-4 lg:pr-4 lg:pb-4">
+                    <div class="flex py-2.5 bg-emerald-950 rounded-[10px] mb-4 w-[180px] justify-center" *ngIf="guide?.featured">
+                        <div class="text-base mr-2 text-white uppercase">{{ 'plans.recommended' | translate }}</div>
+                        <svg class="w-6 h-6 text-amber-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 20">
+                            <path d="M7.958 19.393a7.7 7.7 0 0 1-6.715-3.439c-2.868-4.832 0-9.376.944-10.654l.091-.122a3.286 3.286 0 0 0 .765-3.288A1 1 0 0 1 4.6.8c.133.1.313.212.525.347A10.451 10.451 0 0 1 10.6 9.3c.5-1.06.772-2.213.8-3.385a1 1 0 0 1 1.592-.758c1.636 1.205 4.638 6.081 2.019 10.441a8.177 8.177 0 0 1-7.053 3.795Z"/>
+                        </svg>
+                    </div>
+                    <div class="w-full max-w-full">
+                        <div class="text-[1.7rem] mb-4 leading-[29px]">{{ guide?.name }}</div>
+                        <div class="opacity-60 leading-5 text-[0.9rem]">{{ guide?.excerpt }}</div>
+                    </div>
+                    <div class="w-full max-w-full border border-b-1 border-l-0 border-r-0 border-t-0">&nbsp;</div>
+                    <div class="w-full max-w-full flex justify-between items-center flex-wrap h-full max-h-full">
+                        <div class="flex items-center">
+                            <div class="flex" *ngFor="let like of guide?.likes; let i = index;">
+                                <img 
+                                    class="bg-slate-300 object-cover rounded-full w-[54px] h-[54px] max-w-[54px] max-h-[54px] rounded-full" 
+                                    [ngClass]="{'-ml-8': i > 0}"
+                                    width="62" 
+                                    height="62" 
+                                    [ngSrc]="like?.image">
+                            </div>
+                            <div class="text-xs ml-4">{{guide?.likes_text}}</div>
+                        </div>
+                        <div class="mt-4">
+                            <button 
+                                (click)="goToDetails(guide)"
+                                class="font-bold uppercase inline-block h-[40px] ml-4 border text-sm px-6 py-2 font-semibold rounded-[10px] focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+                                [ngStyle]="{
+                                    'border-color': readHover && selectedGuideId == guide.id ? 'transparent' : buttonColor,
+                                    'background-color': readHover && selectedGuideId == guide.id ? buttonColor : 'transparent',
+                                    'color': readHover && selectedGuideId == guide.id ? '#fff' : buttonColor
+                                }"
+                                (mouseover)="toggleReadHover(true, guide)"
+                                (mouseleave)="toggleReadHover(false, guide)"
+                            >
+                                {{ 'chat.read' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div *ngIf="cityGuides?.length > 0" class="text-center">
+        <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>

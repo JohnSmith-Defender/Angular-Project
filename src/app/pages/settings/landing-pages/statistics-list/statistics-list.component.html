@@ -1,0 +1,61 @@
+<div class="grid gap-6 grid-cols-1">
+    <div class="mb-6">
+        <div class="flex items-center w-full max-w-full">
+            <div class="flex-auto">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearch($event)"
+                    (doSearch)="handleSearch($event)"
+                >
+                </app-search>
+            </div>
+            <div class="ml-8">
+                <button 
+                    class="h-[40px] flex items-center py-1.5 p-2.5 px-4 rounded-[10px] justify-evenly hover:bg-black"
+                    [ngStyle]="{'background-color': '#1e1e1e'}" 
+                    (click)="downloadExcel()"
+                >
+                    <svg class="w-3 h-3 text-white mr-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 1v4a1 1 0 0 1-1 1H1m8-2h3M9 7h3m-4 3v6m-4-3h8m3-11v16a.969.969 0 0 1-.932 1H1.934A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.829 1h8.239A.969.969 0 0 1 15 2ZM4 10h8v6H4v-6Z"/>
+                    </svg>
+                    <span class="text-white text-sm">{{ 'your-admin-area.downloadtoexcel' | translate }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list">
+            <ng-container matColumnDef="title">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-create.title' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="title">
+                    <a [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer hover:underline" href="javascript:;">
+                        {{ row?.title }}
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="views">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'videos-ctas.views' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="views">
+                    <a [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer hover:underline" href="javascript:;">
+                        {{ row?.views }}
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="clicks">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'videos-ctas.clicks' | translate }} (CTA)</mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="views">
+                    <a [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer hover:underline" href="javascript:;">
+                        {{ row?.clicks }}
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+        </mat-table>
+    </div>
+</div>

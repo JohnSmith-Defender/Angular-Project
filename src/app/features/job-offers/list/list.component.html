@@ -1,0 +1,126 @@
+<app-page-title [title]="title" [subtitle]="subtitle"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4">
+    <button 
+        class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+        *ngIf="canCreateJobOffer" 
+        [ngStyle]="{
+            'background-color': buttonColor,
+            'opacity': createHover ? 1.5 : 1,
+            'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+        }" 
+        (click)="handleCreateRoute()"
+        (mouseover)="toggleCreateHover(true)"
+        (mouseleave)="toggleCreateHover(false)"
+    >
+        <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+        <span class="text-white text-md font-semibold uppercase">{{ 'dashboard.new' | translate }} {{ pageName }}</span>
+    </button>
+</div>
+<div class="pt-6" *ngIf="!parentComponent">
+    <div class="flex items-center w-full max-w-full">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0" *ngIf="showFilters">
+            <ng-container *ngFor="let setting of filterSettings">
+                <ng-container *ngIf="setting?.field == 'category' && setting?.filter_type == 'dropdown'">
+                    <app-filter
+                        [mode]="'job-offers'"
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        [list]="list"
+                        [defaultActiveFilter]="defaultActiveFilter"
+                        [filterSettings]="filterSettings"
+                        (filterList)="filteredLocation($event)"
+                        (onButtonClick)="filteredArea($event)"
+                        (onFilterClick)="filterViewChanged($event)"
+                    ></app-filter>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 py-8">
+    <div *ngFor="let offer of jobOffers | paginate: {itemsPerPage: 12, currentPage: p}" 
+        class="hover:cursor-pointer w-full max-w-full bg-white rounded-[10px] transition duration-700 ease-in-out" 
+        (click)="handleDetailsRoute(offer)"
+        (mouseover)="toggleHover(true, offer)"
+        (mouseleave)="toggleHover(false, offer)"
+    >
+        <div class="flex h-full">
+            <div class="w-4 rounded-l-lg" 
+                [ngStyle]="{'background-color': offer.active_status == 'closed' ? '#5f5f5f' : buttonColor}">
+                &nbsp;
+            </div>
+            <div class="flex flex-col justify-evenly w-full px-6 pt-4 pb-2 rounded-r-[10px] transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': hover && selectedOfferId == offer.id ? (offer.active_status == 'closed' ? '#5f5f5f' : buttonColor) : 'transparent',
+                    'color': hover && selectedOfferId == offer.id ? '#fff' : '#1e1e1e'
+                }"
+            >
+                <div class="font-semibold text-medium pr-3 flex justify-between">
+                    <div class="pr-4 leading-5">{{ offer?.title_display }}</div>
+                    <div *ngIf="offer?.active_status == 'closed'"
+                        class="uppercase border rounded-[20px] text-[10px] p-1 px-2 h-[24px]"
+                        [ngStyle]="{color: hover && selectedOfferId == offer.id ? '#fff' : '#5f5f5f', 'border-color': (hover && selectedOfferId == offer.id ? '#fff' : '#5f5f5f')}">
+                        {{ 'plan-create.closed' | translate }}
+                    </div>
+                </div>
+                <div class="text-xs pt-0 pb-2">
+                    <span class="opacity-50">{{ offer?.type_display }}</span>
+                    <span class="px-3">•</span>
+                    <span class="opacity-50">{{ offer?.location }}</span>
+                </div>
+                <div class="flex flex-wrap">
+                    <!-- <div class="text-sm pt-0 pb-3 h-[40px] overflow-hidden" [innerHtml]="offer?.description_display"></div> -->
+                    <div class="underline text-sm pb-3 transition duration-700 ease-in-out" 
+                        [ngStyle]="{'color': hover && selectedOfferId == offer.id ? '#fff' : (offer.active_status == 'closed' ? '#5f5f5f' : buttonColor)}">
+                        {{'landing.learnmore' | translate }}
+                    </div>
+                </div>
+                <div class="text-sm pt-0 pb-2 flex">
+                    <div class="flex items-center flex-wrap">
+                        <svg class="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                            [ngStyle]="{
+                                'color': hover && selectedOfferId == offer.id ? '#fff' : '#1e1e1e'
+                            }">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                        </svg>
+                        <span class="text-xs opacity-50"
+                            [ngStyle]="{
+                                'color': hover && selectedOfferId == offer.id ? '#fff' : '#1e1e1e'
+                            }">
+                            {{ offer?.created_at | dateAgo: (language || 'es') }}
+                        </span>
+                    </div>
+                    <div class="flex items-center flex-wrap">
+                        <svg class="w-4 h-4 ml-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                            [ngStyle]="{
+                                'color': hover && selectedOfferId == offer.id ? '#fff' : '#1e1e1e'
+                            }">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 0 0-2 2v4m5-6h8M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m0 0h3a2 2 0 0 1 2 2v4m0 0v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-6m18 0s-4 2-9 2-9-2-9-2m9-2h.01"/>
+                        </svg>
+                        <span class="text-xs opacity-50"
+                            [ngStyle]="{
+                                'color': hover && selectedOfferId == offer.id ? '#fff' : '#1e1e1e'
+                            }">
+                            {{ offer?.area_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="jobOffers?.length > 0" class="text-center pb-8">
+    <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+</div>

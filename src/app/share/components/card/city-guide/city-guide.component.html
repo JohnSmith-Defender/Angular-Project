@@ -1,0 +1,27 @@
+<div class="relative" (click)="handleDetailsRoute(id)"
+    (mouseover)="toggleHover(true)"
+    (mouseleave)="toggleHover(false)">
+    <div class="relative hover:cursor-pointer">
+        <div class="flex p-2 rounded-[10px]"
+            [ngStyle]="{
+                'background-color': hover ? '#f9f9f9' : 'transparent',
+                'box-shadow': hover ? '0px 40px 54px -45px #00000099' : ''
+            }">
+            <div 
+                class="block overflow-hidden w-[84px] min-w-[84px] h-[84px] rounded-lg mr-6"
+                [ngStyle]="{'background': 'url(' + image + ') no-repeat center, linear-gradient(0deg, rgba(0, 0, 0, 0.7) 21.36%, rgba(0, 0, 0, 0.1) 45.67%, rgba(0, 0, 0, 0) 50%)',
+                    'background-size': '100% 100%',
+                    'background-blend-mode': 'multiply'}"
+            >
+            </div>
+            <div>
+                <div class="text-base font-semibold">
+                    {{ title }}
+                </div>
+                <div class="text-sm">
+                    {{ description }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

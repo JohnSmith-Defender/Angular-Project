@@ -1,0 +1,211 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<app-page-title [title]="title"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4" *ngIf="superAdmin || canCreateJobOffer">
+    <button 
+        class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0"
+        (click)="handleEditRoute()" 
+        [ngStyle]="{
+            'background-color': buttonColor,
+            'opacity': editHover ? 1.5 : 1,
+            'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+        }"
+        (mouseover)="toggleEditHover(true)"
+        (mouseleave)="toggleEditHover(false)"
+    >
+        <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+        <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+    </button>
+    <button 
+        class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 border h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0"
+        (click)="handleDelete()" 
+        [ngStyle]="{
+            'border-color': deleteHover ? 'transparent' : buttonColor,
+            'background-color': deleteHover ? buttonColor : '#fff',
+        }"
+        (mouseover)="toggleDeleteHover(true)"
+        (mouseleave)="toggleDeleteHover(false)"
+    >
+        <svg class="w-3 h-3 mr-1" [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+        </svg>
+        <span class="text-md font-semibold uppercase" 
+            [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}">
+            {{ 'plan-details.delete' | translate }}
+        </span>
+    </button>
+</div>
+<div class="py-12">
+    <div>
+        <span class="opacity-60 mr-4">{{ 'plan-create.company' | translate }}: </span>
+        <span class="font-semibold">{{ job?.company }}</span>
+    </div>
+    <div>
+        <span class="opacity-60 mr-4">{{ 'plan-create.address' | translate }}:</span>
+        <span class="font-semibold">{{ job?.location }}</span>
+    </div>
+    <div class="flex items-center">
+        <div class="opacity-60 mr-4">{{ 'job-offers.areas' | translate }}:</div>
+        <div class="font-semibold">{{ getAreaValues() }}</div>
+    </div>
+    <div>
+        <span class="opacity-60 mr-4">{{ 'job-offers.worktype' | translate }}:</span>
+        <span class="font-semibold">{{ getTypeTitle(job) }}</span>
+    </div>
+    <div [innerHtml]="jobDescription" class="mt-8 whitespace-pre-wrap"></div>
+    <ng-container *ngIf="jobRequirements">
+        <div class="font-semibold my-4">{{ 'job-offers.requirements' | translate }}:</div>
+        <div [innerHtml]="jobRequirements" class="whitespace-pre-wrap"></div>
+    </ng-container>
+    <ng-container *ngIf="jobExperience">
+        <div class="font-semibold my-4">{{ 'job-offers.experience' | translate }}:</div>
+        <div [innerHtml]="jobExperience" class="whitespace-pre-wrap"></div>
+    </ng-container>
+    <div class="mt-8">
+        <button 
+            type="button"
+            class="inline-block h-[52px] mt-4 text-sm px-12 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mb-3 md:mb-0 lg:mb-0"
+            [ngStyle]="{
+                'background-color': jobActiveStatus == 'closed' ? '#c7c7c7' : buttonColor,
+                'opacity': sendHover ? 1.5 : 1,
+                'filter': sendHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (click)="register()"
+            [disabled]="jobActiveStatus"
+            *ngIf="!isRegistered"
+            (mouseover)="toggleSendHover(true)"
+            (mouseleave)="toggleSendHover(false)"
+        >
+            {{ 'job-offers.signmeup' | translate }}
+        </button>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'job-offers.signmeup' | translate }}
+                </h3>
+                <div>
+                    <div class="terms-container" *ngIf="!termsAndConditionsURL"
+                        [innerHtml]="termsAndConditions"></div>
+                    <div class="terms-container" *ngIf="!privacyPolicyURL"
+                        [innerHtml]="termsAndConditions"></div>
+                    <div class="terms-container" *ngIf="!cookiePolicyURL"
+                        [innerHtml]="termsAndConditions"></div>
+                    <div *ngIf="termsAndConditionsURL || privacyPolicyURL || cookiePolicyURL"
+                        [ngStyle]="{
+                            'height': termsAndConditionsURL || privacyPolicyURL || cookiePolicyURL ? '100%' : '41vh',
+                            'overflow-y': termsAndConditionsURL || privacyPolicyURL || cookiePolicyURL ? 'initial' : 'scroll'
+                        }">
+                        <div class="mb-4">{{ 'footer.policyintro' | translate }}</div>
+                        <div *ngIf="privacyPolicyURL">
+                            <label class="checkbox-container">
+                                <div class="flex mb-4">
+                                    <input 
+                                        id="terms-conditions" 
+                                        type="checkbox"
+                                        [(ngModel)]="acceptTermsAndConditions" 
+                                        [ngModelOptions]="{standalone: true}"
+                                        [ngStyle]="{'color': acceptTermsAndConditions ? 'text-blue-500' : 'text-gray-900'}"
+                                        class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    >
+                                    <label for="terms-conditions" class="-mt-1 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'footer.iacceptthe' | translate }}
+                                        <a [href]="language == 'en' ? (termsAndConditionsURLEn || termsAndConditionsURL) : (language == 'fr' ? (termsAndConditionsURLFr || termsAndConditionsURL) : termsAndConditionsURL)"
+                                            target="_blank" [ngStyle]="{'color': buttonColor}">
+                                            {{ 'register.termsandconditions' | translate }}
+                                        </a>
+                                    </label>
+                                </div>
+                            </label>
+                        </div>
+                        <div *ngIf="cookiePolicyURL">
+                            <label class="checkbox-container">
+                                <div class="flex mb-4">
+                                    <input 
+                                        id="cookie" 
+                                        type="checkbox"
+                                        [(ngModel)]="acceptCookiePolicy" 
+                                        [ngModelOptions]="{standalone: true}"
+                                        [ngStyle]="{'color': acceptCookiePolicy ? 'text-blue-500' : 'text-gray-900'}"
+                                        class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    >
+                                    <label for="cookie" class="-mt-1 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'footer.iacceptthe' | translate }}
+                                        <a [href]="language == 'en' ? (cookiePolicyURLEn || cookiePolicyURL) : (language == 'fr' ? (cookiePolicyURLFr || cookiePolicyURL) : cookiePolicyURL)"
+                                            target="_blank" [ngStyle]="{'color': buttonColor}">
+                                            {{ 'footer.cookies_policy' | translate }}
+                                        </a>
+                                    </label>
+                                </div>
+                            </label>
+                        </div>
+                        <div *ngIf="termsAndConditionsURL">
+                            <label class="checkbox-container">
+                                <div class="flex mb-4">
+                                    <input 
+                                        id="policy" 
+                                        type="checkbox"
+                                        [(ngModel)]="acceptPrivacyPolicy" 
+                                        [ngModelOptions]="{standalone: true}"
+                                        [ngStyle]="{'color': acceptPrivacyPolicy ? 'text-blue-500' : 'text-gray-900'}"
+                                        class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                    >
+                                    <label for="policy" class="-mt-1 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ 'footer.iacceptthe' | translate }}
+                                        <a [href]="language == 'en' ? (privacyPolicyURLEn || privacyPolicyURL) : (language == 'fr' ? (privacyPolicyURLFr || privacyPolicyURL) : privacyPolicyURL)"
+                                            target="_blank" [ngStyle]="{'color': buttonColor}">
+                                            {{ 'footer.privacy_policy' | translate }}
+                                        </a>
+                                    </label>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="continueRegister()"
+                        [disabled]="getDisabledStatus()"
+                        data-modal-hide="item-modal" 
+                        [ngClass]="{'cursor-not-allowed': getDisabledStatus()}"
+                        [ngStyle]="{
+                            'background-color': buttonColor
+                        }"
+                    >
+                        {{ 'job-offers.agree' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

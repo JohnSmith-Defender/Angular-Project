@@ -1,0 +1,74 @@
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="pt-10">
+    <div class="flex flex-wrap items-center w-full max-w-full">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0" *ngIf="showFilters">
+            <ng-container *ngFor="let setting of filterSettings">
+                <ng-container *ngIf="setting?.field == 'category' && setting?.filter_type == 'dropdown'">
+                    <app-filter
+                        [mode]="'tutors'"
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        [list]="list"
+                        [defaultActiveFilter]="defaultActiveFilter"
+                        [filterSettings]="filterSettings"
+                        (filterList)="filteredList($event)"
+                        (onButtonClick)="filteredType($event)"
+                        (onFilterClick)="filterViewChanged($event)"
+                    ></app-filter>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 py-2 pb-20"
+        [ngClass]="{'gap-8': !tutorCardSmallImage, 'gap-4': tutorCardSmallImage}">
+        <ng-container *ngFor="let tutor of tutors">
+            <div class="rounded-[30px] row-span-1 cursor-pointer relative mb-8 sm:mb-8 md:mb-0 lg:mb-0" >
+                <ng-container *ngIf="!tutorCardSmallImage">
+                    <app-tutor-card
+                        [id]="tutor?.id"
+                        [path]="tutor?.path"
+                        [image]="tutor?.image"
+                        [name]="tutor?.name"
+                        [first_name]="tutor?.first_name"
+                        [last_name]="tutor?.last_name"
+                        [rating]="tutor?.rating"
+                        [city]="tutor?.city"
+                        [languages]="tutor?.languages"
+                        [types]="tutor?.types"
+                        [page]="'list'"
+                    >
+                    </app-tutor-card>
+                </ng-container>
+                <ng-container *ngIf="tutorCardSmallImage">
+                    <app-tutor-small-card
+                        [id]="tutor?.id"
+                        [path]="tutor?.path"
+                        [image]="tutor?.image"
+                        [name]="tutor?.name"
+                        [first_name]="tutor?.first_name"
+                        [last_name]="tutor?.last_name"
+                        [rating]="tutor?.rating"
+                        [city]="tutor?.city"
+                        [languages]="tutor?.languages"
+                        [types]="getTutorTypesText(tutor?.types)"
+                        [page]="'list'"
+                        [buttonColor]="buttonColor"
+                    >
+                    </app-tutor-small-card>
+                </ng-container>
+            </div>
+        </ng-container>
+    </div>
+</div>

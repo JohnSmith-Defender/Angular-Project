@@ -1,0 +1,328 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="py-10">
+    <div class="w-full max-w-full">
+        <div class="text-4xl font-semibold pt-24 sm:pt-24 md:pt-4 lg:pt-4">{{ 'buddy.mentor' | translate }}</div>
+        <div *ngIf="superAdmin || canCreate" class="flex mt-3 sm:mt-3 md:mt-0 lg:mt-0">
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4 mr-4"
+                (click)="handleEditRoute()" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': editHover ? 1.5 : 1,
+                    'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (mouseover)="toggleEditHover(true)"
+                (mouseleave)="toggleEditHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                </svg>
+                <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div>
+    <div class="grid grid-cols-1 mb-20 rounded-[30px] rounded-tr-[10px] md:grid-cols-3 lg:grid-cols-3">
+        <div
+            class="flex flex-col px-[58px] max-w-screen-lg bg-[#f6f6f6]"
+            [ngClass]="{'rounded-l-lg': isMyMentor, 'rounded-lg': !isMyMentor}"
+        >
+            <ng-container *ngIf="mentor">
+                <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row items-center pt-6">
+                    <div class="flex-shrink-0">
+                        <img class="w-32 h-32 rounded-full object-cover" width="128" height="128" [src]="photo || image" alt="{{ user?.name }}">
+                    </div>
+                    <div class="flex-1 min-w-0 ms-4">
+                        <div class="pt-3 text-3xl font-semibold">
+                            <div class="flex items-center">
+                                <div>{{user?.first_name ? (user?.first_name + ' ' + user?.last_name) : user?.name}}</div>
+                                <div *ngIf="superAdmin || userId == mentor?.user_id" 
+                                    [ngStyle]="{'color': buttonColor}"
+                                    (click)="handleSettingsClick()">
+                                    <svg class="ml-2 w-9 h-5 hover:cursor-pointer" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 19">
+                                        <path d="M7.324 9.917A2.479 2.479 0 0 1 7.99 7.7l.71-.71a2.484 2.484 0 0 1 2.222-.688 4.538 4.538 0 1 0-3.6 3.615h.002ZM7.99 18.3a2.5 2.5 0 0 1-.6-2.564A2.5 2.5 0 0 1 6 13.5v-1c.005-.544.19-1.072.526-1.5H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h7.687l-.697-.7ZM19.5 12h-1.12a4.441 4.441 0 0 0-.579-1.387l.8-.795a.5.5 0 0 0 0-.707l-.707-.707a.5.5 0 0 0-.707 0l-.795.8A4.443 4.443 0 0 0 15 8.62V7.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.12c-.492.113-.96.309-1.387.579l-.795-.795a.5.5 0 0 0-.707 0l-.707.707a.5.5 0 0 0 0 .707l.8.8c-.272.424-.47.891-.584 1.382H8.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1.12c.113.492.309.96.579 1.387l-.795.795a.5.5 0 0 0 0 .707l.707.707a.5.5 0 0 0 .707 0l.8-.8c.424.272.892.47 1.382.584v1.12a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1.12c.492-.113.96-.309 1.387-.579l.795.8a.5.5 0 0 0 .707 0l.707-.707a.5.5 0 0 0 0-.707l-.8-.795c.273-.427.47-.898.584-1.392h1.12a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5ZM14 15.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-3 sm:py-3 md:py-0 lg:py-0">
+                            <div class="pt-3 flex flex-wrap">
+                                <div class="types border border-black rounded-xl px-4 py-[4px] mr-2 mb-2">
+                                    <div class="text-xs" title="{{mentor?.major}}">{{ mentor?.major }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="py-1" *ngIf="mentor">
+                            <div class="flex text-base font-medium flex-wrap">
+                                <span>{{location}}</span>
+                                <span class="px-2">{{ (languages || ('tutors.spanish' | translate)) ? '•' : '' }}</span>
+                                <span>{{languages || ('tutors.spanish' | translate)}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 font-semibold italic text-sm" *ngIf="hasLimitReached && limitSettings?.limit_message" [ngStyle]="{'color': buttonColor}">
+                    {{ limitSettings?.limit_message }}
+                </div>
+                <div class="my-2" *ngIf="showRequestMentor">
+                    <button 
+                        class="h-[52px] flex items-center p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4 mr-4"
+                        [ngClass]="{'opacity-75': contactBuddyLog?.id > 0}"
+                        (click)="handleAskAsMentor()" 
+                        [ngStyle]="{
+                            'background-color': buttonColor,
+                            'opacity': askHover ? 1.5 : 1,
+                            'filter': askHover ? 'brightness(0.8)' : 'brightness(1)'
+                        }"
+                        [disabled]="contactBuddyLog?.id > 0"
+                        (mouseover)="toggleAskHover(true)"
+                        (mouseleave)="toggleAskHover(false)"
+                    >
+                        <span class="text-white text-md font-semibold uppercase">
+                            {{ contactBuddyLog?.id > 0 ? ('plan-details.pending' | translate) : ('buddy.asktobementor' | translate) }}
+                        </span>
+                    </button>
+                </div>
+                <div class="py-3 text-sm mt-6 mb-0" [innerHtml]="mentor?.introduction"></div>
+                <ng-container *ngIf="mentor?.interests">
+                    <div class="pt-3">
+                        <div class="font-semibold">{{ 'buddy.interests' | translate }}</div>
+                    </div>
+                    <div class="py-3 text-sm" [innerHtml]="mentor?.interests"></div>
+                </ng-container>
+                <ng-container *ngIf="mentor?.personality">
+                    <div class="pt-4">
+                        <div class="font-semibold">{{ 'buddy.personality' | translate }}</div>
+                    </div>
+                    <div class="py-3 text-sm mb-6" [innerHtml]="mentor?.personality"></div>
+                </ng-container>
+            </ng-container>
+        </div>
+        <div class="bg-white shadow" *ngIf="(isMyMentor || superAdmin || id == userId) && user?.calendly_url">
+            <ng-container *ngIf="!hasCheckedCalendly">
+                <div class="container flex flex-col items-center justify-center h-full">
+                    <div class="w-full max-w-md">
+                        <div class="mb-8 px-3 py-1 text-sm font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
+                            {{'tutors.loadingcalendar' | translate}}...
+                        </div>
+                    </div>
+                </div> 
+            </ng-container>
+            <ng-container *ngIf="hasCheckedCalendly">
+                <div *ngIf="isValidCalendlyAccount">
+                    <app-mentor-calendly
+                        [buttonColor]="buttonColor"
+                        [link]="user?.calendly_url"
+                        [mentorUserId]="mentor?.user_id"
+                        [companyId]="companyId"
+                        [company]="company"
+                        [mentorId]="mentor?.id"
+                        [name]="me?.name"
+                        [first_name]="me?.first_name"
+                        [last_name]="me?.last_name"
+                        [email]="me?.email"
+                    >
+                    </app-mentor-calendly>
+                </div>
+            </ng-container>
+        </div>
+        <div class="bg-[#f6f6f6] p-4 h-[calc(100vh_-_300px)] overflow-y-scroll" *ngIf="isMyMentor || superAdmin || id == userId">
+            <div class="flex items-center">
+                <div class="font-semibold text-lg">{{ 'sidebar.yourmessages' | translate }}</div>
+            </div>
+            <div class="mt-4">
+                <div class="p-6 bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                    <img class="mr-6 mb-6 sm:mb-6 md:mb-0 lg:mb-0 rounded-full object-top object-cover min-w-[40px] w-[40px] h-[40px]" width="40" height="40" [src]="getCurrentUserImage()" />
+                    <div class="mb-6 sm:mb-6 md:mb-0 lg:mb-0 rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-[#F8F4F4]" 
+                        (blur)="getNewPost($event)" 
+                        (focusout)="getNewPost($event)"
+                        (focus)="focusNewPost($event)"
+                        contenteditable 
+                        [innerHTML]="newPost"
+                        [ngClass]="{'text-gray-400': isNewPostPlaceholder()}"
+                    ></div>
+                    <button 
+                        class="mb-6 sm:mb-6 md:mb-0 lg:mb-0 w-32 h-[46px] rounded-[10px] justify-evenly sm:ml-0 md:ml-4 lg:ml-4 sm:mt-4 md:mt-0 lg:mt-0"
+                        (click)="sendMessage()" 
+                        [ngStyle]="{
+                            'background-color': buttonColor,
+                            'opacity': postHover ? 1.5 : 1,
+                            'filter': postHover ? 'brightness(0.8)' : 'brightness(1)'
+                        }"
+                        (mouseover)="togglePostHover(true)"
+                        (mouseleave)="togglePostHover(false)"
+                    >
+                        <span class="text-white text-sm font-medium">{{ 'buddy.send' | translate }}</span>
+                    </button>
+                </div>
+            </div>
+            <div class="my-6">
+                <ng-container *ngFor="let message of messages; let i = index;">
+                    <app-mentor-message 
+                        [buttonColor]="buttonColor" 
+                        [language]="language" 
+                        [message]="message"
+                        [motherComponent]="this"
+                        [superAdmin]="superAdmin"
+                        [me]="me"
+                        [userId]="me?.id"
+                        [mentorId]="mentor?.user_id"
+                        [company]="company"
+                        (handleDelete)="handleDeleteMessage($event)"
+                        (handleRefresh)="displayMessages()"
+                    ></app-mentor-message>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'settings'">
+                    <form class="space-y-6"
+                        [formGroup]="setupCalendlyForm" 
+                        (ngSubmit)="saveCalendlySettings()" 
+                        [ngClass]="{'submitted': setupCalendlyFormSubmitted}"
+                    >
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': setupCalendlyFormSubmitted && setupCalendlyForm.controls['link'] && !setupCalendlyForm.get('link')?.value }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'members.link' | translate }}*"
+                                formControlName="link"
+                                required>
+                        </div>
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': setupCalendlyFormSubmitted && setupCalendlyForm.controls['personal_access_token'] && !setupCalendlyForm.get('personal_access_token')?.value }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'members.personalaccesstoken' | translate }}*"
+                                formControlName="personal_access_token"
+                                required>
+                        </div>
+                        <div class="text-sm mb-4">
+                            {{ "calendly-course.personalaccesstokentext" | translate }} <u><b><i><a href="https://calendly.com/integrations/api_webhooks" target="_blank">{{ "calendly-course.personalaccesstokentext1" | translate }}</a></i></b></u>{{ "calendly-course.personalaccesstokentext2" | translate }}
+                        </div>
+                        <div class="text-sm mb-4">
+                            <div class="mb-2">{{ 'members.foreword' | translate }}</div>
+                            <ol>
+                                <li>
+                                   1. {{ 'members.calendlystep1' | translate }} {{ 'members.signup' | translate }} <a href="https://calendly.com/signup">{{ 'members.here' | translate }}</a>.
+                                </li>
+                                <li>
+                                    2. {{ 'members.calendlystep2' | translate }}
+                                </li>
+                                <li>
+                                    3. {{ 'members.calendlystep3' | translate }} {{ 'members.setup' | translate }} <a href="https://calendly.com/app/calendar_connections">{{ 'members.here' | translate }}</a>.
+                                </li>
+                                <li>
+                                    4. {{ 'members.calendlystep4' | translate }} {{ 'members.organize' | translate }} <a href="https://calendly.com/event_types/user/me">{{ 'members.here' | translate }}</a>.
+                                </li>
+                                <li>
+                                    5. {{ 'members.copy' | translate }} <a href="https://calendly.com/event_types/user/me">{{ 'members.here' | translate }}</a>.
+                                </li>
+                            </ol>
+                        </div>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button 
+                                type="submit" 
+                                class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                            >
+                                {{ 'company-settings.save' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'ask-mentor'">
+                    <div class="flex justify-between">
+                        <div class="flex items-center">
+                            <div>
+                                <img 
+                                    class="mr-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="me?.image ? (apiPath + me?.image) :  (apiPath + 'empty_avatar.png')">
+                            </div>
+                            <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ me?.name ? me?.name : ((me?.first_name ? me?.first_name : '') + ' ' + (me?.last_name ? me?.last_name : '')) }}
+                        </div>
+                        <div class="flex items-center">
+                            <span class="font-semibold mr-2">{{ 'buddy.to' | translate }}</span> {{ mentor?.name }}
+                            <div>
+                                <img 
+                                    class="ml-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="image || './assets/images/empty_avatar.png'">
+                            </div>
+                        </div>
+                    </div>
+                    <form class="space-y-6">
+                        <div class="flex items-center justify-center my-6">
+                            <textarea id="message" cols="30" rows="6"
+                                class="w-full rounded-lg p-4 border border-gray-300"
+                                placeholder="{{ 'buddy.message' | translate }}" 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': contactFormSubmitted && !message }"
+                                [(ngModel)]="message"
+                                [ngModelOptions]="{standalone: true}" 
+                                required>
+                            </textarea>
+                        </div>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button 
+                                class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                                (click)="askToBeMentor()"
+                            >
+                                {{ 'buddy.send' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

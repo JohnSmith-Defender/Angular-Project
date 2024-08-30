@@ -1,0 +1,334 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+                <div>
+                    <select
+                        id="mentors"
+                        class="w-[250px] min-w-[250px] max-w-[250px] ml-4 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedMentor"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changeMentorFilter($event)"
+                    >
+                        <option value="">{{ 'buddy.selectmentor' | translate }}</option>
+                        <option
+                            *ngFor="let mentor of mentors"                                
+                            [value]="mentor.mentor_name"
+                        >
+                            {{ mentor.mentor_name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="ml-2">
+                    <select
+                        id="mentees"
+                        class="w-[250px] min-w-[250px] max-w-[250px] ml-2 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedMentee"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changeMenteeFilter($event)"
+                    >
+                        <option value="">{{ 'buddy.selectmentee' | translate }}</option>
+                        <option
+                            *ngFor="let mentee of mentees"                                
+                            [value]="mentee.mentee_name"
+                        >
+                            {{ mentee?.mentee_name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="pt-1.5 mb-6 flex justify-end">
+            <div class="flex flex-wrap">
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'All' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'All' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('All')"
+                >
+                    {{ 'tutors.all' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Upcoming' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Upcoming' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Upcoming')"
+                >
+                    {{ 'tutors.upcoming' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Action required' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Action required' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Action required')"
+                >
+                    {{ 'tutors.actionrequired' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Cancelled' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Cancelled' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Cancelled')"
+                >
+                    {{ 'company-settings.cancelled' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Completed' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Completed' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Completed')"
+                >
+                    {{ 'tutors.completed' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pt-2">
+    <div class="w-full max-w-full">
+        <div class="py-8">
+            <div class="full-width-container w-full max-w-full">
+                <div *ngIf="isLoading" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                    <svg aria-hidden="true" class="w-8 h-8 mr-2 mt-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <mat-paginator *ngIf="!isLoading && pageSize == 200" #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" class="mb-5"
+                (page)="getPageDetails($event)"
+                [showFirstLastButtons]="true">
+                </mat-paginator>
+                <mat-table *ngIf="!isLoading" [dataSource]="dataSource" matSort>
+                    <ng-container matColumnDef="session_date_display">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.scheduleddate' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="session_date_display">{{ row.session_date_display }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="session_time">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.time' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="session_time"> {{ row.session_time }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="mentor_name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.mentor' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="mentor_name">
+                            <div class="flex items-center">
+                                <span>{{ row.mentor_name }}</span>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="mentee_name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.mentee' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="mentee_name"> {{ row.mentee_name }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'landing.status' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="status">
+                            <ng-container *ngIf="row?.cancelled == 1">
+                                <span [ngStyle]="{'color': '#c24130'}" [innerHtml]="('company-settings.cancelled' | translate)"></span>
+                            </ng-container>
+                            <ng-container *ngIf="row?.cancelled != 1 && row?.completed != 1 && row?.past_booking">
+                                <div class="flex flex-col">
+                                    <p class="flex items-center justify-between my-2">
+                                        <span class="uppercase text-sm">{{'buddy.mentor' | translate}}</span>
+                                        <svg [ngStyle]="{'color': row?.mentor_complete == 1 ? '#5cb85c' : '#c7c7c7'}" class="ml-2 w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                        </svg>
+                                    </p>
+                                    <p class="flex items-center justify-between mb-2">
+                                        <span class="uppercase text-sm">{{'buddy.mentee' | translate}}</span>
+                                        <svg [ngStyle]="{'color': row?.mentee_complete == 1 ? '#5cb85c' : '#c7c7c7'}" class="ml-2 w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                        </svg>
+                                    </p>
+                                </div>
+                            </ng-container>
+                        </mat-cell>
+                    </ng-container>
+                    <!-- <ng-container matColumnDef="rating">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'wall.rating' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="rating">
+                            <app-star-rating *ngIf="row?.tutor_rating" [rating]="row.tutor_rating || rating"></app-star-rating>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="feedback">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'company-settings.feedback' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="feedback"> 
+                            <ng-container *ngIf="superAdmin || (row?.tutor_user_id == userId) || (row?.user_id == userId) || cityAdmin">
+                                {{ row.feedback }} 
+                            </ng-container> 
+                        </mat-cell>
+                    </ng-container> -->
+                    <!-- <ng-container matColumnDef="notes">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'guests.notes' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="notes"> 
+                            <ng-container *ngIf="isGuardianType || superAdmin || superTutor || (row?.tutor_user_id == userId) || cityAdmin">
+                                <button (click)="addNotes(row)" 
+                                    class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                >
+                                    {{ 'company-settings.add' | translate }}
+                                </button>
+                                <button (click)="viewNotes(row)" 
+                                    class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                >
+                                    {{ 'notification-popup.view' | translate }}
+                                </button>
+                            </ng-container>
+                        </mat-cell>
+                    </ng-container> -->
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'wall.action' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="action">
+                            <div class="flex items-center">
+                                <ng-container *ngIf="(statusFilter == 'All' && row.session_action_required && row.show_mark_complete) || (statusFilter == 'Action required' && row.show_mark_complete)" >
+                                    <button (click)="confirmMarkComplete(row)" 
+                                    class="p-2 text-xs rounded-lg mr-2 text-white"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                    >
+                                    {{ 'course-details.completebutton' | translate }}
+                                    </button>
+                                </ng-container>
+                                <ng-container *ngIf="row.show_cancel">
+                                    <button (click)="handleCancelSession(row)" 
+                                        class="p-2 text-xs rounded-lg mr-2 bg-white"
+                                        style="border:solid 1px #c24130;color:#c24130;"
+                                        >
+                                        {{ 'settings.cancel' | translate }}
+                                    </button>
+                                </ng-container>
+                                <!-- <ng-container *ngIf="(statusFilter == 'Completed' && !row.tutor_rating)">
+                                    <div *ngIf="!row.tutor_rating && !(isTutorUser && !superAdmin)">
+                                         <button (click)="provideRating(row)" 
+                                            class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            >
+                                            {{ 'event-survey.rate' | translate }}
+                                        </button>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="(statusFilter == 'Completed' || statusFilter == 'All') && row?.show_feedback_button">
+                                    <button (click)="openFeedbackPopup(row)" 
+                                        class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                        [ngStyle]="{'background-color': buttonColor}">
+                                        {{ 'company-settings.givefeedback' | translate }}
+                                    </button>
+                                </ng-container> -->
+                                <ng-container *ngIf="row.show_delete">
+                                    <button type="button" class="focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="handleDeleteSession(row)"
+                                    >
+                                        <svg [ngStyle]="{'color': '#c24130'}" class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                        <span class="sr-only">Icon description</span>
+                                    </button>
+                                </ng-container>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <div *ngIf="!isLoading && (!sessions || (sessions?.length == 0))" 
+                    class="text-center mt-4 opacity-80">
+                    {{ 'categories.noresultsfound' | translate }}
+                </div>
+            </div>
+            <mat-paginator *ngIf="!isLoading && pageSize < 200" #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]"
+                (page)="getPageDetails($event)"
+                [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
+<!-- <button #modalbutton1 data-modal-target="item-modal1" data-modal-toggle="item-modal1" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal1" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full"
+        [ngClass]="{'max-w-2xl': dialogMode == 'view-notes', 'max-w-md': dialogMode != 'view-notes'}">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton1 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal1">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'rating'">
+                    <div>
+                        <select 
+                            id="rating" 
+                            class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            [ngStyle]="{'border-color': buttonColor}"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !rating }"
+                            [(ngModel)]="rating"
+                            [ngModelOptions]="{standalone: true}"
+                        >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="mt-8">
+                        <button class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="acceptRating()"
+                            [disabled]="!rating"
+                            data-modal-hide="item-modal" 
+                            [ngClass]="{'cursor-not-allowed': !rating}"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'plans.submit' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'feedback'">
+                    <div>
+                        <textarea name="" id="" cols="30" rows="3"
+                            class="w-full rounded-lg p-4"
+                            placeholder="{{ 'company-settings.givefeedback' | translate }}"
+                            [(ngModel)]="feedback"
+                            [ngModelOptions]="{standalone: true}">
+                        </textarea>
+                    </div>
+                    <div class="mt-8">
+                        <button class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="submitFeedback()"
+                            [disabled]="!feedback"
+                            data-modal-hide="item-modal1" 
+                            [ngClass]="{'cursor-not-allowed': !feedback}"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'plans.submit' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div> -->
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

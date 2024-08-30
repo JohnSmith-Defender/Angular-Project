@@ -1,0 +1,32 @@
+<div class="p-7 h-full max-h-full w-full max-w-full rounded-lg shadow dark:bg-gray-800 dark:border-gray-700" 
+    *ngIf="id > 0" [routerLink]="[path]"
+    [ngStyle]="{'background-color': '#F8F4F4'}"
+>
+    <div class="relative">
+        <img width="460" height="325" 
+            class="rounded-lg object-cover w-full max-w-full h-full min-h-full max-h-full sm:min-h-full sm:max-h-full md:min-h-[258px] md:max-h-[258px] lg:min-h-[258px] lg:max-h-[258px]"
+            [ngSrc]="image" alt="" />
+        <img width="56" height="56" 
+            class="w-14 h-14 absolute shadow bottom-[20px] right-[20px] rounded-lg object-cover"
+            [ngSrc]="progress == 100 ? './src/assets/icons/complete.png' : './src/assets/icons/notcomplete.png'" alt="" />
+    </div>
+    <div class="mt-6">
+        <div class="text-xl font-bold tracking-tight dark:text-white">{{title}}</div>
+        <div class="py-2 line-clamp-3 h-[85px]" [innerHtml]="description"></div>
+        <div>
+            <button 
+                class="w-full max-w-full h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': buttonColor || '#828EC5',
+                    'opacity': hover ? 1.5 : 1,
+                    'filter': hover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (click)="handleClick()"
+                (mouseover)="toggleHover(true)"
+                (mouseleave)="toggleHover(false)"
+            >
+                <span class="text-white text-md font-semibold uppercase">{{ 'course-details.viewclass' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>

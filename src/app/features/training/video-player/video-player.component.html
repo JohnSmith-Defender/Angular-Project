@@ -1,0 +1,41 @@
+<div>
+    <div [ngClass]="{'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full': $any(playlist)?.length > 0}">
+        <div class="col-span-2">
+            <vg-player class="rounded-lg" (onPlayerReady)="onPlayerReady($event)">
+                <vg-buffering vgFor="singleVideo"></vg-buffering>
+                <vg-controls>
+                    <vg-play-pause></vg-play-pause>
+                    <vg-playback-button></vg-playback-button>
+                    <vg-time-display vgProperty="current" vgFormat="mm:ss"></vg-time-display>
+                    <vg-scrub-bar>
+                        <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                        <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+                    </vg-scrub-bar>
+                    <vg-time-display vgProperty="total" vgFormat="mm:ss"></vg-time-display>
+                    <vg-mute></vg-mute>
+                    <vg-volume></vg-volume>
+                    <vg-fullscreen></vg-fullscreen>
+                </vg-controls>
+                <video 
+                    #media 
+                    [vgMedia]="$any(media)"
+                    [src]="currentItem?.src"
+                    id="singleVideo" 
+                    preload="auto" 
+                    crossorigin>
+                </video>
+            </vg-player>
+        </div>
+        <div *ngIf="$any(playlist)?.length > 1">
+            <ng-container *ngFor="let video of playlist;let i = index;">
+                <div
+                    (click)="onClickPlaylistItem(video, i)"
+                    class="flex items-center mb-2 hover:cursor-pointer">
+                    <img [src]="video?.poster" class="w-28 h-20 max-w-full" />
+                    <div class="ml-2 text-md" [ngClass]="{'font-semibold': currentIndex == i}">{{video?.title}}</div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="my-4 font-bold text-2xl uppercase" *ngIf="$any(playlist)?.length > 1">{{currentItem?.title}}</div>
+</div>

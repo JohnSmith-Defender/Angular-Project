@@ -1,0 +1,460 @@
+<div class="container flex flex-col items-center justify-center h-full">
+    <div class="w-full max-w-md">
+        <app-company-logo [logoSource]="logoSource" [size]="'sm'" />
+        <div
+            class="flex items-center justify-center pt-7 pb-8 m-auto left-0 right-0 text-center mt-0 text-base"
+            [ngStyle]="{
+            color:
+                primaryColor == '#ffffff' || primaryColor == '#fff'
+                ? '#1e1e1e'
+                : '#fff'
+            }"
+        >
+            {{ "signup.fillupform" | translate }}
+        </div>
+        <div>
+            <ng-container *ngIf="isKlubOkio && isStep2">
+                <div>
+                    <div class="container upload-btn-wrapper profile-image">
+                        <div>
+                            <div class="font-semibold mb-2 text-white text-center">{{ 'public-profile.profileimage' | translate }} </div>
+                            <div class="flex items-center justify-center mb-8 relative">
+                                <div class="relative">
+                                    <input 
+                                        #file
+                                        id="image"
+                                        name="image" 
+                                        type="file"
+                                        style="display:none;"
+                                        (change)="uploadPhoto($event)"
+                                    />
+                                    <div 
+                                        class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-white backdrop-filter backdrop-blur"
+                                        [ngClass]="{'p-6': !hasImage}"
+                                    >
+                                        <div
+                                            class="grid mb-8 place-items-center"
+                                            [ngClass]="{'w-28 h-28 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300': !hasImage, 'w-40 h-40': hasImage}"
+                                        >
+                                            <img *ngIf="!hasImage" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                            <img *ngIf="hasImage" class="w-[112px] h-[112px] rounded-full object-cover" src="{{ myImage }}" />
+                                        </div>
+                                    </div>
+                                    <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                        <label
+                                            for="image"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            class="btn text-white"
+                                        >
+                                            {{ 'club-create.uploadimage' | translate }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <form
+                class="m-auto text-center mb-8"
+                [formGroup]="getStartedForm"
+                (ngSubmit)="signUp()"
+            >
+                <ng-container *ngIf="selectedFields && selectedFields?.length > 0 && !isloading">
+                    <div *ngFor="let section of sectionFields; let n = index;">
+                        <ng-container
+                            *ngIf="!hasCompanyInvoiceSettings || 
+                                (hasCompanyInvoiceSettings && section?.field_group_en != 'Company') || 
+                                (hasCompanyInvoiceSettings && useCompanyInvoice && section?.field_group_en == 'Company')"
+                        >
+                            <ng-container 
+                                *ngFor="let field of section?.fields; let i = index;"
+                            >
+                                <div>
+                                    <ng-container *ngIf="!isKlubOkio || (isKlubOkio && isStep1)">
+                                        <ng-container *ngIf="(!countryDropdown && field.field == 'country' && (field.field_type == 'text' || field.field_type == 'number')) ||
+                                            (!countryDropdown && field.field!= 'country' && (field.field_type == 'text' || field.field_type == 'number')) ||
+                                            (countryDropdown && field.field != 'country' && (field.field_type == 'text' || field.field_type == 'number'))">
+                                            <div class="flex items-center justify-center mb-2 relative">
+                                                <input 
+                                                    *ngIf="field?.field != 'startup_name'"
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': field?.required == 1 && getStartedForm.get(field?.field)?.errors }"
+                                                    class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                                    [type]="field.field_type == 'number' ? 'number' : 'text'" 
+                                                    placeholder="{{ getFieldDisplay(field) }}" formControlName="{{ field?.field }}"
+                                                    [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                                        'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                                        'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                                                    }"
+                                                >
+                                                <ng-container *ngIf="field?.field == 'startup_name'">
+                                                    <ng-multiselect-dropdown
+                                                        placeholder="{{ 'signup.selectstartup' | translate }}"
+                                                        [settings]="startupDropdownSettings"
+                                                        [data]="startups"
+                                                        [(ngModel)]="selectedStartup"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                    >
+                                                    </ng-multiselect-dropdown>
+                                                    <div (click)="openCreateNewStartup()">
+                                                        <svg class="ml-4  hover:cursor-pointer w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 14h6m-3 3v-6M1.857 1h4.286c.473 0 .857.384.857.857v4.286A.857.857 0 0 1 6.143 7H1.857A.857.857 0 0 1 1 6.143V1.857C1 1.384 1.384 1 1.857 1Zm10 0h4.286c.473 0 .857.384.857.857v4.286a.857.857 0 0 1-.857.857h-4.286A.857.857 0 0 1 11 6.143V1.857c0-.473.384-.857.857-.857Zm-10 10h4.286c.473 0 .857.384.857.857v4.286a.857.857 0 0 1-.857.857H1.857A.857.857 0 0 1 1 16.143v-4.286c0-.473.384-.857.857-.857Z"/>
+                                                        </svg>
+                                                    </div>
+                                                </ng-container>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="countryDropdown && (field?.field == 'country' || field?.field == 'company_country')">
+                                            <select 
+                                                id="country" 
+                                                formControlName="{{ field?.field }}"
+                                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                                'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                                'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                                            }"
+                                            >
+                                                <option value="">
+                                                    {{ getFieldDisplay(field) }}{{ field?.required == 1 ? ' *' : '' }}
+                                                </option>
+                                                <option
+                                                    *ngFor="let country of countries"                                
+                                                    [value] ="country.country_name"
+                                                >{{country.country_name}}</option>
+                                            </select>
+                                        </ng-container>
+                                        <div *ngIf="field?.field_type == 'password'">
+                                            <div class="flex items-center justify-center mb-2 relative">
+                                                <ng-container *ngIf="field?.field == 'password'">
+                                                    <input 
+                                                        autocomplete="new-password"
+                                                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': field?.required == 1 && getStartedForm.get(field?.field)?.errors }"
+                                                        class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                                        [type]="fieldTextType ? 'text' : 'password'"
+                                                        placeholder="{{ getFieldDisplay(field) }}" 
+                                                        formControlName="{{ field?.field }}"
+                                                        [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                                            'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                                            'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                                                        }"
+                                                    >
+                                                    <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+                                                        [icon]="!fieldTextType ? eyeSlashIcon : eyeIcon"
+                                                        (click)="toggleFieldTextType()"
+                                                    ></fa-icon>
+                                                </ng-container>
+                                                <ng-container *ngIf="field?.field == 'confirm_password'">
+                                                    <input 
+                                                        autocomplete="confirm-password"
+                                                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': field?.required == 1 && getStartedForm.get(field?.field)?.errors }"
+                                                        class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                                        [type]="fieldConfirmTextType ? 'text' : 'password'"
+                                                        placeholder="{{ getFieldDisplay(field) }}" 
+                                                        formControlName="{{ field?.field }}"
+                                                        [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                                            'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                                            'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                                                        }"
+                                                    >
+                                                    <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+                                                        [icon]="!fieldConfirmTextType ? eyeSlashIcon : eyeIcon"
+                                                        (click)="toggleFieldConfirmTextType()"
+                                                    ></fa-icon>
+                                                </ng-container>
+                                            </div>
+                                            <ng-container *ngIf="field?.field == 'password'">
+                                                <div *ngIf="formSubmitted && f['password'].errors">
+                                                    <p *ngIf="f['password'].errors['required']" class="mt-4 mb-4 text-sm" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                        <span class="font-medium">{{'password.oops' | translate}}</span> {{'password.passwordrequired' | translate}}
+                                                    </p>
+                                                    <div *ngIf="f['password'].errors['minlength']" class="mt-4 mb-4 text-sm" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                    {{'password.atleast' | translate}}
+                                                    </div>
+                                                    <div *ngIf="f['password'].errors['maxlength']" class="mt-4 mb-4 text-sm text-white dark:text-white">
+                                                        {{'password.notexceed' | translate}}
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3 mb-4" *ngIf="requiredValid">
+                                                    <div class="mb-1 text-xs relative flex space-between" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                        <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center"
+                                                        [ngClass]="{'text-green-300': minLengthValid, 'text-red-300': !minLengthValid}"
+                                                        [icon]="minLengthValid ? checkCircleIcon : timesCircleIcon"
+                                                        ></fa-icon>
+                                                        {{'password.atleast' | translate}}
+                                                    </div>
+                                            
+                                                    <div class="mb-1 text-xs relative flex space-between" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                    <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center"
+                                                        [ngClass]="{'text-green-300': requiresDigitValid, 'text-red-300': !requiresDigitValid}"
+                                                        [icon]="requiresDigitValid ? checkCircleIcon : timesCircleIcon"
+                                                        ></fa-icon>
+                                                        {{'password.digit' | translate}}
+                                                    </div>
+                                            
+                                                    <div class="mb-1 text-xs relative flex space-between" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                    <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center"
+                                                        [ngClass]="{'text-green-300': requiresUppercaseValid, 'text-red-300': !requiresUppercaseValid}"
+                                                        [icon]="requiresUppercaseValid ? checkCircleIcon : timesCircleIcon"
+                                                        ></fa-icon>
+                                                        {{'password.uppercase' | translate}}
+                                                    </div>
+                                            
+                                                    <div class="mb-1 text-xs relative flex space-between" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                    <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center"
+                                                        [ngClass]="{'text-green-300': requiresLowercaseValid, 'text-red-300': !requiresLowercaseValid}"
+                                                        [icon]="requiresLowercaseValid ? checkCircleIcon : timesCircleIcon"
+                                                        ></fa-icon>
+                                                        {{'password.lowercase' | translate}}
+                                                    </div>
+                                            
+                                                    <div class="mb-1 text-xs relative flex space-between" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff'}">
+                                                    <fa-icon
+                                                        class="fa absolute inset-y-0 right-0 flex items-center"
+                                                        [ngClass]="{'text-green-300': requiresSpecialCharsValid, 'text-red-300': !requiresSpecialCharsValid}"
+                                                        [icon]="requiresSpecialCharsValid ? checkCircleIcon : timesCircleIcon"
+                                                        ></fa-icon>
+                                                        {{'password.specialcharacter' | translate}}
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                        <div *ngIf="field?.field_type == 'textarea'" class="mb-2">
+                                            <textarea
+                                                rows="4" 
+                                                class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                placeholder="{{ language == 'en' ? field?.field_display_en : field?.field_display_es }}"
+                                                formControlName="{{ field?.field }}"
+                                            >
+                                            </textarea>
+                                        </div>
+                                    </ng-container>
+                                    <div *ngIf="field?.field_type == 'date' && (!isKlubOkio || (isKlubOkio && isStep2))" class="-mb-5 signup-date">
+                                        <mat-form-field class="w-full">
+                                            <mat-label>{{ language == 'en' ? field?.field_display_en : field?.field_display_es }}</mat-label>
+                                            <input readonly autocomplete="off" matInput [matDatepicker]="pickerdate" placeholder="{{language == 'en' ? field?.field_display_en : field?.field_display_es}}" formControlName="{{ field?.field }}">
+                                            <mat-datepicker-toggle matIconSuffix [for]="pickerdate"></mat-datepicker-toggle>
+                                            <mat-datepicker #pickerdate>
+                                                <mat-datepicker-actions>
+                                                    <button mat-button matDatepickerCancel class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'settings.cancel' | translate }}</button>
+                                                    <button mat-raised-button color="primary" matDatepickerApply class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'company-settings.apply' | translate }}</button>
+                                                </mat-datepicker-actions>
+                                            </mat-datepicker>
+                                        </mat-form-field>
+                                    </div>
+                                    <ng-container *ngIf="errors">
+                                        <div class="mt-4 mb-4 text-white text-xs">{{ errors[field?.field] }}</div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <div class="flex items-center mt-8" *ngIf="!isKlubOkio || (isKlubOkio && isStep1)">
+                    <input 
+                        id="link-checkbox" 
+                        type="checkbox"
+                        [(ngModel)]="agreeTerms"
+                        [ngModelOptions]="{standalone: true}"
+                        [ngStyle]="{'color': agreeTerms ? buttonColor : 'text-blue-500'}"
+                        class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    >
+                    <label for="link-checkbox" class="ml-2 text-sm font-medium dark:text-gray-300" 
+                        [ngStyle]="{
+                            color:
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? '#1e1e1e'
+                                : '#fff'
+                        }">{{'signup.ihavereadandaccepted' | translate}} <a href="javascript:;" (click)="openPrivacyPolicy()" class="text-blue-600 dark:text-blue-500 hover:underline">{{ 'register.privacypolicy' | translate }}</a>.</label>
+                </div>
+                <div class="flex items-center justify-center mb-6">
+                    <button
+                        type="submit"
+                        class="inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold bg-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                        [ngStyle]="{
+                            color: buttonColor,
+                            'border-color':
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? buttonColor
+                                : 'transparent',
+                            'border-width':
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? '1px'
+                                : '0',
+                            'border-style':
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? 'solid'
+                                : 'none'
+                        }"
+                        [ngClass]="{'disabled:opacity-75': formSubmitted || !agreeTerms}"
+                        [disabled]="formSubmitted || !agreeTerms"
+                        *ngIf="!isKlubOkio || (isKlubOkio && isStep1)"
+                    >
+                        {{ "signup.signup" | translate }}
+                    </button>
+                    <button
+                        type="button"
+                        class="inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold bg-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                        [ngStyle]="{
+                            color: buttonColor,
+                            'border-color':
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? buttonColor
+                                : 'transparent',
+                            'border-width':
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? '1px'
+                                : '0',
+                            'border-style':
+                            primaryColor == '#ffffff' || primaryColor == '#fff'
+                                ? 'solid'
+                                : 'none'
+                        }"
+                        [ngClass]="{'disabled:opacity-75': getStartedForm.get('birthday')?.errors || !file }"
+                        [disabled]="getStartedForm.get('birthday')?.errors || !file"
+                        (click)="updateBirthdayProfileImage()"
+                        *ngIf="isKlubOkio && isStep2"
+                    >
+                        {{ "courses.continue" | translate }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="flex items-center justify-center mb-10 hover:cursor-pointer">
+        <a
+          class="text-sm hover:cursor-pointer"
+          [routerLink]="['/auth/login']"
+          [ngStyle]="{
+            color:
+              primaryColor == '#ffffff' || primaryColor == '#fff'
+                ? '#1e1e1e'
+                : '#fff'
+          }"
+          >{{ "login.returntologin" | translate }}</a
+        >
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-xl">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <ng-container *ngIf="modalMode == 'startup'">
+                <div class="px-6 py-6 pt-4 lg:px-8">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'signup.createnewstartup' | translate }}
+                    </h3>
+                    <form class="space-y-6" [formGroup]="startupDataForm" (ngSubmit)="saveStartupData()">
+                        <ng-container *ngIf="startupDataFields && startupDataFields?.length > 0">
+                            <ng-container *ngFor="let field of startupDataFields; let i = index;">
+                                <div *ngIf="field?.field_type != 'textarea' && field?.field_type != 'file'"
+                                    class="flex items-center justify-center mb-4">
+                                    <ng-container *ngIf="field?.field_type == 'text' || field?.field_type == 'number'">
+                                        <input 
+                                            [type]="field.field_type" 
+                                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            placeholder="{{ language == 'en' ? field?.field_display_en : field?.field_display_es }}"
+                                            formControlName="{{ field?.field }}">
+                                    </ng-container>
+                                    <ng-container *ngIf="field?.field_type == 'select'">
+                                        <ng-multiselect-dropdown
+                                            placeholder="{{ 'signup.selectgroup' | translate }}"
+                                            [settings]="dropdownSettings"
+                                            [data]="businessCategories"
+                                            [(ngModel)]="selectedBusinessCategories"
+                                            [ngModelOptions]="{standalone: true}"
+                                        >
+                                        </ng-multiselect-dropdown>
+                                    </ng-container>
+                                </div>
+                                <ng-container *ngIf="field?.field_type == 'file'">
+                                    <div class="mb-2 relative">
+                                        <div class="w-full max-w-full">
+                                            <file-pond
+                                                #myPond
+                                                [options]="pondOptions"
+                                                [files]="pondFiles"
+                                                (oninit)="pondHandleInit()"
+                                                (onaddfile)="pondHandleAddFile($event)"
+                                            >
+                                            </file-pond>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="field?.field_type == 'textarea'">
+                                    <div class="mb-2 relative">
+                                        <textarea
+                                            rows="4" 
+                                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                            placeholder="{{ language == 'en' ? field?.field_display_en : field?.field_display_es }}"
+                                            formControlName="{{ field?.field }}"
+                                        >
+                                        </textarea>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                            >
+                                {{ 'company-settings.save' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="modalMode == 'profile'">
+                <div class="px-6 py-6 lg:px-8">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'club-create.uploadimage' | translate }}
+                    </h3>
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="imageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="canvasRotation"
+                            [transform]="transform"
+                            [imageChangedEvent]="imageChangedEvent" 
+                            [maintainAspectRatio]="true"
+                            [cropperMinWidth]="360" 
+                            [cropperMinHeight]="320" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="imageCropped($event)" 
+                            (imageLoaded)="imageLoaded()" 
+                            (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>

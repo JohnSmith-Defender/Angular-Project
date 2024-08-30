@@ -1,0 +1,64 @@
+<div class="py-2">
+    <mat-table [dataSource]="dataSource" #sort="matSort" matSort class="manage-list w-full max-w-full">
+        <ng-container matColumnDef="notes">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'guests.notes' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="notes">
+                <ng-container *ngIf="mode == 'notes'">
+                    {{ row?.notes }}
+                </ng-container>
+                <ng-container *ngIf="mode == 'history'">
+                    <ng-container *ngFor="let note of row?.notes">
+                        <p>{{note?.notes}}</p>
+                    </ng-container>
+                </ng-container>
+            </mat-cell>
+        </ng-container>                            
+        <ng-container matColumnDef="created_by">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-details.createdby' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="created_by"> {{ row?.created_by }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="date_display">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'ranking.date' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="date_display" style="text-align: left"> {{ row?.date_display }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.status' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="status">
+                <ng-container *ngIf="row?.status && !row?.cancelled">
+                    <i class="fa fa-check-circle-o" style="opacity:1" [ngStyle]="{'color': 'green'}" aria-hidden="true"></i>
+                </ng-container>
+                <ng-container *ngIf="!row?.status && !row?.cancelled">
+                    <i class="fa fa-circle" style="opacity:0.3" [ngStyle]="{'color': 'white'}" aria-hidden="true"></i>
+                </ng-container>
+                <ng-container *ngIf="!row?.status && row?.cancelled">
+                    <i class="fa fa-ban" aria-hidden="true" [ngStyle]="{'color': 'red'}"></i>
+                </ng-container>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="booking_date_display">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.scheduleddate' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="booking_date_display" style="text-align: left"> {{ row?.booking_date_display }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="tutor">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.tutor' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="tutor" style="text-align: left"> {{ row?.tutor }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="student">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plans.student' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="student" style="text-align: left"> {{ row?.student }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="rating">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'wall.rating' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="rating" style="text-align: left"> {{ row?.rating }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="feedback">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'company-settings.feedback' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="feedback" style="text-align: left"> {{ row?.feedback }}</mat-cell>
+        </ng-container>
+        <ng-container>
+            <mat-header-row *matHeaderRowDef="dataColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: dataColumns">
+            </mat-row>
+        </ng-container>
+    </mat-table>
+</div>

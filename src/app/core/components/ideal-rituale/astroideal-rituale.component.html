@@ -1,0 +1,72 @@
+<div class="relative">
+  <div class="relative mt-[245px] mb-20">
+    <div class="ml-14 flex space-x-[2px]">
+      <div>*</div>
+      <div class="flex font-semibold">
+        <p class="text-[15px]">Home </p>
+        <p class="text-[15px] opacity-75"> / Cursos </p>
+      </div>
+    </div>
+
+    <div class="ml-24 mt-7">
+      <p class="mb-5 text-[40px] font-semibold">Rituales</p>
+      <div class="flex items-center overflow-hidden">
+        <div class="mr-44 flex-none">
+          <img class="w-full" src="/src/assets/rituales/tags.png" />
+        </div>
+        <div class="flex space-x-12">
+          <div *ngFor="let featured_product of featured_products">
+            <app-rituale-card [cardData]="{title: this.titleTranslator(featured_product), description: this.descriptionTranslator(featured_product), image: featured_product.image, currency: featured_product.currency, amount: featured_product.amount}" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="mb-8 flex items-center">
+  <hr class="flex-1" />
+  <p class="font-medium text-xl flex-none px-4">Conoce los cursos más destacados </p>
+  <hr class="flex-1 lg:flex-none lg:w-[130px]" />
+</div>
+<div class="pl-10">
+  <div class="pl-28 flex flex-wrap items-center space-y-5">
+    <div class="px-4 py-[10px] text-white font-semibold text-xl bg-[#464646] mr-[18px] mt-5" *ngFor="let subcategory of subcategories; let isFirst = first"  [ngClass]="{'mt-5': isFirst}">
+      {{ subcategory.en_title }}
+    </div>
+  </div>
+</div>
+<div class="pl-28 pr-24 mt-6">
+  <div class="pl-0 lg:pl-10">
+    <hr class="bg-[#D2D4D4] w-full" />
+    <div class="flex flex-col items-center space-y-4 space-x-0 lg:space-y-0 lg:items-center lg:flex-row lg:space-x-12 lg:py-[2px] py-2">
+      <div class="flex space-x-2 flex-row items-center">
+        <img src="/src/assets/rituales/money.png" />
+        <p class="text-[#A77FE0] text-xl font-semibold">Dinero</p>
+      </div>
+      <div class="flex space-x-2 flex-row items-center">
+        <img src="/src/assets/rituales/snow.png" />
+        <p class="text-[#A77FE0] text-xl font-semibold">Relaciones</p>
+      </div>
+      <div class="flex space-x-2 flex-row items-center">
+        <img src="/src/assets/rituales/human.png" />
+        <p class="text-[#A77FE0] text-xl font-semibold">Cuerpo</p>
+      </div>
+      <div class="flex space-x-2 flex-row items-center">
+        <img src="/src/assets/rituales/energy.png" />
+        <p class="text-[#A77FE0] text-xl font-semibold">Energía</p>
+      </div>
+      <div class="flex space-x-2 flex-row items-center">
+        <img src="/src/assets/rituales/rune.png" />
+        <p class="text-[#A77FE0] text-xl font-semibold">Espiritualidad</p>
+      </div>
+    </div>
+    <hr class="bg-[#D2D4D4] w-full" />
+  </div>
+</div>
+
+<div class="pl-[75px] pr-14 grid grid-rows-8 grid-cols-1 lg:grid-rows-4 lg:grid-cols-2 2xl:grid-rows-2 2xl:grid-cols-4 gap-y-14 justify-items-center mb-60 mt-8">
+  <div *ngFor="let product of products">
+    <app-rituale-card [cardData]="{title: this.titleTranslator(product), description: this.descriptionTranslator(product), image: product.image, currency: product.currency, amount: product.amount}" />
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 pt-4 justify-evenly relative"> 
+    <div class="col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 row-span-2 cursor-pointer rounded-[10px] h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]" 
+        [ngStyle]="{'background-color': '#F5F5F5'}"
+        *ngIf="testimonial1Data?.id > 0">
+        <app-testimonial-card
+            [id]="testimonial1Data?.id"
+            [path]="testimonial1Data?.path"
+            [date]="testimonial1Data?.date_display"
+            [tag]="testimonial1Data?.tags_display"
+            [shortdescription]="testimonial1Data?.short_description"
+            [image]="testimonial1Data?.image"
+            [buttonColor]="buttonColor"
+            [author]="testimonial1Data?.author"
+            [socialMediaUrl]="testimonial1Data?.social_media_url"
+            [page]="'home'"
+        >
+        </app-testimonial-card>
+    </div>
+    <div class="rounded-lg col-span-1 row-span-1 cursor-pointer relative mb-8 sm:mb-8 md:mb-0 lg:mb-0 h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]" 
+        *ngIf="tutor1Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor1Data?.id"
+            [path]="tutor1Data?.path"
+            [image]="tutor1Data?.image"
+            [name]="tutor1Data?.name"
+            [first_name]="tutor1Data?.first_name"
+            [last_name]="tutor1Data?.last_name"
+            [rating]="tutor1Data?.rating"
+            [city]="tutor1Data?.city"
+            [languages]="tutor1Data?.languages"
+            [types]="tutor1Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg col-span-1 row-span-1 cursor-pointer relative mb-8 sm:mb-8 md:mb-0 lg:mb-0 h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]" 
+        *ngIf="tutor2Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor2Data?.id"
+            [path]="tutor2Data?.path"
+            [image]="tutor2Data?.image"
+            [name]="tutor2Data?.name"
+            [first_name]="tutor2Data?.first_name"
+            [last_name]="tutor2Data?.last_name"
+            [rating]="tutor2Data?.rating"
+            [city]="tutor2Data?.city"
+            [languages]="tutor2Data?.languages"
+            [types]="tutor2Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 pt-4 justify-evenly relative"> 
+    <div class="col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 row-span-2 cursor-pointer rounded-[10px] h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]" 
+        [ngStyle]="{'background-color': '#F5F5F5'}"
+        *ngIf="testimonial2Data?.id > 0">
+        <app-testimonial-card
+            [id]="testimonial2Data?.id"
+            [path]="testimonial2Data?.path"
+            [date]="testimonial2Data?.date_display"
+            [tag]="testimonial2Data?.tags_display"
+            [shortdescription]="testimonial2Data?.short_description"
+            [image]="testimonial2Data?.image"
+            [buttonColor]="buttonColor"
+            [author]="testimonial2Data?.author"
+            [socialMediaUrl]="testimonial2Data?.social_media_url"
+            [page]="'home'"
+        >
+        </app-testimonial-card>
+    </div>
+    <div class="rounded-lg col-span-1 row-span-1 cursor-pointer relative mb-8 sm:mb-8 md:mb-0 lg:mb-0 h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]" 
+        *ngIf="tutor3Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor3Data?.id"
+            [path]="tutor3Data?.path"
+            [image]="tutor3Data?.image"
+            [name]="tutor3Data?.name"
+            [first_name]="tutor3Data?.first_name"
+            [last_name]="tutor3Data?.last_name"
+            [rating]="tutor3Data?.rating"
+            [city]="tutor3Data?.city"
+            [languages]="tutor3Data?.languages"
+            [types]="tutor3Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+    <div class="rounded-lg col-span-1 row-span-1 cursor-pointer relative h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px]" 
+        *ngIf="tutor4Data?.id > 0">
+        <app-tutor-card
+            [id]="tutor4Data?.id"
+            [path]="tutor4Data?.path"
+            [image]="tutor4Data?.image"
+            [name]="tutor4Data?.name"
+            [first_name]="tutor4Data?.first_name"
+            [last_name]="tutor4Data?.last_name"
+            [rating]="tutor4Data?.rating"
+            [city]="tutor4Data?.city"
+            [languages]="tutor4Data?.languages"
+            [types]="tutor4Data?.types"
+        >
+        </app-tutor-card>
+    </div>
+</div>

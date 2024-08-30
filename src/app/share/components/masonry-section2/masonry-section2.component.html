@@ -1,0 +1,194 @@
+<div class="md:grid lg:grid md:grid-cols-5 lg:grid-cols-5 gap-4 pt-4 justify-evenly relative"> 
+    <div class="col-span-1 sm:col-span-1 md:col-span-3 lg:col-span-3 row-span-2 cursor-pointer rounded-[10px]" 
+        [ngStyle]="{'background-color': '#F5F5F5'}"
+        [routerLink]="[cityGuide1Data?.path]" *ngIf="cityGuide1Data?.id > 0">
+        <div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0 sm:gap-0 md:gap-8 lg:gap-8 justify-evenly">
+            <div>
+                <img class="h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px] w-full max-w-full object-cover rounded-l-[10px]" 
+                    width="344" height="300" *ngIf="cityGuide1Data?.image" [ngSrc]="cityGuide1Data?.image" alt="">
+            </div>
+            <div class="pl-4 pt-4 pr-4 pb-4 sm:pl-4 sm:pt-4 sm:pr-4 sm:pb-4 md:pl-0 md:pt-4 md:pr-4 md:pb-4 lg:pl-0 lg:pt-4 lg:pr-4 lg:pb-4 h-auto max-h-auto rounded-r-lg">
+                <div class="flex flex-col justify-between">
+                    <div class="flex py-2 bg-emerald-950 rounded-[10px] mb-4 w-[180px] justify-center" *ngIf="cityGuide1Data?.featured">
+                        <div class="text-sm mr-2 text-white uppercase">{{ 'plans.recommended' | translate }}</div>
+                        <svg class="w-4 h-4 text-amber-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 20">
+                            <path d="M7.958 19.393a7.7 7.7 0 0 1-6.715-3.439c-2.868-4.832 0-9.376.944-10.654l.091-.122a3.286 3.286 0 0 0 .765-3.288A1 1 0 0 1 4.6.8c.133.1.313.212.525.347A10.451 10.451 0 0 1 10.6 9.3c.5-1.06.772-2.213.8-3.385a1 1 0 0 1 1.592-.758c1.636 1.205 4.638 6.081 2.019 10.441a8.177 8.177 0 0 1-7.053 3.795Z"/>
+                        </svg>
+                    </div>
+                    <div class="mb-2 text-[1.25rem] sm:text-[1.25rem] md:text-[1.7rem] lg:text-[1.7rem] font-medium" [ngStyle]="{'line-height': '26px'}">{{ cityGuide1Data?.title }}</div>
+                    <div class="leading-5 text-[0.9rem]">{{ cityGuide1Data?.excerpt }}</div>
+                    <div class="w-full border border-b-1 border-l-0 border-r-0 border-t-0 mb-4">&nbsp;</div>
+                    <div class="w-full h-16 flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="flex" *ngFor="let like of cityGuide1Data?.likes; let i = index;">
+                                <img 
+                                    class="bg-slate-300 object-cover rounded-full w-[40px] h-[40px] max-w-[40px] max-h-[40px] rounded-full" 
+                                    [ngClass]="{'-ml-6': i > 0}"
+                                    width="40" 
+                                    height="40" 
+                                    [ngSrc]="like?.image">
+                            </div>
+                            <div class="text-xs ml-4">{{cityGuide1Data?.likes_text}}</div>
+                        </div>
+                        <div>
+                            <button 
+                                class="font-bold uppercase inline-block h-[40px] ml-4 border text-sm px-12 py-2 font-semibold rounded-[10px] focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+                                [ngStyle]="{
+                                    'border-color': readHover && selectedGuideId == cityGuide1Data.id ? 'transparent' : buttonColor,
+                                    'background-color': readHover && selectedGuideId == cityGuide1Data.id ? buttonColor : 'transparent',
+                                    'color': readHover && selectedGuideId == cityGuide1Data.id ? '#fff' : buttonColor
+                                }"
+                                (mouseover)="toggleReadHover(true, cityGuide1Data)"
+                                (mouseleave)="toggleReadHover(false, cityGuide1Data)"
+                            >
+                                {{ 'chat.read' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 cursor-pointer pt-4 sm:pt-4 md:pt-0 lg:pt-0 pb-4 sm:pb-4 md:pb-0 lg:pb-0 rounded-[10px] transition duration-700 ease-in-out" 
+        [routerLink]="[jobOffer1Data?.path]" *ngIf="jobOffer1Data?.id > 0"
+        (mouseover)="toggleHover(true, jobOffer1Data)"
+        (mouseleave)="toggleHover(false, jobOffer1Data)"
+    >
+        <div class="flex h-full max-h-full">
+            <div class="w-4 rounded-l-lg" [ngStyle]="{'background-color': buttonColor}">&nbsp;</div>
+            <div class="flex flex-col justify-evenly w-full pl-9 rounded-r-[10px] transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': hover && selectedOfferId == jobOffer1Data?.id ? buttonColor : 'transparent',
+                    'color': hover && selectedOfferId == jobOffer1Data.id ? '#fff' : '#1e1e1e'
+                }"
+            >
+                <div class="font-semibold text-medium">{{jobOffer1Data?.title}}</div>
+                <div class="text-sm">
+                    <span>{{jobOffer1Data?.type}}</span><span class="px-3">•</span><span>{{jobOffer1Data?.area}}</span>
+                </div>
+                <div class="underline text-sm hover:cursor-pointe transition duration-700 ease-in-outr" [ngStyle]="{'color': hover && selectedOfferId == jobOffer1Data.id ? '#fff' : buttonColor}">
+                    {{'club-details.readmore' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 cursor-pointer pb-4 sm:pb-4 md:pb-0 lg:pb-0 rounded-[10px] transition duration-700 ease-in-out" 
+        [routerLink]="[jobOffer2Data?.path]" *ngIf="jobOffer2Data?.id > 0"
+        (mouseover)="toggleHover(true, jobOffer2Data)"
+        (mouseleave)="toggleHover(false, jobOffer2Data)"
+    >
+        <div class="flex h-full max-h-full">
+            <div class="w-4 rounded-l-lg" [ngStyle]="{'background-color': buttonColor}">&nbsp;</div>
+            <div class="flex flex-col justify-evenly w-full pl-9 rounded-r-[10px] transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': hover && selectedOfferId == jobOffer2Data?.id ? buttonColor : 'transparent',
+                    'color': hover && selectedOfferId == jobOffer2Data.id ? '#fff' : '#1e1e1e'
+                }"
+            >
+                <div class="font-semibold text-medium">{{jobOffer2Data?.title}}</div>
+                <div class="text-sm">
+                    <span>{{jobOffer2Data?.type}}</span><span class="px-3">•</span><span>{{jobOffer2Data?.area}}</span>
+                </div>
+                <div class="underline text-sm hover:cursor-pointer transition duration-700 ease-in-out" [ngStyle]="{'color': hover && selectedOfferId == jobOffer2Data.id ? '#fff' : buttonColor}">
+                    {{'club-details.readmore' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-1 sm:col-span-1 md:col-span-3 lg:col-span-3 row-span-2 cursor-pointer rounded-[10px]" 
+        [ngStyle]="{'background-color': '#F5F5F5'}"
+        [routerLink]="[cityGuide2Data?.path]" *ngIf="cityGuide2Data?.id > 0">
+        <div class="h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-0 sm:gap-0 md:gap-8 lg:gap-8 justify-evenly">
+            <div>
+                <img class="h-full max-h-full sm:h-full sm:max-h-full md:h-[300px] md:max-h-[300px] lg:h-[300px] lg:max-h-[300px] w-full max-w-full object-cover rounded-l-[10px]" 
+                    width="344" height="300" *ngIf="cityGuide2Data?.image" [ngSrc]="cityGuide2Data?.image" alt="">
+            </div>
+            <div class="pl-4 pt-4 pr-4 pb-4 sm:pl-4 sm:pt-4 sm:pr-4 sm:pb-4 md:pl-0 md:pt-4 md:pr-4 md:pb-4 lg:pl-0 lg:pt-4 lg:pr-4 lg:pb-4 h-auto max-h-auto rounded-r-lg">
+                <div class="flex flex-col justify-between">
+                    <div class="flex py-2 bg-emerald-950 rounded-[10px] mb-4 w-[180px] justify-center" *ngIf="cityGuide2Data?.featured">
+                        <div class="text-sm mr-2 text-white uppercase">{{ 'plans.recommended' | translate }}</div>
+                        <svg class="w-4 h-4 text-amber-400 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 17 20">
+                            <path d="M7.958 19.393a7.7 7.7 0 0 1-6.715-3.439c-2.868-4.832 0-9.376.944-10.654l.091-.122a3.286 3.286 0 0 0 .765-3.288A1 1 0 0 1 4.6.8c.133.1.313.212.525.347A10.451 10.451 0 0 1 10.6 9.3c.5-1.06.772-2.213.8-3.385a1 1 0 0 1 1.592-.758c1.636 1.205 4.638 6.081 2.019 10.441a8.177 8.177 0 0 1-7.053 3.795Z"/>
+                        </svg>
+                    </div>
+                    <div class="mb-2 text-[1.25rem] sm:text-[1.25rem] md:text-[1.7rem] lg:text-[1.7rem] font-medium" [ngStyle]="{'line-height': '26px'}">{{ cityGuide2Data?.title }}</div>
+                    <div class="leading-5 text-[0.9rem]">{{ cityGuide2Data?.excerpt }}</div>
+                    <div class="w-full border border-b-1 border-l-0 border-r-0 border-t-0 mb-4">&nbsp;</div>
+                    <div class="w-full flex justify-between items-center flex-wrap h-full max-h-full">
+                        <div class="flex items-center">
+                            <div class="flex" *ngFor="let like of cityGuide2Data?.likes; let i = index;">
+                                <img 
+                                    class="bg-slate-300 object-cover rounded-full w-[40px] h-[40px] max-w-[40px] max-h-[40px] rounded-full" 
+                                    [ngClass]="{'-ml-6': i > 0}"
+                                    width="40" 
+                                    height="40" 
+                                    [ngSrc]="like?.image">
+                            </div>
+                            <div class="text-xs ml-4">{{cityGuide2Data?.likes_text}}</div>
+                        </div>
+                        <div class="mt-4">
+                            <button 
+                                class="font-bold uppercase inline-block h-[40px] ml-4 border text-sm px-12 py-2 font-semibold rounded-[10px] focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+                                [ngStyle]="{
+                                    'border-color': readHover && selectedGuideId == cityGuide2Data.id ? 'transparent' : buttonColor,
+                                    'background-color': readHover && selectedGuideId == cityGuide2Data.id ? buttonColor : 'transparent',
+                                    'color': readHover && selectedGuideId == cityGuide2Data.id ? '#fff' : buttonColor
+                                }"
+                                (mouseover)="toggleReadHover(true, cityGuide2Data)"
+                                (mouseleave)="toggleReadHover(false, cityGuide2Data)"
+                            >
+                                {{ 'chat.read' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 cursor-pointer pt-4 sm:pt-4 md:pt-0 lg:pt-0 pb-4 sm:pb-4 md:pb-0 lg:pb-0 rounded-[10px] transition duration-700 ease-in-out" 
+        [routerLink]="[jobOffer3Data?.path]" *ngIf="jobOffer3Data?.id > 0"
+        (mouseover)="toggleHover(true, jobOffer3Data)"
+        (mouseleave)="toggleHover(false, jobOffer3Data)"    
+    >
+        <div class="flex h-full max-h-full">
+            <div class="w-4 rounded-l-lg" [ngStyle]="{'background-color': buttonColor}">&nbsp;</div>
+            <div class="flex flex-col justify-evenly w-full pl-9 rounded-r-[10px] transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': hover && selectedOfferId == jobOffer3Data?.id ? buttonColor : 'transparent',
+                    'color': hover && selectedOfferId == jobOffer3Data.id ? '#fff' : '#1e1e1e'
+                }"
+            >
+                <div class="font-semibold text-medium">{{jobOffer3Data?.title}}</div>
+                <div class="text-sm">
+                    <span>{{jobOffer3Data?.type}}</span><span class="px-3">•</span><span>{{jobOffer3Data?.area}}</span>
+                </div>
+                <div class="underline text-sm hover:cursor-pointer transition duration-700 ease-in-out" [ngStyle]="{'color': hover && selectedOfferId == jobOffer3Data.id ? '#fff' : buttonColor}">
+                    {{'club-details.readmore' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 cursor-pointer pb-4 sm:pb-4 md:pb-0 lg:pb-0 rounded-[10px] transition duration-700 ease-in-out" 
+        [routerLink]="[jobOffer4Data?.path]" *ngIf="jobOffer4Data?.id > 0"
+        (mouseover)="toggleHover(true, jobOffer4Data)"
+        (mouseleave)="toggleHover(false, jobOffer4Data)"
+    >
+        <div class="flex h-full max-h-full">
+            <div class="w-4 rounded-l-lg" [ngStyle]="{'background-color': buttonColor}">&nbsp;</div>
+            <div class="flex flex-col justify-evenly w-full pl-9 rounded-r-[10px] transition duration-700 ease-in-out"
+                [ngStyle]="{
+                    'background-color': hover && selectedOfferId == jobOffer4Data?.id ? buttonColor : 'transparent',
+                    'color': hover && selectedOfferId == jobOffer4Data.id ? '#fff' : '#1e1e1e'
+                }"
+            >
+                <div class="font-semibold text-medium">{{jobOffer4Data?.title}}</div>
+                <div class="text-sm">
+                    <span>{{jobOffer4Data?.type}}</span><span class="px-3">•</span><span>{{jobOffer4Data?.area}}</span>
+                </div>
+                <div class="underline text-sm hover:cursor-pointer transition duration-700 ease-in-out" [ngStyle]="{'color': hover && selectedOfferId == jobOffer4Data.id ? '#fff' : buttonColor}">
+                    {{'club-details.readmore' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

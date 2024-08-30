@@ -1,0 +1,54 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<app-page-title [title]="title"></app-page-title>
+<div class="py-12">
+    <div class="line-clamp-3" [innerHtml]="job?.description"></div>
+    <a 
+        href="javascript:;" 
+        (click)="viewJob()" 
+        class="mt-4 mb-8 inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        [ngStyle]="{'background-color': buttonColor}"
+    >
+        {{'landing.learnmore' | translate}}
+        <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+        </svg>
+    </a>
+</div>
+<div class="py-3 pt-0 mb-8 text-lg uppercase border border-b-2 border-l-0 border-r-0 border-t-0">
+    {{ 'job-offers.attachment' | translate }}
+</div>
+<div>
+    <file-pond
+        #myPond
+        [options]="pondOptions"
+        [files]="pondFiles"
+        (oninit)="pondHandleInit()"
+        (onaddfile)="pondHandleAddFile($event)"
+    >
+    </file-pond>
+</div>
+<div class="text-center mt-8">
+    <button 
+        class="inline-block h-[52px] ml-4 text-base uppercase px-16 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+        (click)="submit()" 
+        [ngStyle]="{'background-color': buttonColor}"
+    >
+        {{ 'job-offers.submit' | translate }}
+    </button>
+    <button 
+        class="inline-block h-[52px] border rounded-[10px] ml-4 text-base uppercase px-12 py-2 font-semibold rounded-[10px] focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+        (click)="cancel()" 
+        [ngStyle]="{'color': buttonColor, 'border-color': buttonColor}"
+    >
+        {{ 'job-offers.cancel' | translate }}
+    </button>
+</div>

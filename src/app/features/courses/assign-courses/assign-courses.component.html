@@ -1,0 +1,89 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+        <div class="pt-1.5 mb-6 flex justify-end" *ngIf="userIds?.length > 0">
+            <div class="flex justify-end">
+                <select 
+                    id="bulk" 
+                    class="w-xs max-w-xs mr-4 bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    [ngStyle]="{'border-color': buttonColor}"
+                    [(ngModel)]="selectedCourse"
+                    [ngModelOptions]="{standalone: true}"
+                >
+                    <option value="" disabled>{{ 'keap.selectcourse' | translate }}</option>
+                    <option
+                        *ngFor="let course of courses"                                
+                        [value]="course.id"
+                    >
+                        {{
+                            language == 'en' ? course?.title_en 
+                            :
+                            language == 'ca' ? course?.title_ca
+                            :
+                            language == 'de' ? course?.title_de
+                            :
+                            language == 'eu' ? course?.title_eu
+                            :
+                            language == 'fe' ? course?.title_fr
+                            : course?.title
+                        }}
+                    </option>
+                </select>
+                <button 
+                    class="float-right flex items-center py-1.5 p-2.5 rounded-[10px] justify-evenly hover:bg-black"
+                    [ngStyle]="{'background-color': buttonColor}" 
+                    (click)="assignUserToCourse()"
+                    *ngIf="selectedCourse"
+                >
+                    <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                    </svg>
+                    <span class="text-white text-sm">{{ 'course-students.assignstudentstocourses' | translate }}</span>
+                </button>
+            </div> 
+        </div>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list assign-course-students">
+            <ng-container matColumnDef="checked">
+                <mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="name"> <input type="checkbox" [checked]="row.checked" (change)="getDataUsers(row.id)" > </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="name"> {{ row.name ? row.name : row.first_name + ' ' + row.last_name }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="email">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.email' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="email"> {{ row.email }}</mat-cell>
+            </ng-container>
+            <ng-container>
+                <mat-header-row *matHeaderRowDef="studentReportsColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: studentReportsColumns">
+                </mat-row>
+            </ng-container>
+        </mat-table>
+    </div>
+    <div>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+            (page)="getPageDetails($event)"
+            [showFirstLastButtons]="true">
+        </mat-paginator>
+    </div>
+</div>

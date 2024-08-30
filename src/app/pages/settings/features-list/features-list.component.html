@@ -1,0 +1,45 @@
+<app-page-title title="{{ 'general-details.module' | translate }}"></app-page-title>
+<app-breadcrumb 
+    [level1Title]="level1Title"
+    [level2Title]="level2Title"
+    [level3Title]="level3Title"
+    [level4Title]="level4Title"
+    [buttonColor]="buttonColor"
+    (goBack)="handleGoBack()"
+/>
+<div class="py-6">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid:cols-3 mb">
+        <div class="relative mb-6 col-span-2">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="col-span-1 pt-1.5 mb-6">
+            <app-button-group
+                [buttonList]="buttonList"
+                [buttonColor]="buttonColor"
+                (onButtonClick)="handleButtonClick($event)"
+            >
+            </app-button-group>
+        </div>
+    </div>
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-12">
+        <ng-container *ngFor="let feature of companyFeatures">
+            <app-horizontal-card
+                [item]="feature"
+                [title]="getFeatureTitle(feature)"
+                [description]="getFeatureDescription(feature)"
+                [imageSrc]="imageSrc + feature?.image"
+                [buttonColor]="buttonColor"
+                [buttonText]="feature?.status == 1 ? ('company-settings.deactivate' | translate) : ('company-settings.activate' | translate)"
+                (onActionClick)="handleActionClick($event)"
+                (onViewDetails)="handleViewDetails($event)"
+            />
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pt-2">
+    <div class="w-full max-w-full">
+        <div class="py-8">
+        <div class="mat-table-responsive users-table-container">
+                <div *ngIf="isLoading" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                    <svg aria-hidden="true" class="w-8 h-8 mr-2 mt-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <mat-table *ngIf="!isLoading" [dataSource]="dataSource" matSort>
+                    <ng-container matColumnDef="date" >
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'company-reports.date' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="date">{{ row.date }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="time">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.time' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="time">{{ row.time }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="user">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'credit-package.credituser' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="user" class="capitalize">{{ row.user }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="total_credits">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'credit-package.totalcredits' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="total_credits"> {{ row.total_credits }} </mat-cell>
+                    </ng-container>
+                   
+                    <ng-container matColumnDef="credits">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'credit-package.credits' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="credits"> 
+                         {{row.credits }} 
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'credit-package.action' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="action" class="capitalize"> 
+                         {{row.action }} 
+                        </mat-cell>
+                      </ng-container>
+                      <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'credit-package.status' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="status" class="capitalize"> 
+                         {{row.status }} 
+                        </mat-cell>
+                      </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <div *ngIf="!isLoading && (!creditLogData || (creditLogData?.length == 0))" 
+                    class="text-center mt-4 opacity-80">
+                    {{ 'categories.noresultsfound' | translate }}
+                </div>
+            </div>
+            <mat-paginator *ngIf="!isLoading" #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+                (page)="getPageDetails($event)"
+                [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+    </div>
+</div>

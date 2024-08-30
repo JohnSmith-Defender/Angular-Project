@@ -1,0 +1,187 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<form [formGroup]="form" (ngSubmit)="submit()" class="form" autocomplete="off">
+    <div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 pt-12 pb-4">
+            <div class="text-center">
+                <div>
+                    <label for="firstname" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'email.shfirstname' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <input
+                        id="firstname"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': form.get('first_name')?.errors }"
+                        type="text" 
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="first_name" 
+                        placeholder="{{ 'email.shfirstname' | translate }}"
+                        required>
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="lastname" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'email.shlastname' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <input 
+                        id="lastname"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': form.get('last_name')?.errors }"
+                        type="text" 
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="last_name" 
+                        placeholder="{{ 'email.shlastname' | translate }}"
+                        required>
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="location" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ companyId == 32 ? 'Campus' : ('buddy.location' | translate) }}
+                            </div>
+                        </div>
+                    </label>
+                    <select
+                        id="location"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        formControlName="location" 
+                    >
+                        <option value="" disabled selected>{{ 'courses.selectcampus' | translate }}</option>
+                        <option
+                            *ngFor="let city of cities"
+                            [value]="city.city"
+                        >
+                            {{ city?.city }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="language" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'job-offers.language' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <ng-multiselect-dropdown
+                        placeholder="{{ 'dialog.selectlanguage' | translate }}*"
+                        [settings]="languageSettings"
+                        [data]="languages"
+                        [(ngModel)]="selectedLanguage"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                    </ng-multiselect-dropdown> 
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="major" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'buddy.major' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <input 
+                        id="major"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': form.get('major')?.errors }"
+                        type="text" 
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="major" 
+                        placeholder="{{ 'buddy.major' | translate }}"
+                        required>
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="faculty" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'buddy.faculty' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <input 
+                        id="faculty"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': form.get('faculty')?.errors }"
+                        type="text" 
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="faculty" 
+                        placeholder="{{ 'buddy.faculty' | translate }}"
+                        required>
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="businessunit" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'buddy.businessunit' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <input 
+                        id="businessunit"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': form.get('business_unit')?.errors }"
+                        type="text" 
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="business_unit" 
+                        placeholder="{{ 'buddy.businessunit' | translate }}"
+                        required>
+                </div>
+            </div>
+            <div class="text-center">
+                <div>
+                    <label for="segment" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'buddy.segment' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <input 
+                        id="segment"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': form.get('segment')?.errors }"
+                        type="text" 
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="segment" 
+                        placeholder="{{ 'buddy.segment' | translate }}"
+                        required>
+                </div>
+            </div>
+            <div class="text-center col-span-2">
+                <div>
+                    <label for="message" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                {{ 'landing.message' | translate }}
+                            </div>
+                        </div>
+                    </label>
+                    <quill-editor class="w-full max-w-full content-editor" formControlName="message"></quill-editor>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+        <button
+            type="submit"
+            class="w-full inline-block h-[40px] text-sm px-6 py-2 my-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+            [ngStyle]="{'background-color': buttonColor}"
+            [ngClass]="{'disabled:opacity-75': hasRequest && !approvedRequest}"
+            [disabled]="hasRequest && !approvedRequest"
+        >
+            {{ hasRequest && !approvedRequest ? ('campaign-details.pendingrequest' | translate) : ('job-offers.submit' | translate) }}
+        </button>
+    </div>
+</form>

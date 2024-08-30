@@ -1,0 +1,65 @@
+<div class="py-2">
+    <div class="pb-4">
+        <button 
+            class="flex items-center py-1.5 p-2.5 px-8 h-[40px] rounded-[10px] justify-evenly hover:bg-black"
+            [ngStyle]="{'background-color': buttonColor}" 
+            (click)="downloadExcel()"
+        >
+            <svg class="w-3 h-3 text-white mr-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                <path d="M7 11H5v1h2v-1Zm4 3H9v1h2v-1Zm-4 0H5v1h2v-1ZM5 5V.13a2.98 2.98 0 0 0-1.293.749L.88 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM13 16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6Zm-1-8H9a1 1 0 0 1 0-2h3a1 1 0 1 1 0 2Zm0-3H9a1 1 0 0 1 0-2h3a1 1 0 1 1 0 2Z"/>
+                <path d="M11 11H9v1h2v-1Z"/>
+            </svg>
+            <span class="text-white text-sm">{{ 'company-reports.downloadCSV' | translate }}</span>
+        </button>
+    </div>
+    <mat-table [dataSource]="unitDetailDataSource" #sort="matSort" matSort class="manage-list w-full max-w-full">
+        <ng-container matColumnDef="course">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.course' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="course"> {{ unitCourse }}</mat-cell>
+        </ng-container>                            
+        <ng-container matColumnDef="module">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.module' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="module"> {{ row.module }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="unit">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.unit' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="unit" style="text-align: left"> {{ row.unit }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="status">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.status' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="status">
+                <ng-container *ngIf="row['visited'] == 1 && row['progress'] != 100">
+                    <fa-icon class="fa flex items-center" style="color:#fff;background-color:#198754;border-radius:20px;font-size:16px;border:solid 2px #198754;" [icon]="visitedIcon"></fa-icon>
+                </ng-container>
+                <ng-container *ngIf="row['progress'] == 100">
+                    <img class="w-[16px] h-[16px] complete" src="./assets/images/new-design/icons/Progress-completed.png" />
+                </ng-container>
+                <ng-container *ngIf="row['visited'] != 1 && row['progress'] != 100">
+                    <img class="w-[16px] h-[16px] complete" src="./assets/images/new-design/icons/Progress-incomplete.png" />
+                </ng-container>
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="progress">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.progress' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="progress"> {{ row['progress'] }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="start_date">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.start_date' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="start_date"> {{ (row['progress'] != 0 || row['visited'] == 1) ? row['start_date'] : ''}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="end_date">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-create.enddate' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let row" data-label="end_date"> {{ (row['progress'] != 0 || row['visited'] == 1) ? row['end_date'] : '' }}</mat-cell>
+        </ng-container>
+        <ng-container>
+            <mat-header-row *matHeaderRowDef="unitDetailsColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: unitDetailsColumns">
+            </mat-row>
+        </ng-container>
+    </mat-table>
+    <div *ngIf="!isLoading && (!courseUnits || (courseUnits?.length == 0))" 
+        class="text-center mt-4 opacity-80">
+        {{ 'categories.noresultsfound' | translate }}
+    </div>
+</div>

@@ -1,0 +1,492 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+                <div>
+                    <select
+                        id="tutors"
+                        class="w-[250px] min-w-[250px] max-w-[250px] ml-4 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedTutor"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changeTutorFilter($event)"
+                    >
+                        <option value="">{{ 'company-settings.selecttutor' | translate }}</option>
+                        <option
+                            *ngFor="let tutor of tutors"                                
+                            [value]="tutor.tutor_name"
+                        >
+                            {{ tutor.tutor_name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="ml-2">
+                    <select
+                        id="students"
+                        class="w-[250px] min-w-[250px] max-w-[250px] ml-2 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedStudent"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changeStudentFilter($event)"
+                    >
+                        <option value="">{{ 'company-settings.selectstudent' | translate }}</option>
+                        <option
+                            *ngFor="let student of students"                                
+                            [value]="student.student_name"
+                        >
+                            {{ student?.student_name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="pt-1.5 mb-6 flex justify-end">
+            <div class="flex flex-wrap">
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'All' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'All' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('All')"
+                >
+                    {{ 'tutors.all' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Upcoming' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Upcoming' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Upcoming')"
+                >
+                    {{ 'tutors.upcoming' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Action required' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Action required' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Action required')"
+                >
+                    {{ 'tutors.actionrequired' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Cancelled' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Cancelled' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Cancelled')"
+                >
+                    {{ 'company-settings.cancelled' | translate }}
+                </div>
+                <div 
+                    class="rounded-[10px] mr-1 text-sm px-4 py-2 hover:cursor-pointer"
+                    [ngStyle]="{'background-color': statusFilter == 'Completed' ? buttonColor : 'transparent',
+                        'color': statusFilter == 'Completed' ? '#fff' : buttonColor}"
+                    (click)="filterLessonStatus('Completed')"
+                >
+                    {{ 'tutors.completed' | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pt-2">
+    <div class="w-full max-w-full">
+        <div class="py-8">
+            <div class="full-width-container w-full max-w-full">
+                <div *ngIf="isLoading" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                    <svg aria-hidden="true" class="w-8 h-8 mr-2 mt-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <mat-paginator *ngIf="!isLoading && pageSize == 200" #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" class="mb-5"
+                (page)="getPageDetails($event)"
+                [showFirstLastButtons]="true">
+                </mat-paginator>
+                <mat-table *ngIf="!isLoading" [dataSource]="dataSource" matSort class="full-width my-lessons-tbl">
+                    <ng-container matColumnDef="booking_date_display">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.scheduleddate' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="booking_date_display">{{ row.booking_date_display }}</mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="booking_time">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.time' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="booking_time"> {{ row.booking_time }} </mat-cell>
+                    </ng-container>
+                    <!-- <ng-container matColumnDef="created_at_display">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'company-settings.date' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="created_at_display"> {{ row.created_at_display }} </mat-cell>
+                    </ng-container> -->
+                    <ng-container matColumnDef="course">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.course' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="course"> {{ row.course }} </mat-cell>
+                    </ng-container>
+                    <!-- <ng-container matColumnDef="package_name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'course-create.package' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="package_name"> {{ row.package_name }} </mat-cell>
+                    </ng-container> -->
+                    <ng-container matColumnDef="tutor_name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.tutor' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="tutor_name">
+                            <div class="flex items-center">
+                                <span>{{ row.tutor_name }}</span>
+                                <ng-container *ngIf="row?.show_tutor_edit">
+                                    <svg (click)="handleEditTutor(row)" class="cursor-pointer ml-4 w-5 h-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="square" stroke-linejoin="round" stroke-width="2" d="M7 19H5a1 1 0 0 1-1-1v-1a3 3 0 0 1 3-3h1m4-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm7.441 1.559a1.907 1.907 0 0 1 0 2.698l-6.069 6.069L10 19l.674-3.372 6.07-6.07a1.907 1.907 0 0 1 2.697 0Z"/>
+                                    </svg>
+                                    <span class="sr-only">Icon description</span>
+                                </ng-container>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="student_name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plans.student' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="student_name"> {{ row.student_name }} </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'landing.status' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="status">
+                            <ng-container *ngIf="row?.cancelled == 1">
+                                <span [ngStyle]="{'color': '#c24130'}" [innerHtml]="('company-settings.cancelled' | translate)"></span>
+                            </ng-container>
+                            <ng-container *ngIf="row?.cancelled != 1 && row?.completed != 1 && row?.past_booking">
+                                <p class="flex items-center justify-between my-2">
+                                    <span class="uppercase text-sm">{{'tutors.tutor' | translate}}</span>
+                                    <svg [ngStyle]="{'color': row?.tutor_complete == 1 ? '#5cb85c' : '#c7c7c7'}" class="ml-2 w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                    </svg>
+                                </p>
+                                <p class="flex items-center justify-between mb-2">
+                                    <span class="uppercase text-sm">{{'plans.student' | translate}}</span>
+                                    <svg [ngStyle]="{'color': row?.student_complete == 1 ? '#5cb85c' : '#c7c7c7'}" class="ml-2 w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                    </svg>
+                                </p>
+                            </ng-container>
+                            <ng-container *ngIf="row?.completed == 1 && row?.transfer_date">
+                                <span [innerHtml]="row?.transferred ? ('tutors.charged' | translate) : (('tutors.moneyontheway' | translate) + ' ' + (row?.transfer_date | date:'dd/MM/YYYY'))"></span>
+                            </ng-container>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="rating">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'wall.rating' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="rating">
+                            <app-star-rating *ngIf="row?.tutor_rating" [rating]="row.tutor_rating || rating"></app-star-rating>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="feedback">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'company-settings.feedback' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="feedback"> 
+                            <ng-container *ngIf="superAdmin || (row?.tutor_user_id == userId) || (row?.user_id == userId) || cityAdmin">
+                                {{ row.feedback }} 
+                            </ng-container> 
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="notes">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'guests.notes' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="notes"> 
+                            <ng-container *ngIf="isGuardianType || superAdmin || superTutor || (row?.tutor_user_id == userId) || cityAdmin">
+                                <button (click)="addNotes(row)" 
+                                    class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                >
+                                    {{ 'company-settings.add' | translate }}
+                                </button>
+                                <button (click)="viewNotes(row)" 
+                                    class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                >
+                                    {{ 'notification-popup.view' | translate }}
+                                </button>
+                            </ng-container>
+                        </mat-cell>
+                    </ng-container>
+                    <ng-container matColumnDef="action">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'wall.action' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="action">
+                            <div class="flex items-center">
+                                <ng-container *ngIf="!hasDifferentStripeAccounts">
+                                    <ng-container *ngIf="(statusFilter == 'All' && row.booking_action_required && row.show_mark_complete) || (statusFilter == 'Action required' && row.show_mark_complete)" >
+                                        <button (click)="confirmMarkComplete(row)" 
+                                        class="p-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                        >
+                                        {{ 'course-details.completebutton' | translate }}
+                                        </button>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="row.show_cancel">
+                                    <button (click)="handleCancelBooking(row)" 
+                                        class="p-2 text-xs rounded-lg my-1 mr-2 bg-white"
+                                        style="border:solid 1px #c24130;color:#c24130;"
+                                        >
+                                        {{ 'settings.cancel' | translate }}
+                                    </button>
+                                </ng-container>
+                                <ng-container *ngIf="hasDifferentStripeAccounts">
+                                    <ng-container *ngIf="(row?.stripe_connect || !isTutorUser) && !cityAdmin" >
+                                        <ng-container *ngIf="(statusFilter == 'All' && row.booking_action_required && row.show_mark_complete) || (statusFilter == 'Action required' && row.show_mark_complete)" >
+                                            <button (click)="confirmMarkComplete(row)" 
+                                                class="p-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                                [ngStyle]="{'background-color': buttonColor}"
+                                                >
+                                                {{ 'course-details.completebutton' | translate }}
+                                            </button>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="!row?.stripe_connect && isTutorUser && row?.tutor_user_id == me?.id && (potTutor || potsuperTutor) && !cityAdmin" >
+                                        <ng-container *ngIf="(statusFilter == 'All' && row.booking_action_required && row.show_mark_complete) || (statusFilter == 'Action required' && row.show_mark_complete)" >
+                                            <button (click)="confirmMarkComplete(row)" 
+                                                class="p-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                                [ngStyle]="{'background-color': buttonColor}"
+                                                >
+                                                {{ 'course-details.completebutton' | translate }}
+                                            </button>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="cityAdmin && isTutorUser && row?.stripe_connect && row?.tutor_user_id == me?.id" >
+                                        <ng-container *ngIf="(statusFilter == 'All' && row.booking_action_required && row.show_mark_complete) || (statusFilter == 'Action required' && row.show_mark_complete)" >
+                                            <button (click)="confirmMarkComplete(row)" 
+                                                class="p-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                                [ngStyle]="{'background-color': buttonColor}"
+                                                >
+                                                {{ 'course-details.completebutton' | translate }}
+                                            </button>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="!row?.stripe_connect && isTutorUser && tutorAccountId.length > 0 && !cityAdmin">
+                                        <span class="text-xs text-center font-medium inline-block py-2 px-3 capitalize rounded-full text-red-600 bg-red-200">
+                                            {{ 'course-details.stripeinactivetransfer' | translate}}
+                                          </span>
+                                    </ng-container>
+                                    <ng-container *ngIf="!row?.stripe_connect && isTutorUser && tutorAccountId.length > 0 && cityAdmin && row?.tutor_user_id == me?.id">
+                                        <span class="text-xs text-center font-medium inline-block py-2 px-3 capitalize rounded-full text-red-600 bg-red-200">
+                                            {{ 'course-details.stripeinactivetransfer' | translate}}
+                                          </span>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="!transferCommissionsByBulk">
+                                    <ng-container *ngIf="isTutorUser || superAdmin || superTutor">
+                                        <div 
+                                            *ngIf="row?.transfer_status == 0 && isTutorUser && !superAdmin" 
+                                            style="background-color: rgb(254,255,154);" 
+                                            class="mt-[10px] text-sm inline-block ml-[5px] p-[7px] text-center">
+                                            {{ "booking-error.insufficientbalancetutortext" | translate }}
+                                        </div>
+                                        <div *ngIf="row?.transfer_status == 0 && superAdmin" style="margin-top: 10px;font-size: 12px;display: inline-block;margin-left: 5px;background-color: rgb(254,255,154);color: black;font-weight: 400;padding: 7px;border-radius:10px;text-align:center;" class="label">
+                                            {{ "booking-error.insufficientbalancetutortext" | translate }}
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="(statusFilter == 'Completed' && !row.tutor_rating)">
+                                    <div *ngIf="!row.tutor_rating && !(isTutorUser && !superAdmin)">
+                                         <button (click)="provideRating(row)" 
+                                            class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            >
+                                            {{ 'event-survey.rate' | translate }}
+                                        </button>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="(statusFilter == 'Completed' || statusFilter == 'All') && row?.show_feedback_button">
+                                    <button (click)="openFeedbackPopup(row)" 
+                                        class="px-4 py-2 text-xs rounded-lg my-1 mr-2 text-white"
+                                        [ngStyle]="{'background-color': buttonColor}">
+                                        {{ 'company-settings.givefeedback' | translate }}
+                                    </button>
+                                </ng-container>
+                                <ng-container *ngIf="row.show_delete">
+                                    <button type="button" class="focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="handleDeleteBooking(row)"
+                                    >
+                                        <svg [ngStyle]="{'color': '#c24130'}" class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                        <span class="sr-only">Icon description</span>
+                                    </button>
+                                </ng-container>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+                <div *ngIf="!isLoading && (!bookings || (bookings?.length == 0))" 
+                    class="text-center mt-4 opacity-80">
+                    {{ 'categories.noresultsfound' | translate }}
+                </div>
+            </div>
+            <mat-paginator *ngIf="!isLoading && pageSize < 200" #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]"
+                (page)="getPageDetails($event)"
+                [showFirstLastButtons]="true">
+            </mat-paginator>
+        </div>
+    </div>
+</div>
+<button #modalbutton1 data-modal-target="item-modal1" data-modal-toggle="item-modal1" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal1" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full"
+        [ngClass]="{'max-w-2xl': dialogMode == 'view-notes', 'max-w-md': dialogMode != 'view-notes'}">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton1 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal1">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'rating'">
+                    <div>
+                        <select 
+                            id="rating" 
+                            class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            [ngStyle]="{'border-color': buttonColor}"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !rating }"
+                            [(ngModel)]="rating"
+                            [ngModelOptions]="{standalone: true}"
+                        >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="mt-8">
+                        <button class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="acceptRating()"
+                            [disabled]="!rating"
+                            data-modal-hide="item-modal" 
+                            [ngClass]="{'cursor-not-allowed': !rating}"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'plans.submit' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'feedback'">
+                    <div>
+                        <textarea name="" id="" cols="30" rows="3"
+                            class="w-full rounded-lg p-4"
+                            placeholder="{{ 'company-settings.givefeedback' | translate }}"
+                            [(ngModel)]="feedback"
+                            [ngModelOptions]="{standalone: true}">
+                        </textarea>
+                    </div>
+                    <div class="mt-8">
+                        <button class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="submitFeedback()"
+                            [disabled]="!feedback"
+                            data-modal-hide="item-modal1" 
+                            [ngClass]="{'cursor-not-allowed': !feedback}"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'plans.submit' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'add-notes'">
+                    <div>
+                        <textarea name="" id="" cols="30" rows="3"
+                            class="w-full rounded-lg p-4"
+                            placeholder="{{ 'guests.notes' | translate }}"
+                            [(ngModel)]="notes"
+                            [ngModelOptions]="{standalone: true}">
+                        </textarea>
+                    </div>
+                    <div class="mt-8">
+                        <button class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="submitNotes()"
+                            [disabled]="!notes"
+                            data-modal-hide="item-modal1" 
+                            [ngClass]="{'cursor-not-allowed': !notes}"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'view-notes'">
+                    <app-tutors-history-list
+                        [mode]="historyListMode"
+                        [title]="historyListTitle"
+                        [bookingId]="historyListBookingId"
+                        [userId]="historyListUserId"
+                        [companyId]="companyId"
+                        [superAdmin]="superAdmin"
+                        [isTutorUser]="isTutorUser"
+                    ></app-tutors-history-list>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'edit-tutor'">
+                    <div>
+                        <select
+                        id="assigned-tutors"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedBookingTutor"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="">{{ 'company-settings.selecttutor' | translate }}</option>
+                        <option
+                            *ngFor="let tutor of tutorUsers"                                
+                            [value]="tutor.id"
+                        >
+                            {{ tutor?.first_name ? (tutor?.first_name + ' ' + tutor?.last_name) : tutor?.name }}
+                        </option>
+                    </select>
+                    </div>
+                    <div class="mt-8">
+                        <button class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="editAssignedTutor()"
+                            [disabled]="!selectedBookingTutor"
+                            data-modal-hide="item-modal" 
+                            [ngClass]="{'cursor-not-allowed': !selectedBookingTutor}"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'plan-details.save' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="showPendingLessonAlert" id="bottom-banner" tabindex="-1" class="fixed bottom-0 start-0 z-50 flex justify-between w-full p-6  dark:bg-gray-700 bg-black" >
+    <div class="flex items-center mx-auto">
+        <p class="flex items-center text-xs sm:text-sm font-medium text-white">
+            <span class="inline-flex p-1 me-3 bg-gray-200 rounded-full dark:bg-gray-600 w-6 h-6 items-center justify-center">
+                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.2 3.8a1 1 0 1 0-2 .4l.4 1.7a5.3 5.3 0 0 0-2.8 5.8l.2 1.5.1.3c.3 1.3-.2 2.2-.6 3-.3.5-.6 1-.5 1.4.1.6.3 1.2.8 1l12.7-2.3c.5-.1.4-.7.3-1.3-.1-.5-.6-1-1.2-1.7a5.2 5.2 0 0 1-1.4-2 19.6 19.6 0 0 1-.3-1.8 5.3 5.3 0 0 0-5.4-4.4l-.3-1.6Z"/>
+                    <path fill-rule="evenodd" d="M6.5 4.3c.4.3.5 1 .1 1.4A6.9 6.9 0 0 0 4.8 10a1 1 0 0 1-2-.2c.1-2.1 1-3.9 2.3-5.5a1 1 0 0 1 1.4 0Z" clip-rule="evenodd"/>
+                    <path d="M9 19.7c.6.8 1.7 1.3 2.8 1.3 1.5 0 2.8-1.1 3.3-2.5l-6.2 1.2Z"/>
+                  </svg>   
+            </span>
+            <span class="mx-2">{{ 'tutors.pendingtutorials' | translate }}</span>
+        </p>
+    </div>
+    <div class="flex items-center">
+        <button data-dismiss-target="#bottom-banner" type="button" class="flex-shrink-0 inline-flex justify-center w-7 h-7 items-center text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

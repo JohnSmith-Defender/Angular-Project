@@ -1,0 +1,24 @@
+<app-page-title title="{{ 'company-settings.guestreports' | translate }}"></app-page-title>
+<div class="container w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="pt-6">
+    <div>
+        <app-members-reports
+            [company]="company"
+            [buttonColor]="buttonColor"
+            [primaryColor]="primaryColor"
+            [userId]="userId"
+            [language]="language"
+            [mode]="'guests'"
+        >
+        </app-members-reports>
+    </div>
+</div>

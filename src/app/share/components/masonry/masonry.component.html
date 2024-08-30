@@ -1,0 +1,58 @@
+<ng-container *ngIf="section1Mode == 'plans'">
+    <app-masonry-section1
+        *ngIf="section1Data"
+        [userId]="userId"
+        [company]="company"
+        [section1Data]="section1Data"
+    ></app-masonry-section1>
+</ng-container>
+<ng-container *ngIf="section1Mode == 'courses' || section2Mode == 'courses'">
+    <app-masonry-section1-1
+        [ngClass]="{'block my-4': section2Mode == 'courses'}"
+        *ngIf="coursesData?.length > 0"
+        [userId]="userId"
+        [superAdmin]="superAdmin"
+        [company]="company"
+        [coursesData]="coursesData"
+        [coursesProgress]="coursesProgress"
+        [tutorsData]="tutorsData"
+        [tutorTypes]="tutorTypes"
+        [user]="user"
+    ></app-masonry-section1-1>
+</ng-container>
+<ng-container *ngIf="section2Mode == 'cityguide-employmentchannel'">
+    <app-masonry-section2
+        *ngIf="section2Data"
+        [section2Data]="section2Data"
+        [userId]="userId"p
+        [company]="company"
+        [cityGuideLikes]="cityGuideLikes"
+        [jobTypes]="jobTypes"
+        [jobAreas]="jobAreas"
+        [jobOfferAreas]="jobOfferAreas"
+    ></app-masonry-section2>
+</ng-container>
+<ng-container *ngIf="section2Mode == 'testimonials-tutors'">
+    <app-masonry-section2-1
+        *ngIf="section21Data"
+        [section21Data]="section21Data"
+        [userId]="userId"
+        [company]="company"
+        [tags]="tags"
+        [tagMapping]="tagMapping"
+        [tutorTypes]="tutorTypes"
+        [user]="user"
+    ></app-masonry-section2-1>
+</ng-container>
+<ng-container *ngIf="section3Mode == 'clubs'">
+    <div class="py-4">
+        <app-masonry-section3
+            *ngIf="section3Data"
+            [userId]="userId"
+            [company]="company"
+            [section3Data]="section3Data"
+            [clubCategories]="clubCategories"
+            [clubCategoryMapping]="clubCategoryMapping"
+        ></app-masonry-section3>
+    </div>
+</ng-container>

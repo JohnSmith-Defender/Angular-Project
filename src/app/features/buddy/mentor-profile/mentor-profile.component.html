@@ -1,0 +1,522 @@
+<div class="flex items-center">
+    <app-page-title [title]="pageTitle"></app-page-title>
+    <div>
+        <button
+            (click)="viewPublicProfile()"
+            class="ml-4 w-full inline-block h-[40px] text-sm px-6 py-2 my-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+            [ngStyle]="{'background-color': buttonColor}"
+        >
+            {{ 'notification-popup.view' | translate }} {{ 'sidebar.publicprofile' | translate }}
+        </button>
+    </div>
+</div>
+<div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 my-10">
+    <div>
+        <form [formGroup]="profileForm" (ngSubmit)="save()" class="profile-form" autocomplete="off">
+            <div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 pt-12 pb-4">
+                    <div class="text-center col-span-2">
+                        <div>
+                            <div class="flex justify-center items-center mb-8 relative">
+                                <div class="max-w-xl mr-8">
+                                    <img width="160" height="192" src="./assets/images/640.png" />
+                                </div>
+                                <div class="relative">
+                                    <input 
+                                        #file
+                                        id="image"
+                                        name="image" 
+                                        type="file"
+                                        style="display:none;"
+                                        (change)="uploadPhoto($event)"
+                                    />
+                                    <div 
+                                        class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                        [ngClass]="{'p-6': !hasImage}"
+                                    >
+                                        <div
+                                            class="grid mb-8 place-items-center"
+                                            [ngClass]="{'w-28 h-28 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300': !hasImage, 'w-40 h-40': hasImage}"
+                                        >
+                                            <img *ngIf="!hasImage" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                            <img *ngIf="hasImage" class="w-[112px] h-[112px] rounded-full object-cover" src="{{ myImage }}" />
+                                        </div>
+                                    </div>
+                                    <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                        <label
+                                            for="image"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            class="btn text-white"
+                                        >
+                                            {{ 'club-create.uploadimage' | translate }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="firstname" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'email.shfirstname' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <input 
+                                readonly
+                                id="firstname"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('first_name')?.errors }"
+                                type="text" 
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="first_name" 
+                                placeholder="{{ 'email.shfirstname' | translate }}"
+                                required>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="lastname" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'email.shlastname' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <input 
+                                readonly
+                                id="lastname"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('last_name')?.errors }"
+                                type="text" 
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="last_name" 
+                                placeholder="{{ 'email.shlastname' | translate }}"
+                                required>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="location" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ companyId == 32 ? 'Campus' : ('buddy.location' | translate) }}
+                                    </div>
+                                </div>
+                            </label>
+                            <select
+                                id="location"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                formControlName="location" 
+                            >
+                                <option value="" disabled selected>{{ 'courses.selectcampus' | translate }}</option>
+                                <option
+                                    *ngFor="let city of cities"
+                                    [value]="city.city"
+                                >
+                                    {{ city?.city }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="language" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'job-offers.language' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'dialog.selectlanguage' | translate }}*"
+                                [settings]="languageSettings"
+                                [data]="languages"
+                                [(ngModel)]="selectedLanguage"
+                                [ngModelOptions]="{standalone: true}"
+                            >
+                            </ng-multiselect-dropdown> 
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="major" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.major' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <input 
+                                id="major"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('major')?.errors }"
+                                type="text" 
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="major" 
+                                placeholder="{{ 'buddy.major' | translate }}"
+                                required>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="faculty" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.faculty' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <input 
+                                id="faculty"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('faculty')?.errors }"
+                                type="text" 
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="faculty" 
+                                placeholder="{{ 'buddy.faculty' | translate }}"
+                                required>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="businessunit" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.businessunit' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <input 
+                                id="businessunit"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('business_unit')?.errors }"
+                                type="text" 
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="business_unit" 
+                                placeholder="{{ 'buddy.businessunit' | translate }}"
+                                required>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div>
+                            <label for="segment" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.segment' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <input 
+                                id="segment"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('segment')?.errors }"
+                                type="text" 
+                                class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="segment" 
+                                placeholder="{{ 'buddy.segment' | translate }}"
+                                required>
+                        </div>
+                    </div>
+                    <div class="text-center col-span-2">
+                        <div>
+                            <label for="introduction" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.introductionlabel' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <quill-editor class="w-full max-w-full content-editor" formControlName="introduction"></quill-editor>
+                        </div>
+                    </div>
+                    <div class="text-center col-span-2">
+                        <div>
+                            <label for="interests" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.interestslabel' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <quill-editor class="w-full max-w-full content-editor" formControlName="interests"></quill-editor>
+                        </div>
+                    </div>
+                    <div class="text-center col-span-2">
+                        <div>
+                            <label for="personality" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        {{ 'buddy.personalitylabel' | translate }}
+                                    </div>
+                                </div>
+                            </label>
+                            <quill-editor class="w-full max-w-full content-editor" formControlName="personality"></quill-editor>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                <button
+                    type="submit"
+                    class="w-full inline-block h-[40px] text-sm px-6 py-2 my-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                    [ngStyle]="{'background-color': buttonColor}"
+                >
+                    {{ "buddy.save" | translate }}
+                </button>
+            </div>
+        </form>
+    </div>
+    <div class="bg-[#F8F4F4] min-h-[calc(100vh_-_330px)] p-6 rounded-[16px]">
+        <mat-tab-group #mtTab (selectedTabChange)="changeTab($event)" [(selectedIndex)]="tabIndex">
+            <mat-tab class="uppercase" label="{{ 'buddy.mentees' | translate }}">
+                <div class="relative mb-6 relative">
+                    <div class="my-8">
+                        <ng-container *ngFor="let mentee of mentor?.buddies">
+                            <ng-container *ngIf="getMenteeName(mentee) != 'undefined undefined'">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <img class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                                            [ngSrc]="getMenteeImage(mentee)"
+                                        />
+                                        <div class="font-semibold text-sm">{{ getMenteeName(mentee) }}</div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab class="uppercase" label="{{ 'notification-popup.mentorrequests' | translate }}">
+                <div class="w-full min-w-full py-8">
+                    <div class="mat-table-responsive">
+                        <mat-table [dataSource]="notificationsDataSource" matSort>
+                            <ng-container matColumnDef="action">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'job-offers.action' | translate }}</mat-header-cell>
+                                <mat-cell *matCellDef="let row" data-label="action">
+                                    <div class="flex items-center align-center">
+                                        <ng-container>
+                                            <ng-container *ngIf="row?.type == 'VS_COMPANY_BUDDY'">
+                                                <svg (click)="viewMenteeProfile(row)" class="mr-2 hover:cursor-pointer w-8 h-8 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.948 8.948 0 0 0 12 21Zm3-11a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                                                </svg>                                                  
+                                                <ng-container *ngIf="!row.declined && (!row?.read_status || row?.read_status == -1)">
+                                                    <svg (click)="viewBuddyDetails(row)" [ngStyle]="{'color': '#5cb85c'}" class="mr-2 hover:cursor-pointer w-8 h-8 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                                    </svg>
+                                                    <svg (click)="denyBuddyRequest(row)" [ngStyle]="{'color': '#d9534f'}" class="hover:cursor-pointer w-8 h-8 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                                                    </svg>
+                                                </ng-container>
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+                                </mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="message">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'notification-popup.message' | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let row" data-label="message"><div [innerHtml]="row?.message"></div></mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="email">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'login.emailaddress' | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let row" data-label="email"><div>{{ row?.email }}</div></mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="created">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'posts.date' | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let row" data-label="created">{{ row?.created | date: 'dd MMM yyyy'  }}</mat-cell>
+                            </ng-container>
+                            <ng-container matColumnDef="status">
+                                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'pricing.status' | translate }} </mat-header-cell>
+                                <mat-cell *matCellDef="let row" data-label="status">
+                                    <span style="text-transform:uppercase" 
+                                        [ngStyle]="{'color': row?.status ? (row?.approved || row?.accepted ? '#4bb543' : (row?.declined || row?.not_approved ? '#c24153' : buttonColor)) : ''}">
+                                        {{ row?.status }}
+                                    </span>
+                                </mat-cell>
+                            </ng-container>
+                            <mat-header-row *matHeaderRowDef="notificationDisplayedColumns"></mat-header-row>
+                            <mat-row *matRowDef="let row; columns: notificationDisplayedColumns;"></mat-row>
+                        </mat-table>
+                    </div>
+                    <mat-paginator
+                        #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+                        [showFirstLastButtons]="true"
+                    ></mat-paginator>
+                </div>
+            </mat-tab>
+            <mat-tab *ngIf="messages?.length > 0" class="uppercase" label="{{ 'sidebar.yourmessages' | translate }}">
+                <div class="md:flex mb-8 max-w-screen-md mx-auto p-8">
+                    <ul *ngIf="messages?.length > 0" class="flex-column space-y space-y-4 text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
+                        <ng-container *ngFor="let msg of messages">
+                            <li>
+                                <a (click)="selectMenteeMessage(msg)" href="javascript:;" 
+                                    class="inline-flex items-center px-4 py-3 rounded-lg w-full" aria-current="page"
+                                    [ngClass]="{'active text-white': selectedMenteeMessage?.mentee_id == msg.mentee_id}"
+                                    [ngStyle]="{'background-color': selectedMenteeMessage?.mentee_id == msg.mentee_id ? buttonColor : '#F9FAFB'}">
+                                    {{ msg?.mentee_name }}
+                                </a>
+                            </li>
+                        </ng-container>
+                    </ul>
+                    <div class="text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full">
+                        <ng-container *ngIf="menteeMessages?.length > 0">
+                            <div class="bg-white p-4 h-[calc(100vh_-_300px)] overflow-y-scroll">
+                                <div class="flex items-center">
+                                    <div class="font-semibold text-lg">{{ 'sidebar.yourmessages' | translate }}</div>
+                                </div>
+                                <div class="mt-4">
+                                    <div class="p-6 bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                                        <img *ngIf="me?.image" class="mr-6 mb-6 sm:mb-6 md:mb-0 lg:mb-0 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                                            [ngSrc]="apiPath + me.image"
+                                        />
+                                        <div class="mb-6 sm:mb-6 md:mb-0 lg:mb-0 rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-[#F8F4F4]" 
+                                            (blur)="getNewPost($event)" 
+                                            (focusout)="getNewPost($event)"
+                                            (focus)="focusNewPost($event)"
+                                            contenteditable 
+                                            [innerHTML]="newPost"
+                                            [ngClass]="{'text-gray-400': isNewPostPlaceholder()}"
+                                        ></div>
+                                        <button 
+                                            class="mb-6 sm:mb-6 md:mb-0 lg:mb-0 w-32 h-[46px] rounded-[10px] justify-evenly sm:ml-0 md:ml-4 lg:ml-4 sm:mt-4 md:mt-0 lg:mt-0"
+                                            (click)="sendMessage()" 
+                                            [ngStyle]="{
+                                                'background-color': buttonColor,
+                                                'opacity': postHover ? 1.5 : 1,
+                                                'filter': postHover ? 'brightness(0.8)' : 'brightness(1)'
+                                            }"
+                                            (mouseover)="togglePostHover(true)"
+                                            (mouseleave)="togglePostHover(false)"
+                                        >
+                                            <span class="text-white text-sm font-medium">{{ 'buddy.send' | translate }}</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="my-6">
+                                    <ng-container *ngFor="let message of menteeMessages; let i = index;">
+                                        <app-mentor-message 
+                                            [buttonColor]="buttonColor" 
+                                            [language]="language" 
+                                            [message]="message"
+                                            [motherComponent]="this"
+                                            [superAdmin]="superAdmin"
+                                            [me]="me"
+                                            [userId]="me?.id"
+                                            [mentorId]="mentor?.user_id"
+                                            [company]="company"
+                                            (handleDelete)="handleDeleteMessage($event)"
+                                            (handleRefresh)="displayMessages()"
+                                        ></app-mentor-message>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <ng-container *ngIf="dialogMode == 'profile'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'club-create.uploadimage' | translate }}
+                    </h3>
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="imageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="canvasRotation"
+                            [transform]="transform"
+                            [imageChangedEvent]="imageChangedEvent" 
+                            [maintainAspectRatio]="true"
+                            [cropperMinWidth]="360" 
+                            [cropperMinHeight]="320" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="imageCropped($event)" 
+                            (imageLoaded)="imageLoaded()" 
+                            (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode != 'profile'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ dialogTitle }}
+                    </h3>
+                    <ng-container *ngIf="dialogMode == 'accept'">
+                        <div class="flex justify-between">
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ buddy?.from }}
+                            </div>
+                            <div class="flex items-center">
+                                <span class="font-semibold mr-2">{{ 'buddy.to' | translate }}</span> {{ buddy?.to }}
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span class="font-semibold mr-2">{{ 'buddy.major' | translate }}</span> {{ buddy?.major }}
+                            </div>
+                            <div>
+                                <span class="font-semibold mr-2">{{ 'job-offers.language' | translate }}</span> {{ buddy?.language }}
+                            </div>
+                        </div>
+                        <form class="space-y-6">
+                            <div class="flex items-center justify-center my-6">
+                                <textarea id="message" cols="30" rows="6"
+                                    class="w-full rounded-lg p-4 border border-gray-300"
+                                    placeholder="{{ 'buddy.message' | translate }}" 
+                                    [(ngModel)]="message"
+                                    [ngModelOptions]="{standalone: true}" 
+                                    readonly>
+                                </textarea>
+                            </div>
+                            <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto" *ngIf="canAccept">
+                                <button 
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    data-modal-hide="item-modal"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                    (click)="acceptBuddy()"
+                                >
+                                    {{ 'buddy.accept' | translate }}
+                                </button>
+                            </div>
+                        </form>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

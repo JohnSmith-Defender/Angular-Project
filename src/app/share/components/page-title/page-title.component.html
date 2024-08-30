@@ -1,0 +1,5 @@
+<div class="pt-24 sm:pt-24 md:pt-4 lg:pt-4">
+  <h1 *ngIf="title && mode != 'section'" class="text-4xl font-bold mb-2">{{ title }}</h1>
+  <h2 *ngIf="title && mode == 'section'" class="mb-2 text-3xl tracking-tight font-bold text-gray-900 dark:text-white">{{ title }}</h2>
+  <div class="text-sm" *ngIf="subtitle">{{ subtitle }}</div>
+</div>

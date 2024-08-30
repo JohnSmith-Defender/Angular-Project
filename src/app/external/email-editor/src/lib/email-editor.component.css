@@ -1,0 +1,9 @@
+:host {
+  flex: 1;
+  display: flex;
+}
+
+.unlayer-editor {
+  flex: 1;
+  display: flex;
+}

@@ -1,0 +1,141 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="pt-4">
+    <div class="w-full max-w-full sm:w-full sm:max-w-full md:w-6/12 md:max-w-6/12 lg:w-6/12 lg:max-w-6/12">
+        <div *ngIf="superAdmin || canCreate" class="flex mt-3 sm:mt-3 md:mt-0 lg:mt-0">
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4 mr-4"
+                (click)="handleEditRoute()" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': editHover ? 1.5 : 1,
+                    'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (mouseover)="toggleEditHover(true)"
+                (mouseleave)="toggleEditHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                </svg>
+                <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+            </button>
+            <button 
+                class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                (click)="handleDelete()" 
+                [ngStyle]="{
+                    'border-color': deleteHover ? 'transparent' : buttonColor,
+                    'background-color': deleteHover ? buttonColor : '#fff',
+                }"
+                (mouseover)="toggleDeleteHover(true)"
+                (mouseleave)="toggleDeleteHover(false)"
+            >
+                <svg [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="w-2 h-2 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                </svg>
+                <span [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="text-md font-semibold uppercase">{{ 'plan-details.delete' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="pt-10 flex flex-col sm:flex-col md:flex-row lg:flex-row pb-20">
+    <div class="relative mr-0 sm:mr-0 md:mr-[58px] lg:mr-[58px]">
+        <img 
+            *ngIf="service?.image" 
+            width="540" 
+            height="510" 
+            [ngSrc]="service?.image" 
+            [alt]="service?.name" 
+            class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[540px] md:max-w-[540px] lg:w-[540px] lg:max-w-[540px] sm:h-auto md:h-[510px] lg:h-[510px] max-h-auto md:max-h-[510px] lg:max-h-[510px]">
+    </div>
+    <div class="w-full mr-0 sm:mr-0 md:mr-32 lg:mr-32">
+        <div class="text-xl font-bold">{{service?.name}}</div>
+        <div class="mt-4 w-full max-w-full">
+            <div class="flex flex-col">
+                <div [innerHtml]="serviceTruncatedDescription"></div>
+                <ng-container *ngIf="service?.display_description?.length > truncate">
+                    <div class="mt-2 uppercase text-xs underline cursor-pointer" *ngIf="serviceExpandedDescription" [ngStyle]="{'color': buttonColor}" (click)="showLess()">{{ 'club-details.seeless' | translate }}</div>
+                    <div class="mt-2 uppercase text-xs underline cursor-pointer" *ngIf="!serviceExpandedDescription" [ngStyle]="{'color': buttonColor}" (click)="readMore()">{{ 'club-details.readmore' | translate }}</div>
+                </ng-container>
+            </div>
+            <div class="flex flex-row flex-wrap my-12">
+                <div class="flex mb-4" *ngIf="(service?.contact_person?.name || service?.contact_person?.first_name)">
+                    <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm-2 3h4a4 4 0 0 1 4 4v2H1v-2a4 4 0 0 1 4-4Z"/>
+                    </svg>
+                    <div class="font-semibold mr-12">{{ service?.contact_person?.name || (service?.contact_person?.first_name + ' ' + service?.contact_person?.last_name) }}</div>
+                </div>
+                <div class="flex mb-4" *ngIf="service?.contact_person?.email">
+                    <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 2-8.4 7.05a1 1 0 0 1-1.2 0L1 2m18 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1m18 0v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2"/>
+                      </svg>
+                    <div class="font-semibold mr-12">{{ service?.contact_person?.email }}</div>
+                </div>
+                <div class="flex mb-4" *ngIf="service?.phone_number">
+                    <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.344 12.168-1.4-1.4a1.98 1.98 0 0 0-2.8 0l-.7.7a1.98 1.98 0 0 1-2.8 0l-2.1-2.1a1.98 1.98 0 0 1 0-2.8l.7-.7a1.981 1.981 0 0 0 0-2.8l-1.4-1.4a1.828 1.828 0 0 0-2.8 0C-.638 5.323 1.1 9.542 4.78 13.22c3.68 3.678 7.9 5.418 11.564 1.752a1.828 1.828 0 0 0 0-2.804Z"/>
+                    </svg>
+                    <div class="font-semibold mr-2">{{ service?.phone_number }}</div>
+                </div>
+            </div>
+            <div *ngIf="userId && !service?.service_member && stripeSubscriptionActive && service?.subscription_fee > 0" 
+                class="flex justify-between flex-col sm:flex-col md:flex-row lg:flex-row">
+                <button
+                    class="btn w-full max-w-full h-[52px] text-white text-base uppercase font-semibold" 
+                    [ngStyle]="{
+                        'background-color': buttonColor,
+                        'opacity': payHover ? 1.5 : 1,
+                        'filter': payHover ? 'brightness(0.8)' : 'brightness(1)'
+                    }"
+                    (mouseover)="togglePayHover(true)"
+                    (mouseleave)="togglePayHover(false)"
+                    (click)="subscribeToService()">
+                    {{ service?.service_type == 1 ? ('service.pay' | translate) : ('service.subscribe' | translate) }}
+                </button>
+            </div>
+            <div class="my-12 flex items-center" *ngIf="service?.creator">
+                <img 
+                    *ngIf="service?.creator?.image" 
+                    [ngSrc]="apiPath + service?.creator?.image"
+                    class="object-cover rounded-full w-16 h-16 mr-4"
+                    width="30"
+                    height="30"  />
+                <div class="opacity-60 mr-4">{{ 'plan-details.createdby' | translate }}</div>
+                <div class="font-semibold">{{ service?.creator?.name || (service?.creator?.first_name + ' ' + service?.creator?.last_name) }}</div>
+            </div>
+            <div class="my-12 flex items-center" *ngIf="userId">
+                <div *ngIf="service?.link" (click)="openLink(service?.link)" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer">
+                    <img width="36" height="36" class="object-contain mr-6 ml-4" src="./assets/icons/link-chain.png">
+                    <div class="mt-10 text-center opacity-60">{{ service?.text || service?.link }}</div>
+                </div>
+                <div (click)="copyText()" class="flex flex-col items-center justify-center mr-16 hover:cursor-pointer">
+                    <img width="36" height="36" class="object-contain ml-6" src="./assets/icons/copy-paste.png">
+                    <div class="w-[36px] max-w-[36px] mt-6 text-center opacity-60">{{ 'plan-details.copylink' | translate }}</div>
+                </div>
+                <div *ngIf="service?.contact_person?.email" (click)="goToLink(emailTo)" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer">
+                    <img width="36" height="36" class="object-contain" src="./assets/icons/mail-send.png">
+                    <div class="w-[80px] max-w-[80px] mt-4 text-center opacity-60">{{ 'plan-details.sharebyemail' | translate }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

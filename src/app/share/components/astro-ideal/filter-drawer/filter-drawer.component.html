@@ -1,0 +1,37 @@
+<div class="w-full sm:w-full md:w-96 lg:w-96 mt-4 mr-8 h-screen bg-[#F5F6F8] p-6 py-8"
+    style="filter:drop-shadow(0 4px -1px rgb(0 0 0 / 0.25))">
+    <div class="flex items-center justify-between">
+        <div class="flex items-center">
+            <div>
+                <img width="36" height="36" 
+                    class="w-full h-6 object-cover"
+                    src="./src/assets/professional-icons/filter-black.png" alt="" />
+            </div>
+            <div class="pl-2 text-black font-medium text-lg capitalize">{{ title }}</div>
+        </div>
+        <div class="hover:cursor-pointer" (click)="handleExit()">
+            <img width="16" height="20" 
+                class="w-full h-5 object-cover"
+                src="./src/assets/professional-icons/exit.png" alt="" />
+        </div>
+    </div>
+    <ng-container *ngFor="let item of list; let i = index;">
+        <div>
+            <div class="pt-12">
+                <div class="pb-4 text-black font-medium text-lg capitalize">{{ item.title }}</div>
+                <div class="flex flex-wrap items-center">
+                    <div class="text-sm mr-3 mb-3" *ngFor="let row of item.items">
+                        <div (click)="handleFilterClick(row.type, row.id)" 
+                            class="p-1 px-2 rounded-lg border border-1 border-[#677173]"
+                            [ngClass]="{
+                                'text-[#677173] hover:cursor-pointer hover:bg-black hover:text-white hover:border-black': !getSelected(row),
+                                'bg-black text-white': getSelected(row),
+                            }">
+                            {{ row?.text }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

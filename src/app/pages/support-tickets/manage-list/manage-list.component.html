@@ -1,0 +1,415 @@
+<app-page-title title="{{ 'landing.supporttickets' | translate }}"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4">
+    <button 
+        class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+        [ngStyle]="{
+            'background-color': buttonColor,
+            'opacity': createHover ? 1.5 : 1,
+            'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+        }" 
+        (click)="handleCreateRoute()"
+        (mouseover)="toggleCreateHover(true)"
+        (mouseleave)="toggleCreateHover(false)"
+    >
+        <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+        <span class="text-white text-md font-semibold uppercase">{{ 'your-support-cases.createnewticket' | translate }}</span>
+    </button>
+</div>
+<div class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+        <div class="pt-1.5 mb-6 flex justify-end">
+            <div class="flex flex-wrap">
+                <app-button-group class="flex justify-end"
+                    [buttonColor]="buttonColor"
+                    [buttonList]="buttonList"
+                    (onButtonClick)="handleChangeStatus($event)"
+                >
+                </app-button-group>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="py-6">
+    <div class="w-full min-w-full py-8">
+        <div class="mat-table-responsive">
+            <mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="subject">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-support-cases.subject' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="subject"> {{ row?.subject }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="created_at">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-support-cases.date' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="created_at"> {{ row?.created_at | date: "d MMM yyyy HH:mm" }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status_display">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-support-cases.status' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="status_display"> {{ row?.status_display }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'your-admin-area.action' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="action">
+                        <svg (click)="ticketDetails(row)" class="hover:cursor-pointer w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+                            <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+                        </svg>
+                        <svg *ngIf="superAdmin" (click)="editSupportTicket(row)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer ml-4 w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                        </svg>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+        <mat-paginator
+            #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+            [showFirstLastButtons]="true"
+        ></mat-paginator>
+    </div>
+</div>
+<button #modalbutton2 data-modal-target="item-modal2" data-modal-toggle="item-modal2" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal2" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full"
+        [ngClass]="{'max-w-lg': mode != 'edit', 'max-w-2xl': mode == 'edit'}">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton2 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal2">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <ng-container *ngIf="mode == 'create'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'your-support-cases.createnewticket' | translate }}
+                    </h3>
+                    <form class="space-y-6">
+                        <div class="mb-2 relative">
+                            <label for="subject" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'your-support-cases.subject' | translate }}
+                            </label>
+                            <input 
+                                id="your-support-cases.subject"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !subject }"
+                                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                type="text" 
+                                placeholder="{{ 'your-support-cases.subject' | translate }}" 
+                                [(ngModel)]="subject"
+                                [ngModelOptions]="{standalone: true}"
+                                required
+                            >
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'your-support-cases.category' | translate }}
+                            </label>
+                            <select 
+                                id="category" 
+                                [(ngModel)]="selectedCategory"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedCategory }"
+                            >
+                                <option value="" disabled selected>{{ 'your-support-cases.category' | translate }}*</option>
+                                <option
+                                    *ngFor="let category of categories"
+                                    [value]="category.id"
+                                >
+                                    {{ getCategoryTitle(category) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'your-support-cases.priority' | translate }}
+                            </label>
+                            <select 
+                                id="category" 
+                                [(ngModel)]="selectedPriority"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedPriority }"
+                            >
+                                <option value="" disabled selected>{{ 'your-support-cases.priority' | translate }}*</option>
+                                <option
+                                    *ngFor="let priority of priorities"
+                                    [value]="priority.id"
+                                >
+                                    {{ getPriorityTitle(priority) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'your-support-cases.description' | translate }}
+                            </label>
+                            <textarea name="" id="" cols="30" rows="3"
+                                class="w-full rounded-lg p-4"
+                                placeholder="{{ 'your-support-cases.description' | translate }}"
+                                [(ngModel)]="description" 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !description }"
+                                [ngModelOptions]="{standalone: true}">
+                            </textarea>
+                        </div>
+                        <button type="button" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            [ngStyle]="{'background-color': buttonColor}"
+                            (click)="submitTicket()"
+                        >
+                            {{ 'your-support-cases.submit' | translate }}
+                        </button>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="mode == 'view'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'category.view' | translate }}
+                    </h3>
+                    <div class="flex justify-between mb-4">
+                        <div class="flex items-center">
+                            <div>
+                                <img 
+                                    *ngIf="supportTicket?.created_by_image"
+                                    class="mr-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="supportTicket?.created_by_image ? (apiPath + supportTicket?.created_by_image) : './assets/images/empty_avatar.png'">
+                            </div>
+                            <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ supportTicket?.created_by_name }}
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="flex">
+                            <div class="font-semibold">{{ 'your-support-cases.category' | translate }}:</div>
+                            <div class="ml-2">{{ language == 'es' ? supportTicket?.title_ES : supportTicket?.title }}</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="flex">
+                            <div class="font-semibold">{{ 'your-support-cases.priority' | translate }}:</div>
+                            <div class="ml-2">{{ language == 'es' ? supportTicket?.priority_ES : supportTicket?.priority }}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-semibold">{{ 'your-support-cases.subject' | translate }}:</span>
+                        <span class="ml-2">{{ language == 'es' ? supportTicket?.subject : supportTicket?.subject }}</span>
+                    </div>
+                    <div class="font-semibold mt-2">{{ 'your-support-cases.description' | translate }}:</div>
+                    <div class="text-sm">{{ supportTicket?.description }}</div>
+                    <div class="mt-2 flex items-center" *ngIf="supportTicket?.file">
+                        <svg class="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
+                            <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"/>
+                        </svg> 
+                        <a class="hover:cursor-pointer text-blue-600 underline text-sm"
+                            target="_blank" 
+                            [href]="apiPath + 'assets/ticket_files/' + supportTicket?.file ">
+                            {{ 'your-support-cases.attachment' | translate }}
+                        </a>
+                    </div>
+                    <div *ngIf="replies?.length > 0" class="border-b-0 border-l-0 border-r-0 border-t-2 pt-4 my-4">
+                        <ng-container *ngFor="let reply of replies">
+                            <div>
+                                <div class="sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row justify-between">
+                                    <div class="flex items-center">
+                                        <img *ngIf="reply?.admin != 1" class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                                            [ngSrc]="apiPath + supportTicket?.created_by_image"
+                                        />
+                                        <svg *ngIf="reply?.admin == 1" class="w-8 h-8 mr-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M7.824 5.937a1 1 0 0 0 .726-.312 2.042 2.042 0 0 1 2.835-.065 1 1 0 0 0 1.388-1.441 3.994 3.994 0 0 0-5.674.13 1 1 0 0 0 .725 1.688Z"/>
+                                            <path d="M17 7A7 7 0 1 0 3 7a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V7a5 5 0 1 1 10 0v7.083A2.92 2.92 0 0 1 12.083 17H12a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a1.993 1.993 0 0 0 1.722-1h.361a4.92 4.92 0 0 0 4.824-4H17a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3Z"/>
+                                        </svg>
+                                        <div>
+                                            <div class="font-semibold text-sm">{{reply?.admin == 1 ? 'Admin' : supportTicket?.created_by_name}}</div>
+                                            <div class="opacity-70 text-xs">{{reply?.created_at | date:'MMM dd, yyyy, HH:MM a'}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4" [ngClass]="{'mb-4': !reply?.file}">
+                                    <div class="bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                                        <div class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]">&nbsp;</div>
+                                        <div class="whitespace-pre-wrap rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-[#F3F3F3]">
+                                            {{ reply?.message }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-4" *ngIf="reply?.file">
+                                    <div class="bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                                        <div class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]">&nbsp;</div>
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
+                                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"/>
+                                            </svg> 
+                                            <a class="hover:cursor-pointer text-blue-600 underline text-sm"
+                                                target="_blank" 
+                                                [href]="apiPath + 'assets/ticket_files/' + reply?.file ">
+                                                {{ 'your-support-cases.attachment' | translate }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="mode == 'edit'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'landing.editsupportticket' | translate }}
+                    </h3>
+                    <div class="flex justify-between mb-4">
+                        <div class="flex items-center">
+                            <div>
+                                <img 
+                                    *ngIf="supportTicket?.created_by_image"
+                                    class="mr-4 bg-slate-300 object-cover rounded-full w-[32px] h-[32px] max-w-[32px] max-h-[32px] rounded-full" 
+                                    width="32" 
+                                    height="32" 
+                                    [ngSrc]="supportTicket?.created_by_image ? (apiPath + supportTicket?.created_by_image) : './assets/images/empty_avatar.png'">
+                            </div>
+                            <span class="font-semibold mr-2">{{ 'buddy.from' | translate }}</span> {{ supportTicket?.created_by_name }}
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="flex">
+                            <div class="font-semibold">{{ 'your-support-cases.category' | translate }}:</div>
+                            <div class="ml-2">{{ language == 'es' ? supportTicket?.title_ES : supportTicket?.title }}</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="flex">
+                            <div class="font-semibold">{{ 'your-support-cases.priority' | translate }}:</div>
+                            <div class="ml-2">{{ language == 'es' ? supportTicket?.priority_ES : supportTicket?.priority }}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-semibold">{{ 'your-support-cases.subject' | translate }}:</span>
+                        <span class="ml-2">{{ language == 'es' ? supportTicket?.subject : supportTicket?.subject }}</span>
+                    </div>
+                    <div class="mt-2 flex items-center" *ngIf="supportTicket?.file">
+                        <svg class="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
+                            <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"/>
+                        </svg> 
+                        <a class="hover:cursor-pointer text-blue-600 underline text-sm"
+                            target="_blank" 
+                            [href]="apiPath + 'assets/ticket_files/' + supportTicket?.file ">
+                            {{ 'your-support-cases.attachment' | translate }}
+                        </a>
+                    </div>
+                    <div *ngIf="replies?.length > 0" class="border-b-0 border-l-0 border-r-0 border-t-2 pt-4 my-4">
+                        <ng-container *ngFor="let reply of replies">
+                            <div>
+                                <div class="sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row justify-between">
+                                    <div class="flex items-center">
+                                        <img *ngIf="reply?.admin != 1" class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                                            [ngSrc]="apiPath + supportTicket?.created_by_image"
+                                        />
+                                        <svg *ngIf="reply?.admin == 1" class="w-8 h-8 mr-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M7.824 5.937a1 1 0 0 0 .726-.312 2.042 2.042 0 0 1 2.835-.065 1 1 0 0 0 1.388-1.441 3.994 3.994 0 0 0-5.674.13 1 1 0 0 0 .725 1.688Z"/>
+                                            <path d="M17 7A7 7 0 1 0 3 7a3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V7a5 5 0 1 1 10 0v7.083A2.92 2.92 0 0 1 12.083 17H12a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a1.993 1.993 0 0 0 1.722-1h.361a4.92 4.92 0 0 0 4.824-4H17a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3Z"/>
+                                        </svg>
+                                        <div>
+                                            <div class="font-semibold text-sm">{{reply?.admin == 1 ? 'Admin' : supportTicket?.created_by_name}}</div>
+                                            <div class="opacity-70 text-xs">{{reply?.created_at | date:'MMM dd, yyyy, HH:MM a'}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4" [ngClass]="{'mb-4': !reply?.file}">
+                                    <div class="bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                                        <div class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]">&nbsp;</div>
+                                        <div class="whitespace-pre-wrap rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-[#F3F3F3]">
+                                            {{ reply?.message }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-4" *ngIf="reply?.file">
+                                    <div class="bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                                        <div class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]">&nbsp;</div>
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 mr-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 20">
+                                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"/>
+                                            </svg> 
+                                            <a class="hover:cursor-pointer text-blue-600 underline text-sm"
+                                                target="_blank" 
+                                                [href]="apiPath + 'assets/ticket_files/' + reply?.file ">
+                                                {{ 'your-support-cases.attachment' | translate }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <form class="space-y-6"
+                        [formGroup]="supportTicketForm" 
+                        (ngSubmit)="saveSupportTicket()"  
+                        [ngClass]="{'submitted': formSubmitted}">
+                        <div class="mb-2 relative">
+                            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'your-support-cases.category' | translate }}
+                            </label>
+                            <select 
+                                id="category" 
+                                [(ngModel)]="selectedStatus"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedCategory }"
+                            >
+                                <option value="" disabled selected>{{ 'your-support-cases.category' | translate }}*</option>
+                                <option
+                                    *ngFor="let status of allStatus"
+                                    [value]="status.value"
+                                >
+                                    {{ status?.text }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'company-settings.message' | translate }}
+                            </label>
+                            <textarea name="" id="message" cols="30" rows="3"
+                                class="w-full rounded-lg p-4"
+                                placeholder="{{ 'your-support-cases.description' | translate }}"
+                                formControlName="message"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': supportTicketFormSubmitted && !supportTicketForm.get('message')?.errors }">
+                            </textarea>
+                        </div>
+                        <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'customer.save' | translate }}
+                        </button>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

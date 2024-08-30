@@ -1,0 +1,183 @@
+<div class="" *ngIf="(!groupId || groupId == '0') || (groupId && isGroupMember) || superAdmin || isTutor">
+    <div>
+        <div *ngIf="activeMenu == 'General'">
+            <div class="p-6 bg-white relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                <img class="mr-6 sm:mb-6 md:mb-0 lg:mb-0 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                    [ngSrc]="me?.image == 'default-avatar.jpg' || me?.image == 'empty_avatar.png' ? ('./assets/images/default-profile.png') : (apiPath + me?.image)"
+                />
+                <div class="rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-[#F3F3F3]" 
+                    (blur)="getNewPost($event)" 
+                    (focusout)="getNewPost($event)"
+                    (focus)="focusNewPost($event)"
+                    contenteditable 
+                    [innerHTML]="newPost"
+                    [ngClass]="{'text-gray-400': isNewPostPlaceholder()}"
+                ></div>
+                <button 
+                    class="w-28 h-[46px] rounded-[10px] justify-evenly sm:ml-0 md:ml-4 lg:ml-4 sm:mt-4 md:mt-0 lg:mt-0"
+                    (click)="handleCreatePost()" 
+                    [ngStyle]="{
+                        'background-color': buttonColor,
+                        'opacity': postHover ? 1.5 : 1,
+                        'filter': postHover ? 'brightness(0.8)' : 'brightness(1)'
+                    }"
+                    (mouseover)="togglePostHover(true)"
+                    (mouseleave)="togglePostHover(false)"
+                >
+                    <span class="text-white text-sm font-medium">{{ 'posts.post' | translate }}</span>
+                </button>
+            </div>
+        </div>
+        <div *ngIf="activeMenu != 'Resources'">
+            <div class="p-6 relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px] my-6"
+                [ngStyle]="{'background-color': courseWallSettings && courseWallSettings?.question_background ? courseWallSettings?.question_background : buttonColor}">
+                <div class="rounded-[6px] p-3 w-full max-w-full text-sm text-gray-400 text-sm bg-white" 
+                    (blur)="getQuestion($event)" 
+                    (focus)="focusQuestion($event)"
+                    contenteditable 
+                    [innerHTML]="question"
+                ></div>
+                <button 
+                    class="w-28 h-[46px] flex items-center p-3.5 rounded-[10px] justify-evenly sm:ml-0 md:ml-4 lg:ml-4 sm:mt-4 md:mt-0 lg:mt-0"
+                    (click)="handleAskQuestion()" 
+                    [ngStyle]="{
+                        'background-color': '#ffffff',
+                        'opacity': questionHover ? 1.5 : 1,
+                        'filter': questionHover ? 'brightness(0.8)' : 'brightness(1)'
+                    }"
+                    (mouseover)="toggleQuestionHover(true)"
+                    (mouseleave)="toggleQuestionHover(false)"
+                >
+                    <span class="text-sm font-medium">{{ 'company-reports.question' | translate }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf="activeMenu == 'General'">
+    <div class="my-6" *ngFor="let post of posts; let i = index;">
+        <app-wall-post 
+            *ngIf="hasCheckedCourseWallSettings || !groupId" 
+            [buttonColor]="buttonColor" 
+            [language]="language" 
+            [post]="post" 
+            [activity]="activityTopics"
+            [topics]="postTopics" 
+            [motherComponent]="this"
+            [groupId]="groupId"
+            [groupMembers]="groupMembers" 
+            [superAdmin]="superAdmin" 
+            [courseTutors]="courseTutors"
+            [showPin]="isTutor || superAdmin ? true : false" 
+            [courseWallSettings]="courseWallSettings"
+            [me]="me"
+            [userId]="me?.id"
+            [companyId]="companyId"
+            [isTutor]="isTutor"
+            [company]="company"
+            (handleDelete)="deletePost($event)"
+            (handleRefresh)="displayPosts()"
+        ></app-wall-post>
+    </div>
+</ng-container>
+<ng-container *ngIf="activeMenu == 'Q & A'">
+    <div class="my-6" *ngFor="let question of questions">
+        <app-wall-question
+            [me]="me"
+            [userId]="userId"
+            [companyId]="companyId"
+            [courseId]="courseId"
+            [superAdmin]="superAdmin"
+            [buttonColor]="buttonColor"
+            [language]="language"
+            [question]="question"
+            [courseTutors]="courseTutors"
+            (handleDisplayQuestions)="displayQuestions()"
+        ></app-wall-question>
+    </div>
+</ng-container>
+<ng-container *ngIf="activeMenu == 'Resources'">
+    <div *ngIf="courseResourceMode != 'add' && courseResourceMode != 'edit'"
+        class="flex justify-end">
+        <button 
+            class="w-48 h-[46px] rounded-[10px] justify-center flex items-center"
+            (click)="addCourseResource()" 
+            [ngStyle]="{
+                'background-color': buttonColor,
+                'opacity': addResourceHover ? 1.5 : 1,
+                'filter': addResourceHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (mouseover)="toggleAddResourceHover(true)"
+            (mouseleave)="toggleAddResourceHover(false)"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-2" 
+                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" 
+                fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+            </svg>
+            <span class="text-white text-sm font-medium">{{ 'course-create.adddownloadableresource' | translate }}</span>
+        </button>
+    </div>
+    <div *ngIf="showResourceDetails"  class="w-full">
+        <div>
+            <div class="w-full max-w-full">
+                <input 
+                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': courseResourceFormSubmitted && !courseResourceTitle }"
+                    type="text" 
+                    class="text-lg shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    [(ngModel)]="courseResourceTitle"
+                    [ngModelOptions]="{standalone: true}"
+                    placeholder="{{ 'club-create.title' | translate }}*" 
+                    required>
+            </div>
+            <div class="my-8">
+                <file-pond
+                  #downloadPond
+                  [options]="resourcePondOptions"
+                  [files]="resourcePondFiles"
+                  (oninit)="resourcePondHandleInit()"
+                  (onaddfile)="resourcePondHandleAddFile($event)"
+                >
+                </file-pond>
+            </div>
+        </div>
+        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+            <button
+                *ngIf="courseResourceMode == 'add'"
+                class="mr-8 w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': saveHover ? 1.5 : 1,
+                    'filter': saveHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (click)="addResource()"
+                (mouseover)="toggleSaveHover(true)"
+                (mouseleave)="toggleSaveHover(false)"
+            >
+                {{ 'your-admin-area.save' | translate }}
+            </button>
+            <button
+                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                [ngStyle]="{'background-color': buttonColor}"
+                (click)="cancelShowResource()"
+                [ngStyle]="{
+                    'border-color': cancelHover ? 'transparent' : buttonColor,
+                    'background-color': cancelHover ? buttonColor : '#fff',
+                }"
+                (mouseover)="toggleCancelHover(true)"
+                (mouseleave)="toggleCancelHover(false)"
+            >
+                <span [ngStyle]="{'color': cancelHover ? '#fff' : buttonColor}">
+                    {{ 'course-create.cancel' | translate }}
+                </span>
+            </button>
+        </div>
+    </div>
+    <ng-container *ngIf="!showResourceDetails">
+        <div class="my-6" *ngFor="let resource of resources">
+            <app-wall-resources
+                [resource]="resource"
+            ></app-wall-resources>
+        </div>
+    </ng-container>
+</ng-container>

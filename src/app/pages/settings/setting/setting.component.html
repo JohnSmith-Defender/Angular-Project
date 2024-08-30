@@ -1,0 +1,1715 @@
+<div class="container flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="pt-6">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="relative mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="py-6">
+    <div class="w-full min-w-full">
+        <ng-container *ngIf="setting?.category_en == 'Personal settings'">
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'register.termsandconditions' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.termsandconditionsdesc' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <button
+                            *ngIf="canShowTermsAndConditions"
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="showURLModal('terms-and-conditions')"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'company-settings.managelanding' | translate }}
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between relative ml-4">
+                        <label
+                            for="terms"
+                            class="flex items-center w-full justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="terms"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="canShowTermsAndConditions"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (change)="toggleTermsAndConditionsChange($event)"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'footer.privacy_policy' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.privacypolicydesc' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <button
+                            *ngIf="canShowPrivacyPolicy"
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="showURLModal('privacy-policy')"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'company-settings.managelanding' | translate }}
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between relative ml-4">
+                        <label
+                            for="privacy"
+                            class="flex items-center w-full justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="privacy"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="canShowPrivacyPolicy"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (change)="togglePrivacyPolicyChange($event)"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'footer.cookies_policy' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'footer.cookies_policy_desc' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <button
+                            *ngIf="canShowCookiePolicy"
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="showURLModal('cookie-policy')"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'company-settings.managelanding' | translate }}
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between relative ml-4">
+                        <label
+                            for="cookies"
+                            class="flex items-center w-full justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="cookies"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="canShowCookiePolicy"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (change)="toggleCookiePolicyChange($event)"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="setting?.category_en == 'Customize design'">
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{'landing.navigation' | translate}}</div>
+                    <div class="opacity-30 text-sm">{{ 'landing.navigationdesc' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <button
+                        class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="showNavigationModal()"
+                        [ngStyle]="{'background-color': buttonColor }"
+                    >
+                        {{ 'company-settings.edit' | translate }}
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>Favicon</div>
+                    <div class="opacity-30 text-sm">{{ 'landing.favicondesc' | translate }}</div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex mr-4">
+                        <img 
+                            class="object-contain"
+                            width="48"
+                            height="48"
+                            [src]="uploadedFaviconSrc && !cancelledFaviconUpload ? uploadedFaviconSrc : (logoImageSrc + faviconImage)" 
+                        />
+                    </div>
+                    <input #faviconFileInput required type="file" class="form-control" id="favicon" style="display: none;" (change)="faviconFileChangeEvent($event)" />
+                    <label for="favicon" class="p-2 px-4 rounded-lg hover:cursor-pointer" [ngStyle]="{'background-color': buttonColor}">
+                        <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m14.707 4.793-4-4a1 1 0 0 0-1.416 0l-4 4a1 1 0 1 0 1.416 1.414L9 3.914V12.5a1 1 0 0 0 2 0V3.914l2.293 2.293a1 1 0 0 0 1.414-1.414Z"></path>
+                            <path d="M18 12h-5v.5a3 3 0 0 1-6 0V12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+                        </svg>
+                    </label>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'customer.changelogo' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.recommendedsize' | translate }}: 200 x 60 px</div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex mr-4">
+                        <img 
+                            class="object-contain"
+                            width="200"
+                            height="60"
+                            [src]="uploadedLogoPageSrc && !cancelledLogoPageUpload ? uploadedLogoPageSrc : (logoImageSrc + companyPageImage)" 
+                        />
+                    </div>
+                    <input #logoFileInput required type="file" class="form-control" id="logo_page" style="display: none;" (change)="logoPageFileChangeEvent($event)" />
+                    <label for="logo_page" class="p-2 px-4 rounded-lg hover:cursor-pointer" [ngStyle]="{'background-color': buttonColor}">
+                        <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m14.707 4.793-4-4a1 1 0 0 0-1.416 0l-4 4a1 1 0 1 0 1.416 1.414L9 3.914V12.5a1 1 0 0 0 2 0V3.914l2.293 2.293a1 1 0 0 0 1.414-1.414Z"></path>
+                            <path d="M18 12h-5v.5a3 3 0 0 1-6 0V12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+                        </svg>
+                    </label>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'settings.company_banner' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.recommendedsize' | translate }}: 1440 x 960 px</div>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex mr-4">
+                        <img 
+                            class="object-contain max-h-[100px]"
+                            width="180"
+                            height="100"
+                            [src]="uploadedBannerSrc ? uploadedBannerSrc : (companyBannerImage ? (logoImageSrc + companyBannerImage) : getLocalBannerImage())" 
+                        />
+                    </div>
+                    <input #logoFileInput required type="file" class="form-control" id="banner" style="display: none;" (change)="bannerFileChangeEvent($event)" />
+                    <label for="banner" class="p-2 px-4 rounded-lg hover:cursor-pointer" [ngStyle]="{'background-color': buttonColor}">
+                        <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m14.707 4.793-4-4a1 1 0 0 0-1.416 0l-4 4a1 1 0 1 0 1.416 1.414L9 3.914V12.5a1 1 0 0 0 2 0V3.914l2.293 2.293a1 1 0 0 0 1.414-1.414Z"></path>
+                            <path d="M18 12h-5v.5a3 3 0 0 1-6 0V12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path>
+                        </svg>
+                    </label>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="setting?.category_en == 'Customize home screen'">
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'company-settings.hometemplate' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.hometemplatedesc' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <button
+                            *ngIf="landingTemplateEnabled"
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="updateHomeTemplate()"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'company-settings.updatetemplate' | translate }}
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between relative ml-4">
+                        <label
+                            for="home-template"
+                            class="flex items-center w-full justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="home-template"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="landingTemplateEnabled"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (change)="toggleLandingTemplateChange($event)"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'company-settings.predefinedhometemplate' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.predefinedhometemplatedesc' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <!-- <div class="flex">
+                        <button
+                            *ngIf="predefinedTemplateEnabled"
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="updatePredefinedHomeTemplate()"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'company-settings.updatetemplate' | translate }}
+                        </button>
+                    </div> -->
+                    <button
+                        class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="goToHomeSettings()"
+                        [ngStyle]="{
+                            'background-color': buttonColor
+                        }"
+                    >
+                        {{ 'company-settings.edit' | translate }}
+                    </button>
+                    <div class="flex items-center justify-between relative ml-4">
+                        <label
+                            for="predefined-template"
+                            class="flex items-center w-full justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="predefined-template"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="predefinedTemplateEnabled"
+                                    [ngModelOptions]="{standalone: true}"
+                                    (change)="togglePredefinedTemplateChange($event)"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div *ngFor="let item of settings" [ngClass]="{'setting-item': item?.title_en != 'CRM'}">
+            <ng-container *ngIf="item?.title_en != 'CRM' || (hasActivityFeed && item?.title_en?.indexOf('all menu') >= 0)">
+                <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4 items-center">
+                    <div class="pr-12">
+                        <div>{{ getSettingItemTitle(item) }}</div>
+                        <div class="opacity-30 text-sm" [innerHtml]="getSettingItemDescription(item)"></div>
+                    </div>
+                    <div *ngIf="item?.type == 'toggle'">
+                        <div class="flex">
+                            <ng-container *ngIf="item?.title_en == 'New menu button' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="openEditNewMenuButtonModal(item)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'New URL button' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="openEditNewURLButtonModal(item)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Home text' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="openEditHomeTextModal(item)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Registration email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('register')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.managefields' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Registration fields' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="manageRegistrationFields()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Join activity email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('join')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Event reminder email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('reminder')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Event reminder email (teacher)' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('reminder_teacher')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Event participation Thank you email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('thank_you')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Activity comment email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('activity_comment')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Club comment email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('club_comment')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Club activity created email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('club_activity_created')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Change password' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('change_password')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Send reference' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('send_reference')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Support ticket email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('support_ticket')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Sales person assigned to guest email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('sales_person_guest')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Inviter email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('inviter')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Event invite' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('event_invite')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Created member email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('member_created')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Course subscription email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('buy_course')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Resend student access email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('resend_course')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Access to the community email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('community_access')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'New Registration (Require Approval) email to customer' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('require_approval')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'New Registration (Require Approval) email to admin' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('new_require_approval')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Send one to one' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('send_one_to_one')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Failed payment email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('failed_payment')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Send payment link email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('send_payment_link')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Choose plan email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('choose_plan')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Complete data email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('complete_data')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Confirmation email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('confirm_email')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Request to join club email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('for_approval_join_club')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Content for approval email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('for_approval_content')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Reject content email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('reject_content')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Successful user registration email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('register_admin')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Job registration email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('job_register')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Links access to terms and policies' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="manageLinkAccessSettings()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Confirm email address' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('confirm_email')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                    style="margin-left:20px;"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Allow member registration' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('register')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                    style="margin-left:20px;"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Menu items order' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="manageOrder()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.editmenuorder' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Contact Buddy email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('contact_buddy')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Supported languages' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToLanguages()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Buddy request email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('buddy_request')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Buddy accepted email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('buddy_accepted')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Buddy rejected email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('buddy_rejected')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Course wall question email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('course_wall_question')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Course wall answer email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('course_wall_answer')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'End of trial reminder email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('reminder_trial_end')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Membership expiration reminder email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('reminder_member_expire')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Membership expired email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('membership_expired')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Renewal email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('renewal')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Response to posts/questions email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('wall_comment')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Resources uploaded in communities email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('wall_upload')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Cancel subscription email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('cancel_subscription')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Share by email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('share_by_email')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Tutor question email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('tutor_question')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Confirm attendance email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('confirm_attendance')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Confirmed attendance email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('attendance_confirmed')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Student credits data email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('student_credits_data_email')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Course completed email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('course_completed')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Allow different content based on profile' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToHomeSettings()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Multiple Stripe Accounts' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="gotoManageStripeAccounts()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.manage' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Questionnaires' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToTikTokSettings(item?.title_en)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.manage' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Landing pages' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToTikTokSettings(item?.title_en)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.manage' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Locations' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToTikTokSettings(item?.title_en)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.manage' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Coupons' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToCoupons()"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.manage' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Videos & CTAs' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToTikTokSettings(item?.title_en)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.manage' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Submitted questions email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('questionnaire_completed')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Joined person to In charge email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('join_in_charge')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>   
+                            <ng-container *ngIf="item?.title_en == 'Updated plan details email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('updated_plan_details')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Admin confirmed attendance email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('admin_confirmed_attendance')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Incoming voice call email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('incoming_voice_call')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Incoming video call email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('incoming_video_call')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="item?.title_en == 'Incoming chat email' && item?.active == 1">
+                                <button
+                                    class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="goToEmailTemplate('incoming_chat')"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.edit' | translate }}
+                                </button>
+                            </ng-container>
+                            <div class="flex items-center justify-between relative ml-4">
+                                <label
+                                    for="setting-status-{{item.id}}"
+                                    class="flex items-center w-full justify-between cursor-pointer"
+                                >
+                                    <div class="relative mr-1">
+                                        <input
+                                            id="setting-status-{{item.id}}"
+                                            name="setting-status"
+                                            type="checkbox"
+                                            class="sr-only"
+                                            [value]="item.id"
+                                            [(ngModel)]="item.active"
+                                            [ngModelOptions]="{standalone: true}"
+                                            (change)="toggleChange($event, item)"
+                                        />
+                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative" *ngIf="item?.type == 'text' && item?.title_en.indexOf('color') >= 0">
+                        <input 
+                            class="rounded-full w-10 h-10 hover:cursor-pointer"
+                            [style.background]="item.value" 
+                            [(colorPicker)]="item.value" 
+                            (colorPickerOpen)="onEventLog('colorPickerOpen', $event, item)" 
+                            (colorPickerClose)="onEventLog('colorPickerClose', $event, item)" 
+                            (cpInputChange)="onEventLog('cpInputChange', $event, item)" 
+                            (cpSliderDragStart)="onEventLog('cpSliderDragStart', $event, item)" 
+                            (cpSliderDragEnd)="onEventLog('cpSliderDragEnd', $event, item)" 
+                            style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);"
+                        />
+                    </div>
+                    <div *ngIf="(item?.type.indexOf('text') >= 0 || item?.type == 'select') && item?.title_en.indexOf('color') < 0">
+                        <button 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="changeValue(item.id, item.value, item.type)"
+                            [ngStyle]="{
+                                'background-color': buttonColor
+                            }"
+                        >
+                            {{ item?.value ? ('company-settings.update' | translate) : ('company-settings.set' | translate) }}
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+        <ng-container *ngIf="setting?.category_en == 'TikTok'">
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'your-admin-area.submissions' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'quiz-details.answers' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <button
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="goToTikTokSettings('submissions')"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'tutors.gotolist' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                <div>
+                    <div>{{ 'company-settings.statistics' | translate }}</div>
+                    <div class="opacity-30 text-sm">{{ 'company-settings.tiktokstatistics' | translate }}</div>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <button
+                            class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="goToTikTokSettings('statistics')"
+                            [ngStyle]="{'background-color': buttonColor }"
+                        >
+                            {{ 'tutors.gotolist' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full"
+        [ngClass]="{'max-w-2xl': dialogMode == 'add' || dialogMode == 'edit' || dialogMode == 'policy-url',
+            'max-w-md': dialogMode != 'add' && dialogMode != 'edit' && dialogMode != 'policy-url'
+        }"
+    >
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="showFaviconImageCropper">
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon (click)="faviconRotateLeft()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon (click)="faviconRotateRight()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="faviconImageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="faviconCanvasRotation"
+                            [transform]="faviconTransform"
+                            [imageChangedEvent]="faviconImageChangedEvent" 
+                            [maintainAspectRatio]="false"
+                            [cropperMinWidth]="200" 
+                            [cropperMinHeight]="68" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="faviconImageCropped($event)" 
+                            (imageLoaded)="faviconImageLoaded()" 
+                            (cropperReady)="faviconCropperReady()"
+                            (loadImageFailed)="faviconLoadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="showLogoImageCropper">
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon (click)="logoRotateLeft()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon (click)="logoRotateRight()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="logoImageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="logoCanvasRotation"
+                            [transform]="logoTransform"
+                            [imageChangedEvent]="logoImageChangedEvent"
+                            [maintainAspectRatio]="false"
+                            [cropperMinWidth]="200" 
+                            [cropperMinHeight]="68" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="logoImageCropped($event)" 
+                            (imageLoaded)="logoImageLoaded()" 
+                            (cropperReady)="logoCropperReady()"
+                            (loadImageFailed)="logoLoadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="showLogoPageImageCropper">
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon (click)="logoPageRotateLeft()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon (click)="logoPageRotateRight()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="logoPageImageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="logoPageCanvasRotation"
+                            [transform]="logoPageTransform"
+                            [imageChangedEvent]="logoPageImageChangedEvent" 
+                            [maintainAspectRatio]="false"
+                            [cropperMinWidth]="200" 
+                            [cropperMinHeight]="68" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="logoPageImageCropped($event)" 
+                            (imageLoaded)="logoPageImageLoaded()" 
+                            (cropperReady)="logoPageCropperReady()"
+                            (loadImageFailed)="logoPageLoadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="showBannerImageCropper">
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon (click)="bannerRotateLeft()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon (click)="bannerRotateRight()" [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="bannerImageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="bannerCanvasRotation"
+                            [transform]="bannerTransform"
+                            [imageChangedEvent]="bannerImageChangedEvent" 
+                            [maintainAspectRatio]="false"
+                            [cropperMinWidth]="1440" 
+                            [cropperMinHeight]="360" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="bannerImageCropped($event)" 
+                            (imageLoaded)="bannerImageLoaded()" 
+                            (cropperReady)="bannerCropperReady()"
+                            (loadImageFailed)="bannerLoadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'policy-url'">
+                    <form class="space-y-6">
+                        <div class="flex items-center">
+                            <select 
+                                id="privacy-settings-option" 
+                                [(ngModel)]="selectedPrivacySettingOption"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedPrivacySettingOption }"
+                            >
+                                <option value="" disabled selected>{{ 'videos-ctas.selectoption' | translate }}*</option>
+                                <option value="url">{{ 'company-settings.url' | translate }}</option>
+                                <option value="custom">{{ 'edit-plan.custom' | translate }}</option>
+                            </select>
+                        </div>
+                        <ng-container *ngIf="selectedPrivacySettingOption == 'url'">
+                            <div class="flex items-center justify-center mb-4">
+                                <input 
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !urlValue }"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    placeholder="{{ 'company-settings.value' | translate }}*"
+                                    [(ngModel)]="urlValue"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div *ngIf="isEnglishEnabled" class="flex items-center justify-center mb-4">
+                                <input 
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !urlValueEn }"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    placeholder="{{ 'company-settings.value' | translate }} (EN)*"
+                                    [(ngModel)]="urlValueEn"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div *ngIf="isFrenchEnabled" class="flex items-center justify-center mb-4">
+                                <input 
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !urlValueFr }"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    placeholder="{{ 'company-settings.value' | translate }} (FR)*"
+                                    [(ngModel)]="urlValueFr"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div *ngIf="isBasqueEnabled" class="flex items-center justify-center mb-4">
+                                <input 
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !urlValueEu }"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    placeholder="{{ 'company-settings.value' | translate }} (EU)*"
+                                    [(ngModel)]="urlValueEu"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div *ngIf="isCatalanEnabled" class="flex items-center justify-center mb-4">
+                                <input 
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !urlValueCa }"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    placeholder="{{ 'company-settings.value' | translate }} (CA)*"
+                                    [(ngModel)]="urlValueCa"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div *ngIf="isGermanEnabled" class="flex items-center justify-center mb-4">
+                                <input 
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !urlValueDe }"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    placeholder="{{ 'company-settings.value' | translate }} (DE)*"
+                                    [(ngModel)]="urlValueDe"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                            <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                                <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="saveDialog()"
+                                    data-modal-hide="item-modal"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.save' | translate }}
+                                </button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedPrivacySettingOption == 'custom'">
+                            <div *ngIf="policyURLMode == 'terms-and-conditions'">
+                                <div>
+                                    <quill-editor class="w-full max-w-full content-editor" 
+                                        [(ngModel)]="termsAndConditions"
+                                        [ngModelOptions]="{standalone: true}">
+                                    </quill-editor>
+                                </div>
+                                <div class="flex justify-center mb-10">
+                                    <button 
+                                        class="mr-4 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="saveTermsAndConditions()"
+                                        style="font-size:16px;margin-top:15px;"
+                                        [ngStyle]="{
+                                            'background-color': buttonColor
+                                        }"
+                                    > 
+                                        {{ 'company-settings.save' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div *ngIf="policyURLMode == 'privacy-policy'">
+                                <div>
+                                    <quill-editor class="w-full max-w-full content-editor" 
+                                        [(ngModel)]="privacyPolicy"
+                                        [ngModelOptions]="{standalone: true}">
+                                    </quill-editor>
+                                </div>
+                                <div class="flex justify-center mb-10">
+                                    <button 
+                                        class="mr-4 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="savePrivacyPolicy()"
+                                        style="font-size:16px;margin-top:15px;"
+                                        [ngStyle]="{
+                                            'background-color': buttonColor
+                                        }"
+                                    > 
+                                        {{ 'company-settings.save' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div *ngIf="policyURLMode == 'cookie-policy'">
+                                <div>
+                                    <quill-editor class="w-full max-w-full content-editor" 
+                                        [(ngModel)]="cookiePolicy"
+                                        [ngModelOptions]="{standalone: true}">
+                                    </quill-editor>
+                                </div>
+                                <div class="flex justify-center mb-10">
+                                    <button 
+                                        class="mr-4 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="saveCookiePolicy()"
+                                        style="font-size:16px;margin-top:15px;"
+                                        [ngStyle]="{
+                                            'background-color': buttonColor
+                                        }"
+                                    > 
+                                        {{ 'company-settings.save' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'new-menu'">
+                    <form class="space-y-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonTextValue }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }}*"
+                                [(ngModel)]="newMenuButtonTextValue"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isEnglishEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonTextValueEn }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }}*"
+                                [(ngModel)]="newMenuButtonTextValueEn"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isFrenchEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonTextValueFr }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }}*"
+                                [(ngModel)]="newMenuButtonTextValueFr"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isBasqueEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonTextValueEu }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }}*"
+                                [(ngModel)]="newMenuButtonTextValueEu"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isCatalanEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonTextValueCa }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }}*"
+                                [(ngModel)]="newMenuButtonTextValueCa"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isGermanEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonTextValueDe }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }}*"
+                                [(ngModel)]="newMenuButtonTextValueDe"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newMenuButtonUrl }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="URL*"
+                                [(ngModel)]="newMenuButtonUrl"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'new-url'">
+                    <form class="space-y-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonTextValue }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }} (ES)*"
+                                [(ngModel)]="newURLButtonTextValue"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isEnglishEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonTextValueEn }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }} (EN)*"
+                                [(ngModel)]="newURLButtonTextValueEn"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isFrenchEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonTextValueFr }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }} (FR)*"
+                                [(ngModel)]="newURLButtonTextValueFr"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isBasqueEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonTextValueEu }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }} (EU)*"
+                                [(ngModel)]="newURLButtonTextValueEu"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isCatalanEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonTextValueCa }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }} (CA)*"
+                                [(ngModel)]="newURLButtonTextValueCa"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isGermanEnabled" class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonTextValueDe }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'company-settings.value' | translate }} (DE)*"
+                                [(ngModel)]="newURLButtonTextValueDe"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newURLButtonUrl }"
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="URL*"
+                                [(ngModel)]="newURLButtonUrl"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'update-value'">
+                    <form class="space-y-6">
+                        <div class="flex items-center justify-center mb-4"
+                            [ngClass]="{'flex-col': selectedSettingId != 291 && modalTextNumber > 1 && modalTextValues.length > 1}">
+                            <ng-container *ngIf="fieldType != 'select'">
+                                <ng-container *ngIf="selectedSettingId != 291 && modalTextNumber == 1">
+                                    <input 
+                                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedSettingItem?.title_en != 'Welcome subtitle' && !newValue }"
+                                        type="text" 
+                                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        placeholder="{{ 'company-settings.value' | translate }} {{selectedSettingItem?.title_en == 'Welcome subtitle' ? '' : '*'}}"
+                                        [(ngModel)]="newValue"
+                                        [ngModelOptions]="{standalone: true}">
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="selectedSettingId != 291 && modalTextNumber > 1 && modalTextValues.length > 1">
+                                <ng-container *ngFor="let item of modalTextValues; let i = index">
+                                    <div class="w-full max-w-full">
+                                        <label for="author" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            {{i == 0 ? ('company-settings.general' | translate) : (i == 1 ? 'Q & A' : (i == 2 ? ('wall.resources' | translate) : ('company-settings.value' | translate)))}}
+                                        </label>
+                                        <input
+                                            class="mb-4 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !newValue }"
+                                            placeholder="{{i == 0 ? ('company-settings.general' | translate) : (i == 1 ? 'Q & A' : (i == 2 ? ('wall.resources' | translate) : ('company-settings.value' | translate)))}}*"
+                                            [value]="item"
+                                            (change)="multiInputEvent($event, i)"
+                                        />
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'new-menu' || dialogMode == 'new-url' || dialogMode == 'update-value'">
+                    <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                        <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveDialog()"
+                            data-modal-hide="item-modal"
+                            [ngStyle]="{
+                                'background-color': buttonColor
+                            }"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'navigation'">
+                    <form class="space-y-6">
+                        <div class="flex items-center">
+                            <select 
+                                id="navigation-option" 
+                                [(ngModel)]="selectedNavigation"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedNavigation }"
+                            >
+                                <option value="top-menu">{{ 'landing.topmenu' | translate }}</option>
+                                <option value="side-menu">{{ 'landing.sidemenu' | translate }}</option>
+                            </select>
+                        </div>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button type="button" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                (click)="saveNavigation()"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                            >
+                                {{ 'company-settings.save' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,2395 @@
+<ng-container *ngIf="!isLoading && (superAdmin || canCreateCourse)">
+    <app-page-title [title]="pageTitle"></app-page-title>
+    <div class="pt-6">
+        <ng-container *ngIf="languages?.length > 1">
+            <div class="pt-1.5 mb-6">
+                <app-button-group class="flex justify-center"
+                    [buttonColor]="buttonColor"
+                    [buttonList]="buttonList"
+                    (onButtonClick)="handleChangeLanguageFilter($event)"
+                >
+                </app-button-group>
+            </div>
+            <div class="p-1 bg-white text-xs text-center flex rounded-lg justify-center align-center items-center w-screen-md max-w-screen-md mx-auto" 
+                *ngIf="showLanguageNote" (click)="closeLanguageNote()">
+                {{ 'dialog.changelanguagetitledesc' | translate }}
+                <svg class="ml-4 font-bold w-2 h-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+            </div>
+        </ng-container>
+    </div>
+    <div class="pt-6">
+        <mat-tab-group #mtTab (selectedTabChange)="changeTab($event)" [(selectedIndex)]="tabIndex">
+            <mat-tab class="uppercase" label="{{ 'course-create.details' | translate }}">
+                <form [formGroup]="courseForm" (ngSubmit)="saveCourse()">
+                    <div class="grid gap-0 sm:gap-0 md:gap-6 lg:gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex justify-evenly my-8 relative col-span-2"
+                            [ngClass]="{'items-center': !isUESchoolOfLife}">
+                            <ng-container *ngIf="!isUESchoolOfLife">
+                                <div class="relative">
+                                    <div class="text-center font-semibold uppercase mb-2">{{ 'courses.courseimage' | translate }}</div>
+                                    <input 
+                                        required 
+                                        type="file"
+                                        id="photo" 
+                                        style="display:none;"
+                                        (change)="fileChangeEvent($event, 'photo')"
+                                    />
+                                    <div 
+                                        class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                        [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !imgSrc}"
+                                    >
+                                        <div
+                                            class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                                            [ngClass]="{'w-28 h-28': !imgSrc}"
+                                        >
+                                            <img *ngIf="!imgSrc" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                            <img *ngIf="imgSrc" class="rounded-xl object-cover h-[240px]" src="{{ imgSrc }}" />
+                                        </div>
+                                    </div>
+                                    <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                        <label
+                                            for="photo"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            class="btn text-white"
+                                        >
+                                            {{ 'club-create.uploadimage' | translate }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="isUESchoolOfLife">
+                                <div class="relative">
+                                    <div class="md:flex mb-8 max-w-screen-md mx-auto">
+                                        <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
+                                            <li>
+                                                <a (click)="selectCourseCover('photo')" href="javascript:;" 
+                                                    class="inline-flex items-center px-4 py-3 rounded-lg w-full" aria-current="page"
+                                                    [ngClass]="{'active text-white': isDefaultPhoto}"
+                                                    [ngStyle]="{'background-color': isDefaultPhoto ? buttonColor : '#F9FAFB'}">
+                                                    <svg class="w-4 h-4 me-2"
+                                                        [ngClass]="{'text-white': isDefaultPhoto}"
+                                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path fill-rule="evenodd" d="M13 10a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H14a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                                                        <path fill-rule="evenodd" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12c0 .556-.227 1.06-.593 1.422A.999.999 0 0 1 20.5 20H4a2.002 2.002 0 0 1-2-2V6Zm6.892 12 3.833-5.356-3.99-4.322a1 1 0 0 0-1.549.097L4 12.879V6h16v9.95l-3.257-3.619a1 1 0 0 0-1.557.088L11.2 18H8.892Z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                    {{ 'plan-create.image' | translate }}
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a (click)="selectCourseCover('video')" href="javascript:;" 
+                                                    class="inline-flex items-center px-4 py-3 rounded-lg w-full"
+                                                    [ngClass]="{'active text-white': isDefaultVideo}"
+                                                    [ngStyle]="{'background-color': isDefaultVideo ? buttonColor : '#F9FAFB'}">
+                                                    <svg class="w-4 h-4 me-2" 
+                                                        [ngClass]="{'text-white': isDefaultVideo}"
+                                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path fill-rule="evenodd" d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                    {{ 'plan-details.video' | translate }}
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full">
+                                            <ng-container *ngIf="isDefaultPhoto">
+                                                <h3 class="text-center text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                                    {{ 'plan-create.image' | translate }}
+                                                </h3>
+                                                <div class="flex items-center justify-center mt-4 mb-8 relative">
+                                                    <div>
+                                                        <input 
+                                                            required 
+                                                            type="file"
+                                                            id="photo" 
+                                                            style="display:none;"
+                                                            (change)="fileChangeEvent($event)"
+                                                        />
+                                                        <div 
+                                                            class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                                            [ngClass]="{'p-6': !imgSrc}"
+                                                        >
+                                                            <div
+                                                                class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                                                                [ngClass]="{'w-28 h-28': !imgSrc, 'w-60 h-60': imgSrc}"
+                                                            >
+                                                                <img *ngIf="!imgSrc" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                                                <img *ngIf="imgSrc" class="rounded-xl object-contain" src="{{ imgSrc }}" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                                            <label
+                                                                for="photo"
+                                                                [ngStyle]="{'background-color': buttonColor}"
+                                                                class="btn text-white"
+                                                            >
+                                                                {{ 'club-create.uploadimage' | translate }}
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center justify-center max-w-xs mx-auto">
+                                                    <div class="flex items-center justify-center w-full relative">
+                                                        <label
+                                                            for="default-photo"
+                                                            class="flex items-center justify-between cursor-pointer"
+                                                        >
+                                                            <div class="ml-3 text-black text-sm mr-6">
+                                                                {{ "categories.setasdefault" | translate }}
+                                                            </div>
+                                                            <div class="relative mr-1">
+                                                                <input
+                                                                    id="default-photo"
+                                                                    type="checkbox"
+                                                                    class="sr-only"
+                                                                    [(ngModel)]="setDefaultPhoto"
+                                                                    [ngModelOptions]="{standalone: true}"
+                                                                    (change)="editCoverStatus($event, 'photo')"
+                                                                />
+                                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="isDefaultVideo">
+                                                <div class="flex items-center"
+                                                    [ngClass]="{
+                                                        'justify-between mb-4': existingVideoURL,
+                                                        'justify-center': !existingVideoURL
+                                                    }">
+                                                    <h3 class="text-center text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                                        {{ 'plan-details.video' | translate }}
+                                                    </h3>
+                                                    <div *ngIf="existingVideoURL" 
+                                                        class="p-2 px-4 rounded-lg flex items-center justify-center hover:cursor-pointer" 
+                                                        [ngStyle]="{'background-color': buttonColor}"
+                                                        (click)="clearVideo()">
+                                                        <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"
+                                                            [ngStyle]="{'color': '#c24130'}">
+                                                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                                        </svg>
+                                                        <span class="text-white text-xs ml-1">{{ 'profile-fields.remove' | translate }}</span>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="!existingVideoURL"
+                                                    class="flex flex-col items-center justify-center plan-video-preview h-64 max-w-full w-full border-2 border-gray-300 border-dashed rounded-lg bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                                    <file-pond
+                                                        class="w-full max-w-full"
+                                                        #coursePondVideo
+                                                        [options]="eventPondVideoOptions"
+                                                        [files]="eventPondVideoFiles"
+                                                        (oninit)="eventPondHandleVideoInit()"
+                                                        (onaddfile)="eventPondHandleAddVideoFile($event)"
+                                                        (onactivatefile)="eventPondHandleActivateVideoFile($event)"
+                                                        (onprocessfiles)="eventPondHandleProcessFiles()"
+                                                    >
+                                                    </file-pond>
+                                                </div>
+                                                <div *ngIf="existingVideoURL" class="relative">             
+                                                    <video *ngIf="existingVideoURL" controls width="100%" height="200px" class="h-64">
+                                                        <source src="{{ existingVideoURL }}" type="video/mp4" />
+                                                    </video>
+                                                </div>
+                                                <div class="flex items-center justify-center max-w-xs mx-auto my-8" [ngClass]="{'mt-16 mb-0': courseVideoCoverUploaded}">
+                                                    <div class="flex items-center justify-center w-full relative">
+                                                        <label
+                                                            for="default-video"
+                                                            class="flex items-center justify-between cursor-pointer"
+                                                        >
+                                                            <div class="ml-3 text-black text-sm mr-6">
+                                                                {{ "categories.setasdefault" | translate }}
+                                                            </div>
+                                                            <div class="relative mr-1">
+                                                                <input
+                                                                    id="default-video"
+                                                                    type="checkbox"
+                                                                    class="sr-only"
+                                                                    [(ngModel)]="setDefaultVideo"
+                                                                    [ngModelOptions]="{standalone: true}"
+                                                                    (change)="editCoverStatus($event, 'video')"
+                                                                />
+                                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <div class="relative">
+                                <div class="text-center font-semibold uppercase mb-2">{{ 'courses.videobackground' | translate }}</div>
+                                <input 
+                                    required 
+                                    type="file"
+                                    id="coverphoto" 
+                                    style="display:none;"
+                                    (change)="fileChangeEvent($event, 'coverphoto')"
+                                />
+                                <div 
+                                    class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                    [ngClass]="{'p-6': !videoBackgroundImgSrc}"
+                                >
+                                    <div
+                                        class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                                        [ngClass]="{'w-28 h-28': !videoBackgroundImgSrc}"
+                                    >
+                                        <img *ngIf="!videoBackgroundImgSrc" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                        <img *ngIf="videoBackgroundImgSrc" class="rounded-xl object-cover h-[240px]" src="{{ videoBackgroundImgSrc }}" />
+                                    </div>
+                                </div>
+                                <div class="text-center m-auto"
+                                    [ngClass]="{'absolute bottom-2 left-0 right-0': !isUESchoolOfLife, '-mt-[50px]': isUESchoolOfLife}">
+                                    <label
+                                        for="coverphoto"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                        class="btn text-white"
+                                    >
+                                        {{ 'club-create.uploadimage' | translate }}
+                                    </label>
+                                </div>
+                                <div class="absolute top-[45px] right-[9px]" *ngIf="videoBackgroundImgSrc">
+                                    <button type="button" (click)="deleteBackground()" class="bg-red-600 text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                        <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/>
+                                        </svg>
+                                        <span class="sr-only">Icon description</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative"> 
+                            <input 
+                                *ngIf="selectedLanguage == 'es'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': courseForm?.get('title')?.errors }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title" 
+                                placeholder="{{ 'club-create.title' | translate }}*" 
+                                required>
+                            <input 
+                                *ngIf="selectedLanguage == 'en'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'en' && courseForm?.get('title')?.errors }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title_en" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'fr'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title_fr" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'eu'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'eu' && !courseForm?.get('title_eu')?.value }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title_eu" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'ca'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title_ca" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'de'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title_de" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'it'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'it' && !courseForm?.get('title_it')?.value }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="title_it" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <ng-multiselect-dropdown
+                                id="course-category"
+                                placeholder="{{ 'company-settings.selectcategory' | translate }}"
+                                [settings]="courseCategoryDropdownSettings"
+                                [data]="courseCategories"
+                                [(ngModel)]="selectedCourseCategory"
+                                [ngModelOptions]="{standalone: true}"
+                            >
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <input 
+                                id="duration"
+                                type="number" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                formControlName="duration" 
+                                placeholder="{{ 'course-create.duration' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <select
+                                id="course-duration"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedCourseDurationUnit"
+                                [ngModelOptions]="{standalone: true}"
+                            >
+                                <option value="" disabled selected>{{ 'course-create.selectcourseduration' | translate }}</option>
+                                <option
+                                    *ngFor="let duration of courseDurationUnits"
+                                    [value]="duration.id"
+                                >
+                                    {{ getCourseDurationUnitTitle(duration) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <select
+                                id="course-difficulty"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedCourseDifficulty }"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedCourseDifficulty"
+                                [ngModelOptions]="{standalone: true}"
+                            >
+                                <option value="" disabled selected>{{ 'course-create.selectcoursedifficulty' | translate }}</option>
+                                <option
+                                    *ngFor="let difficulty of courseDifficultyLevels"
+                                    [value]="difficulty.id"
+                                >
+                                    {{ getDifficultyLevelTitle(difficulty) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div *ngIf="companyId == 32">
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'club-create.selectcity' | translate }}"
+                                [settings]="cityDropdownSettings"
+                                [data]="cities"
+                                [(ngModel)]="selectedCity"
+                                [ngModelOptions]="{standalone: true}"
+                            >
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <mat-form-field class="w-full datetime-picker-field">
+                                    <input 
+                                        matInput 
+                                        [ngxMatDatetimePicker]="picker" 
+                                        placeholder="{{ 'company-reports.startdate' | translate }}" 
+                                        formControlName="course_date">
+                                    <ngx-mat-datepicker-toggle matSuffix [for]="picker"></ngx-mat-datepicker-toggle>
+                                    <ngx-mat-datetime-picker [hideTime]="true" [showSeconds]="false" #picker></ngx-mat-datetime-picker>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-create.buttoncolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="startButtonColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'course-create.buttoncolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="startButtonColor" 
+                                        [(colorPicker)]="startButtonColor" 
+                                        (colorPickerOpen)="onEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative" *ngIf="hasCourseCreditSetting">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'edit-plan.numberofcredits' | translate}}
+                                </label>
+                                <input 
+                                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="courseCredits"
+                                    [ngModelOptions]="{standalone: true}"
+                                    min="0"
+                                    type="number"
+                                    placeholder="{{ 'edit-plan.numberofcredits' | translate }}">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative" *ngIf="hasActivityCodeActivated">
+                            <div class="w-full max-w-full">
+                                <label for="activity-code" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'edit-plan.activitycode' | translate}}
+                                </label>
+                                <input
+                                    *ngIf="companyId != 32 || (companyId == 32 && isUESchoolOfLife)"
+                                    id="activity-code"
+                                    type="text"
+                                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                    [(ngModel)]="activityCode"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'edit-plan.activitycode' | translate }}"
+                                    maxlength="200"
+                                />
+                            </div>
+                            <div class="w-full max-w-full">
+                                <label for="activity-code-sigeca" class="ml-4 text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'credits.activitycodesigeca' | translate}}
+                                </label>
+                                <input
+                                    *ngIf="companyId == 32 && isUESchoolOfLife"
+                                    id="activity-code-sigeca"
+                                    type="text"
+                                    class="ml-4 text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                    [(ngModel)]="activityCodeSigeca"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'credits.activitycodesigeca' | translate }}"
+                                    maxlength="200"
+                                />
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-create.textsize' | translate}}
+                                </label>
+                                <input 
+                                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="textSizeUnit"
+                                    [ngModelOptions]="{standalone: true}"
+                                    min="12"
+                                    max="30"
+                                    type="number"
+                                    placeholder="{{ 'course-create.textsize' | translate }}">
+                            </div>
+                        </div>
+                        <ng-container  *ngIf="hasTutors">
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="tutor-type" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{'tutors.tutor' | translate}}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        id="tutor-type"
+                                        placeholder="{{ 'tutors.tutor' | translate }}"
+                                        [settings]="tutorDropDownSettings"
+                                        [data]="tutors"
+                                        [(ngModel)]="selectedCourseTutor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        (onFilterChange)="onFilterTutorChange($event)"
+                                    >
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{'course-create.activatepackage' | translate}}
+                                    </label>
+                                    <div class="flex items-center">
+                                        <div class="flex items-center justify-between relative">
+                                            <label
+                                                for="setting-1"
+                                                class="flex items-center w-full justify-between cursor-pointer"
+                                            >
+                                                <div class="relative mr-1">
+                                                    <input
+                                                        id="setting-1"
+                                                        name="setting-1"
+                                                        type="checkbox"
+                                                        class="sr-only"
+                                                        [(ngModel)]="activatePackage" 
+                                                        [ngModelOptions]="{standalone: true}"
+                                                    />
+                                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <ng-container *ngIf="activatePackage">
+                                            <select
+                                                id="package-type"
+                                                class="ml-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                [(ngModel)]="selectedCoursePackage"
+                                                [ngModelOptions]="{standalone: true}"
+                                            >
+                                                <option value="" disabled selected>{{ 'course-create.selectcoursepackage' | translate }}</option>
+                                                <option
+                                                    *ngFor="let package of packages"
+                                                    [value]="package.id"
+                                                >
+                                                {{ package?.name ? package?.name : (package?.first_name + ' ' + package?.last_name) }}
+                                                </option>
+                                            </select>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'company-settings.activatewall' | translate}}
+                                </label>
+                                <div class="flex items-center">
+                                    <div class="flex items-center justify-between relative">
+                                        <label
+                                            for="setting-10"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="setting-10"
+                                                    name="setting-10"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="wallStatus" 
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <ng-container *ngIf="wallStatus">
+                                        <select
+                                            id="package-type"
+                                            class="ml-8 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            [(ngModel)]="selectedWall"
+                                            [ngModelOptions]="{standalone: true}"
+                                        >
+                                            <option value="" disabled selected>{{ 'plan-create.select' | translate }} {{ 'company-settings.wall' | translate }}</option>
+                                            <option
+                                                *ngFor="let gwall of groupWalls"
+                                                [value]="gwall.id"
+                                            >
+                                                {{ getWallName(gwall) }}
+                                            </option>
+                                        </select>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    CTA
+                                </label>
+                                <div class="flex items-center">
+                                    <div class="flex items-center justify-between relative">
+                                        <label
+                                            for="setting-2"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="setting-2"
+                                                    name="setting-2"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="ctaStatus" 
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <ng-container *ngIf="ctaStatus">
+                                        <input 
+                                            class="text-2xl ml-4 shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="ctatext"
+                                            placeholder="{{ 'services.text' | translate }}">
+                                        <input 
+                                            class="text-2xl ml-4 shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="ctalink"
+                                            placeholder="{{ 'services.link' | translate }}">
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="hasCourseVideoComments" class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ 'plan-details.comments' | translate }}
+                                </label>
+                                <div class="flex items-center">
+                                    <div class="flex items-center justify-between relative">
+                                        <label
+                                            for="setting-20"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="setting-20"
+                                                    name="setting-20"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="showComments" 
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="hasCoursePayment && !hotmartProductId">
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="setting-3" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'member-type-registration.requirepayment' | translate }} (Stripe)
+                                    </label>
+                                    <div class="flex items-center">
+                                        <div class="flex items-center justify-between relative">
+                                            <label
+                                                for="setting-6"
+                                                class="flex items-center w-full justify-between cursor-pointer"
+                                            >
+                                                <div class="relative mr-1">
+                                                    <input
+                                                        id="setting-6"
+                                                        name="setting-6"
+                                                        type="checkbox"
+                                                        class="sr-only"
+                                                        [(ngModel)]="requirePayment" 
+                                                        [ngModelOptions]="{standalone: true}"
+                                                    />
+                                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <ng-container *ngIf="requirePayment && otherStripeAccounts?.length > 0">
+                                            <select
+                                                id="payment"
+                                                class="ml-4 bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                [(ngModel)]="selectedStripeAccount"
+                                                [ngModelOptions]="{standalone: true}"
+                                            >
+                                                <option value="" disabled selected>{{ 'stripe-account.selectaccount' | translate }}</option>
+                                                <option
+                                                    *ngFor="let account of otherStripeAccounts"
+                                                    [value]="account.id"
+                                                >
+                                                    {{ account.name }}
+                                                </option>
+                                            </select> 
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-container *ngIf="requirePayment">
+                                <div class="flex items-center justify-center relative">
+                                    <div class="w-full max-w-full">
+                                        <label for="setting-3" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ 'member-type-registration.price' | translate }}
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="price" 
+                                            placeholder="{{ 'member-type-registration.price' | translate }}">
+                                        </div>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="setting-3" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ 'courses.buynow' | translate }}
+                                </label>
+                                <div class="flex items-center w-full max-w-full">
+                                    <div class="flex items-center justify-between relative mr-4">
+                                        <label
+                                            for="setting-3"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="setting-3"
+                                                    name="setting-3"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="buyNowStatus" 
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <ng-container *ngIf="buyNowStatus">
+                                        <div class="flex items-center w-full max-w-full">
+                                            <input 
+                                                type="text" 
+                                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                [(ngModel)]="buyNowButtonColor"
+                                                [ngModelOptions]="{standalone: true}"
+                                                placeholder="{{ 'course-create.buttoncolor' | translate }}*" 
+                                                required>
+                                            <input 
+                                                class="ml-4 rounded-full w-10 h-10 hover:cursor-pointer"
+                                                [style.background]="buyNowButtonColor" 
+                                                [(colorPicker)]="buyNowButtonColor" 
+                                                (colorPickerOpen)="onBuyEventLog('colorPickerOpen', $event)" 
+                                                (colorPickerClose)="onBuyEventLog('colorPickerClose', $event)" 
+                                                (cpInputChange)="onBuyEventLog('cpInputChange', $event)" 
+                                                (cpSliderDragStart)="onBuyEventLog('cpSliderDragStart', $event)" 
+                                                (cpSliderDragEnd)="onBuyEventLog('cpSliderDragEnd', $event)" 
+                                                style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                            />        
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="companyId === 32">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="setting-3" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ 'courses.allowadditionalpropertiesaccess' | translate }}
+                                </label>
+                                <div class="flex items-center w-full max-w-full">
+                                    <div class="flex items-center justify-between relative mr-4">
+                                        <label
+                                            for="setting-8"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="setting-8"
+                                                    name="setting-8"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="allowCourseAccess" 
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="allowCourseAccess">
+                        <div class="mt-8 grid gap-0 sm:gap-0 md:gap-6 lg:gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'courses.selectcampus' | translate }}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        placeholder="{{ 'courses.selectcampus' | translate }}"
+                                        [settings]="additionalPropertiesDropdownSettings"
+                                        [data]="campusList"
+                                        [(ngModel)]="selectedCampus"
+                                        class="mb-6"
+                                        [ngModelOptions]="{standalone: true}"
+                                        >   
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'courses.selectfaculty' | translate }}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        placeholder="{{ 'courses.selectfaculty' | translate }}"
+                                        [settings]="additionalPropertiesDropdownSettings"
+                                        [data]="facultyList"
+                                        [(ngModel)]="selectedFaculty"
+                                        class="mb-6"
+                                        [ngModelOptions]="{standalone: true}"
+                                        >
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'courses.selectbusinessunit' | translate }}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        placeholder="{{ 'courses.selectbusinessunit' | translate }}"
+                                        [settings]="additionalPropertiesDropdownSettings"
+                                        [data]="businessUnitList"
+                                        [(ngModel)]="selectedBusinessUnit"
+                                        class="mb-6"
+                                        [ngModelOptions]="{standalone: true}"
+                                        >
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'courses.selecttype' | translate }}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        placeholder="{{ 'courses.selecttype' | translate }}"
+                                        [settings]="additionalPropertiesDropdownSettings"
+                                        [data]="typeList"
+                                        [(ngModel)]="selectedType"
+                                        class="mb-6"
+                                        [ngModelOptions]="{standalone: true}"
+                                        >
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'courses.selectsegment' | translate }}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        placeholder="{{ 'courses.selectsegment' | translate }}"
+                                        [settings]="additionalPropertiesDropdownSettings"
+                                        [data]="segmentList"
+                                        [(ngModel)]="selectedSegment"
+                                        class="mb-6"
+                                        [ngModelOptions]="{standalone: true}"
+                                        >
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'courses.selectbranding' | translate }}
+                                    </label>
+                                    <ng-multiselect-dropdown
+                                        placeholder="{{ 'courses.selectbranding' | translate }}"
+                                        [settings]="additionalPropertiesDropdownSettings"
+                                        [data]="brandingList"
+                                        [(ngModel)]="selectedBranding"
+                                        class="mb-6"
+                                        [ngModelOptions]="{standalone: true}"
+                                        >
+                                    </ng-multiselect-dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="flex items-center justify-center relative col-span-2 pt-4">
+                        <div class="w-full max-w-full">
+                            <div class="flex items-center">
+                                <div>
+                                    <label for="setting-30" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'buddy.introduction' | translate }}
+                                    </label>
+                                    <div class="flex items-center w-full max-w-full">
+                                        <div class="flex items-center justify-between relative mr-4">
+                                            <label
+                                                for="setting-30"
+                                                class="flex items-center w-full justify-between cursor-pointer"
+                                            >
+                                                <div class="relative mr-1">
+                                                    <input
+                                                        id="setting-30"
+                                                        name="setting-30"
+                                                        type="checkbox"
+                                                        class="sr-only"
+                                                        [(ngModel)]="courseIntro" 
+                                                        [ngModelOptions]="{standalone: true}"
+                                                    />
+                                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="selectedLanguage == 'es' && courseIntro && existingIntroPDFFileURL && !existingIntroRemoved">
+                                    <a [href]="existingIntroPDFFileURL" target="_blank">
+                                        <svg class="mt-4 ml-4 w-10 h-10 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                    <svg class="mt-4 ml-2 w-6 h-6 hover:cursor-pointer" (click)="removeExistingIntroPDF()" [ngStyle]="{'color': '#c24130'}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                    </svg>
+                                </ng-container>
+                                <ng-container *ngIf="selectedLanguage == 'en' && courseIntro && existingIntroPDFFileURLEn && !existingIntroRemovedEn">
+                                    <a [href]="existingIntroPDFFileURLEn" target="_blank">
+                                        <svg class="mt-4 ml-4 w-10 h-10 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                    <svg class="mt-4 ml-2 w-6 h-6 hover:cursor-pointer" (click)="removeExistingIntroPDFEn()" [ngStyle]="{'color': '#c24130'}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                    </svg>
+                                </ng-container>
+                                <ng-container *ngIf="selectedLanguage == 'it' && courseIntro && existingIntroPDFFileURLIt && !existingIntroRemovedIt">
+                                    <a [href]="existingIntroPDFFileURLIt" target="_blank">
+                                        <svg class="mt-4 ml-4 w-10 h-10 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd" d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2 2 2 0 0 0 2 2h12a2 2 0 0 0 2-2 2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2V4a2 2 0 0 0-2-2h-7Zm-6 9a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h.5a2.5 2.5 0 0 0 0-5H5Zm1.5 3H6v-1h.5a.5.5 0 0 1 0 1Zm4.5-3a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h1.376A2.626 2.626 0 0 0 15 15.375v-1.75A2.626 2.626 0 0 0 12.375 11H11Zm1 5v-3h.375a.626.626 0 0 1 .625.626v1.748a.625.625 0 0 1-.626.626H12Zm5-5a1 1 0 0 0-1 1v5a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1h1a1 1 0 1 0 0-2h-2Z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </a>
+                                    <svg class="mt-4 ml-2 w-6 h-6 hover:cursor-pointer" (click)="removeExistingIntroPDFIt()" [ngStyle]="{'color': '#c24130'}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                    </svg>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center my-8 relative col-span-2" *ngIf="courseIntro">
+                        <div class="w-full max-w-full">
+                            <label for="setting-30" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'settings.upload' | translate }} PDF
+                            </label>
+                            <div class="flex items-center w-full max-w-full">
+                                <file-pond
+                                    *ngIf="selectedLanguage == 'es'"
+                                    class="w-full"
+                                    #courseIntroPond
+                                    [options]="courseIntroPondOptions"
+                                    [files]="courseIntroPondFiles"
+                                    (oninit)="courseIntroPondHandleInit()"
+                                    (onaddfile)="courseIntroPondHandleAddFile($event)"
+                                >
+                                </file-pond>
+                                <file-pond
+                                    *ngIf="selectedLanguage == 'en'"
+                                    class="w-full"
+                                    #courseIntroPond
+                                    [options]="courseIntroPondOptionsEn"
+                                    [files]="courseIntroPondFilesEn"
+                                    (oninit)="courseIntroPondHandleInitEn()"
+                                    (onaddfile)="courseIntroPondHandleAddFileEn($event)"
+                                >
+                                </file-pond>
+                                <file-pond
+                                    *ngIf="selectedLanguage == 'it'"
+                                    class="w-full"
+                                    #courseIntroPond
+                                    [options]="courseIntroPondOptionsIt"
+                                    [files]="courseIntroPondFilesIt"
+                                    (oninit)="courseIntroPondHandleInitIt()"
+                                    (onaddfile)="courseIntroPondHandleAddFileIt($event)"
+                                >
+                                </file-pond>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 my-8">
+                        <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Write.png" />
+                        <div class="font-light text-xl">{{ 'course-create.description' | translate }}</div>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <quill-editor [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': courseForm.get('description')?.errors }" *ngIf="selectedLanguage == 'es'" class="w-full max-w-full content-editor" formControlName="description"></quill-editor>
+                        <quill-editor *ngIf="selectedLanguage == 'en'" class="w-full max-w-full content-editor" formControlName="description_en"></quill-editor>
+                        <quill-editor *ngIf="selectedLanguage == 'fr'" class="w-full max-w-full content-editor" formControlName="description_fr"></quill-editor>
+                        <quill-editor *ngIf="selectedLanguage == 'eu'" class="w-full max-w-full content-editor" formControlName="description_eu"></quill-editor>
+                        <quill-editor *ngIf="selectedLanguage == 'ca'" class="w-full max-w-full content-editor" formControlName="description_ca"></quill-editor>
+                        <quill-editor *ngIf="selectedLanguage == 'de'" class="w-full max-w-full content-editor" formControlName="description_de"></quill-editor>
+                        <quill-editor *ngIf="selectedLanguage == 'it'" class="w-full max-w-full content-editor" formControlName="description_it"></quill-editor>
+                    </div>
+                    <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                        <button
+                            type="submit"
+                            class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                            [ngStyle]="{'background-color': buttonColor}"
+                            [ngClass]="{'disabled:opacity-75': issaving}"
+                            [disabled]="issaving"
+                        >
+                            {{ !issaving ? ('plan-create.savechanges' | translate) : ('plan-create.pleasewait' | translate) }}
+                        </button>
+                    </div>
+                </form>
+            </mat-tab>
+            <mat-tab *ngIf="isAdvancedCourse && id > 0" label="{{ 'course-create.modules' | translate }}">
+                <div class="my-8">
+                    <div class="flex mb-8">
+                        <button 
+                            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                            *ngIf="courseModuleMode != 'add' && courseModuleMode != 'edit'"
+                            [ngStyle]="{ 'background-color': buttonColor}"
+                            (click)="addCourseModule()"
+                        >
+                            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                            </svg>
+                            <span class="text-white text-md font-semibold uppercase">{{ 'course-create.addmodule' | translate }}</span>
+                        </button>
+                        <button 
+                            class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                            *ngIf="courseModuleMode == 'add' || courseModuleMode == 'edit'"
+                            (click)="cancelShowModule()" 
+                            [ngStyle]="{
+                                'border-color': buttonColor,
+                                'background-color': '#fff',
+                            }"
+                        >
+                            <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                            </svg>
+                            <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                        </button>
+                    </div>
+                    <div *ngIf="showModuleDetails">
+                        <div class="flex items-center justify-center my-8 relative">
+                            <input 
+                                *ngIf="selectedLanguage == 'en'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'en' && !moduleTitleEn }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitleEn"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'es'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'es' && !moduleTitle }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitle"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}*" 
+                                required>
+                            <input 
+                                *ngIf="selectedLanguage == 'fr'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'fr' && !moduleTitleFr }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitleFr"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'eu'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'eu' && !moduleTitleEu }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitleEu"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'ca'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'ca' && !moduleTitleCa }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitleCa"
+                                [ngModelOptions]="{standalone: true}" 
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'de'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'de' && !moduleTitleDe }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitleDe"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'it'"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'it' && !moduleTitleIt }"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="moduleTitleIt"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative">
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'es'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescription"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'en'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescriptionEn"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'fr'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescriptionFr"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'eu'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescriptionEu"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'ca'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescriptionCa"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'de'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescriptionDe"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="selectedLanguage == 'it'">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'company-settings.description' | translate }}"
+                                    [(ngModel)]="moduleDescriptionIt"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveModule()"
+                            >
+                                {{ 'plan-create.savechanges' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="!showModuleDetails">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th></th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.title' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'create-content.date' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.description' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'your-admin-area.action' | translate }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of courseModules;let i = index;" 
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="text-xs px-2 py-1">
+                                        <div class="flex flex-col relative justify-center items-center w-full">
+                                            <svg (click)="moveUp('modules', courseModules, i)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                            </svg>
+                                            <svg (click)="moveDown('modules', courseModules, i)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{getModuleTitle(item)}}
+                                    </td>
+                                    <td class="text-xs px-2 py-1 max-w-[300px]">
+                                        {{ getModuleStartDate(item, i) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ getModuleDescription(item) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1 flex items-center py-4">
+                                        <svg (click)="editCourseModule(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                        </svg>
+                                        <svg (click)="deleteCourseModule(item)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{ 'course-create.units' | translate }}" *ngIf="id > 0">
+                <div class="my-8">
+                    <div class="flex mb-8 items-center align-center">
+                        <button 
+                            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                            *ngIf="courseUnitMode != 'add' && courseUnitMode != 'edit'"
+                            [ngStyle]="{ 'background-color': buttonColor}"
+                            (click)="addCourseUnit()"
+                        >
+                            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                            </svg>
+                            <span class="text-white text-md font-semibold uppercase">{{ 'course-create.addunit' | translate }}</span>
+                        </button>
+                        <button 
+                            class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                            *ngIf="courseUnitMode == 'add' || courseUnitMode == 'edit'"
+                            (click)="cancelShowUnit()" 
+                            [ngStyle]="{
+                                'border-color': buttonColor,
+                                'background-color': '#fff',
+                            }"
+                        >
+                            <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                            </svg>
+                            <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                        </button>
+                    </div>
+                    <div *ngIf="showUnitDetails">
+                        <div class="flex items-center justify-center my-8 relative">
+                            <select
+                                id="modules"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedUnitModule"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedUnitModule }"
+                                (change)="handleChangeModule($event)"
+                            >
+                                <option value="" disabled selected>{{ 'course-create.selectmodule' | translate }}</option>
+                                <option
+                                    *ngFor="let module of courseModules"
+                                    [value]="module.id"
+                                >
+                                    {{ module.number }}. {{ getModuleTitle(module) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative">
+                            <input 
+                                *ngIf="selectedLanguage == 'es'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitle"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'es' && !unitTitle }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'en'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitleEn"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'en' && !unitTitleEn }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'fr'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitleFr"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'fr' && !unitTitleFr }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'eu'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitleFr"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'eu' && !unitTitleEu }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'ca'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitleCa"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'ca' && !unitTitleCa }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'de'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitleDe"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'de' && !unitTitleDe }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                *ngIf="selectedLanguage == 'it'"
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitTitleIt"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': selectedLanguage == 'it' && !unitTitleIt }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative">
+                            <input 
+                                type="number" 
+                                class="text-2xl mr-4 shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="unitDuration"
+                                (keypress)="numberOnly($event)"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !unitDuration }"
+                                placeholder="{{ 'course-create.duration' | translate }}">
+                            <select
+                                id="payment-type"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedCourseUnitDurationUnit"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedCourseUnitDurationUnit }"
+                            >
+                                <option value="" disabled selected>{{ 'course-create.selectcourseduration' | translate }}</option>
+                                <option
+                                    *ngFor="let duration of courseDurationUnits"
+                                    [value]="duration.id"
+                                >
+                                    {{ getCourseDurationUnitTitle(duration) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-details.availableon' | translate}}
+                                </label>
+                                <label
+                                    for="setting-191"
+                                    class="flex items-center w-full justify-between cursor-pointer"
+                                >
+                                    <div class="relative mr-1">
+                                        <input
+                                            id="setting-191"
+                                            name="setting-191"
+                                            type="checkbox"
+                                            class="sr-only"
+                                            [(ngModel)]="unitAvailability" 
+                                            [ngModelOptions]="{standalone: true}"
+                                        />
+                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="w-full max-w-full" *ngIf="unitAvailability">
+                                <div class="flex items-center justify-center relative">
+                                    <div class="w-full max-w-full">
+                                        <mat-form-field class="w-full datetime-picker-field">
+                                            <input 
+                                                matInput 
+                                                [ngxMatDatetimePicker]="picker1" 
+                                                placeholder="{{'course-details.availableon' | translate}} {{'company-settings.date' | translate}}" 
+                                                [(ngModel)]="unitAvailabilityDate" 
+                                                [ngModelOptions]="{standalone: true}">
+                                            <ngx-mat-datepicker-toggle matSuffix [for]="picker1"></ngx-mat-datepicker-toggle>
+                                            <ngx-mat-datetime-picker [hideTime]="false" [showSeconds]="false" #picker1></ngx-mat-datetime-picker>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative">
+                            <select
+                                id="unit-types"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedUnitType"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedUnitType }"
+                            >
+                                <option value="" disabled selected>{{ 'course-create.selectfiletype' | translate }}</option>
+                                <option
+                                    *ngFor="let type of unitTypes"
+                                    [value]="type.id"
+                                >
+                                    {{ type.type }}
+                                </option>
+                            </select>
+                        </div>
+                        <ng-container *ngIf="selectedUnitType && selectedUnitType == 1">
+                            <div class="flex items-center justify-center my-8 relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{'course-create.chooseoption' | translate}}
+                                    </label>
+                                    <select
+                                        id="video-options"
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        [(ngModel)]="selectedUnitOption"
+                                        [ngModelOptions]="{standalone: true}"
+                                    >
+                                        <option value="" disabled selected>{{ 'course-create.chooseoption' | translate }}</option>
+                                        <option
+                                            *ngFor="let option of unitOptions"
+                                            [value]="option"
+                                        >
+                                            {{ option == 'External' ? ('company-settings.others' | translate) : option }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="w-full max-w-full ml-8">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{'company-settings.videoavailabile' | translate}}
+                                    </label>
+                                    <label
+                                        for="setting-6"
+                                        class="flex items-center w-full justify-between cursor-pointer"
+                                    >
+                                        <div class="relative mr-1">
+                                            <input
+                                                id="setting-6"
+                                                name="setting-6"
+                                                type="checkbox"
+                                                class="sr-only"
+                                                [(ngModel)]="videoAvailability" 
+                                                [ngModelOptions]="{standalone: true}"
+                                            />
+                                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            <ng-container *ngIf="selectedUnitOption && selectedUnitOption != 'Self-hosted'">
+                                <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 my-8">
+                                    <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Write.png" />
+                                    <div class="font-light text-xl">{{ 'courses.embedorurl' | translate }}</div>
+                                </div>
+                                <div class="flex items-center justify-center my-8 relative"  *ngIf="selectedUnitOption == 'Vidalytics'">
+                                    <input
+                                        class="text-2xl mr-4 shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="externalLink"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="Video ID">
+                                </div>
+                                <div class="flex items-center justify-center mb-8 relative" 
+                                    *ngIf="selectedUnitOption != 'Vidalytics'">
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'es'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLink"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'en'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLinkEn"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'fr'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLinkFr"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'eu'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLinkEu"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'ca'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLinkCa"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'de'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLinkDe"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="description" cols="30" rows="3" *ngIf="selectedLanguage == 'it'"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embedorurl' | translate }}"
+                                        [(ngModel)]="externalLinkIt"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embedorurl' | translate }}
+                                    </textarea>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType && selectedUnitType == 3">
+                            <div class="flex items-center justify-center my-8 relative">
+                                <select
+                                    id="video-options"
+                                    class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    [(ngModel)]="selectedUnitOption"
+                                    [ngModelOptions]="{standalone: true}"
+                                >
+                                    <option value="" disabled selected>{{ 'course-create.chooseoption' | translate }}</option>
+                                    <option
+                                        *ngFor="let option of podcastOptions"
+                                        [value]="option"
+                                    >
+                                        {{ option }}
+                                    </option>
+                                </select>
+                                <input 
+                                    *ngIf="selectedUnitOption && selectedUnitOption != 'Self-hosted'"
+                                    class="text-2xl mr-4 shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="externalLink"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="Empotrar">
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType && (
+                            (selectedUnitType != 1 && selectedUnitType != 3 && selectedUnitType != 7) || 
+                            ((selectedUnitType == 1 || selectedUnitType == 3) && selectedUnitOption == 'Self-hosted')
+                        ) && selectedUnitType != 6">
+                            <div class="flex items-center justify-center my-8 relative">
+                                <div class="w-full max-w-full">
+                                    <file-pond
+                                        *ngIf="selectedLanguage == 'es'"
+                                        #myPond
+                                        [options]="pondOptions"
+                                        [files]="pondFiles"
+                                        (oninit)="pondHandleInit()"
+                                        (onaddfile)="pondHandleAddFile($event)"
+                                    >
+                                    </file-pond>
+                                    <file-pond
+                                        *ngIf="selectedLanguage == 'en'"
+                                        #myPondEn
+                                        [options]="pondOptionsEn"
+                                        [files]="pondFilesEn"
+                                        (oninit)="pondHandleInitEn()"
+                                        (onaddfile)="pondHandleAddFileEn($event)"
+                                    >
+                                    </file-pond>
+                                    <file-pond
+                                        *ngIf="selectedLanguage == 'it'"
+                                        #myPondIt
+                                        [options]="pondOptionsIt"
+                                        [files]="pondFilesIt"
+                                        (oninit)="pondHandleInitIt()"
+                                        (onaddfile)="pondHandleAddFileIt($event)"
+                                    >
+                                    </file-pond>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType && selectedUnitType == 6">
+                            <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 my-8">
+                                <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Write.png" />
+                                <div class="font-light text-xl">{{ 'course-details.text' | translate }}</div>
+                            </div>
+                            <div class="flex items-center justify-center my-8 relative">
+                                <quill-editor 
+                                    class="w-full max-w-full content-editor" 
+                                    [(ngModel)]="text"
+                                    [ngModelOptions]="{standalone: true}">
+                                </quill-editor>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType == 7">
+                            <div class="flex items-center justify-center my-8 relative">
+                                <div class="w-full max-w-full">
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'es'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScript"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'en'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScriptEn"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'fr'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScriptFr"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'eu'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScriptEu"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'ca'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScriptCa"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'de'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScriptDe"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                    <textarea name="" id="embed-script" *ngIf="selectedLanguage == 'it'" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'courses.embed' | translate }}"
+                                        [(ngModel)]="embedScriptIt"
+                                        [ngModelOptions]="{standalone: true}">
+                                        {{ 'courses.embed' | translate }}
+                                    </textarea>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType && selectedUnitType == 1" >
+                            <div class="flex items-center justify-center my-8 relative col-span-2">
+                                <div class="relative">
+                                    <div class="text-center font-semibold uppercase mb-2">{{ 'courses.videobackground' | translate }}</div>
+                                    <input 
+                                        required 
+                                        type="file"
+                                        id="unitphoto" 
+                                        style="display:none;"
+                                        (change)="fileChangeEvent($event, 'unitphoto')"
+                                    />
+                                    <div 
+                                        class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                        [ngClass]="{'p-6': !videoBackgroundImgSrcUnit}"
+                                    >
+                                        <div
+                                            class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                                            [ngClass]="{'w-28 h-28': !videoBackgroundImgSrcUnit}"
+                                        >
+                                            <img *ngIf="!videoBackgroundImgSrcUnit" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                            <img *ngIf="videoBackgroundImgSrcUnit" class="rounded-xl object-cover h-[240px]" src="{{ videoBackgroundImgSrcUnit }}" />
+                                        </div>
+                                    </div>
+                                    <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                        <label
+                                            for="unitphoto"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            class="btn text-white"
+                                        >
+                                            {{ 'club-create.uploadimage' | translate }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType && selectedUnitType == 1">
+                            <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 my-8">
+                                <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Write.png" />
+                                <div class="font-light text-xl">{{ 'course-create.description' | translate }}</div>
+                            </div>
+                            <div class="flex items-center justify-center my-8 relative">
+                                <quill-editor 
+                                    class="w-full max-w-full content-editor" 
+                                    [(ngModel)]="videoDescription"
+                                    [ngModelOptions]="{standalone: true}">
+                                </quill-editor>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnitType == 1 && selectedUnitId">
+                            <div class="flex items-center justify-center relative">
+                                <div class="w-full max-w-full">
+                                    <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        CTA
+                                    </label>
+                                    <div class="flex items-center">
+                                        <div class="flex items-center justify-between relative">
+                                            <label
+                                                for="setting-7"
+                                                class="flex items-center w-full justify-between cursor-pointer"
+                                            >
+                                                <div class="relative mr-1">
+                                                    <input
+                                                        id="setting-7"
+                                                        name="setting-7"
+                                                        type="checkbox"
+                                                        class="sr-only"
+                                                        [(ngModel)]="cta" 
+                                                        [ngModelOptions]="{standalone: true}"
+                                                        (change)="toggleCtaStatus($event)"
+                                                    />
+                                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex mb-8" *ngIf="cta">
+                                <button 
+                                    class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                                    *ngIf="ctaMode != 'add' && ctaMode != 'edit'"
+                                    [ngStyle]="{ 'background-color': buttonColor}"
+                                    (click)="addUnitCta()"
+                                >
+                                    <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                    </svg>
+                                    <span class="text-white text-md font-semibold uppercase">{{ 'course-details.addcta' | translate }}</span>
+                                </button>
+                                <button 
+                                    class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                                    *ngIf="ctaMode == 'add' || ctaMode == 'edit'"
+                                    (click)="cancelShowCta()" 
+                                    [ngStyle]="{
+                                        'border-color': buttonColor,
+                                        'background-color': '#fff',
+                                    }"
+                                >
+                                    <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                                    </svg>
+                                    <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                                </button>
+                            </div>
+                            <div *ngIf="showCtaDetails && cta">
+                                <div class="flex items-center justify-center my-8 relative">
+                                    <input 
+                                        type="text" 
+                                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="ctaItemText"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'services.text' | translate }}">
+                                </div>
+                                <div class="flex items-center justify-center my-8 relative">
+                                    <input 
+                                        type="text" 
+                                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="ctaItemLink"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'services.link' | translate }}">
+                                </div>
+                                <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                                    <button
+                                        class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                        (click)="saveCta()"
+                                    >
+                                        {{ 'plan-create.savechanges' | translate }}
+                                    </button>
+                                </div>
+                            </div>
+                            <div *ngIf="!showCtaDetails && cta">
+                                <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th></th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'services.text' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'services.link' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'your-admin-area.action' | translate }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of ctaList;let x = index;" 
+                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <td class="text-xs px-2 py-1">
+                                                <div class="flex flex-col relative justify-center items-center w-full">
+                                                    <svg (click)="moveUp('ctas', ctaList, x)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                                    </svg>
+                                                    <svg (click)="moveDown('ctas', ctaList, x)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                                    </svg>
+                                                </div>
+                                            </td>
+                                            <td class="text-xs px-2 py-1">
+                                                {{item?.cta_text}}
+                                            </td>
+                                            <td class="text-xs px-2 py-1 max-w-[300px]">
+                                                {{item?.cta_link}}
+                                            </td>
+                                            <td class="text-xs px-2 py-1 flex items-center py-4">
+                                                <svg (click)="editCta(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                                    <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                                    <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                                </svg>
+                                                <svg (click)="deleteCta(item)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                                </svg>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="!showCtaDetails" class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveUnit()"
+                            >
+                                {{ 'plan-create.savechanges' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="!showUnitDetails">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th></th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.module' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.unit' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.type' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.action' | translate }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of courseUnits;let i = index;" 
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="text-xs px-2 py-1">
+                                        <div class="flex flex-col relative justify-center items-center w-full">
+                                            <svg (click)="moveUp('units', courseUnits, i)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                            </svg>
+                                            <svg (click)="moveDown('units', courseUnits, i)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ getModuleCategoryTitle(item) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ getModuleTitle(item) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.Company_Course_Unit_Type?.type }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1 flex items-center py-4">
+                                        <svg (click)="editCourseUnit(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                        </svg>
+                                        <svg (click)="deleteCourseUnit(item)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{ 'course-details.downloads' | translate }}" *ngIf="id > 0">
+                <div class="my-8">
+                    <div class="flex mb-8 items-center align-center">
+                        <select
+                            id="course-units"
+                            class="mr-4 mt-4 max-w-sm h-[44px] bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            [(ngModel)]="selectedDownloadUnit"
+                            [ngModelOptions]="{standalone: true}"
+                            (change)="filterDownloadResources()"
+                        >
+                            <option value="" selected>{{ 'course-create.selectunit' | translate }}</option>
+                            <option
+                                *ngFor="let unit of courseUnits"
+                                [value]="unit.id"
+                            >
+                                {{ unit?.number }}. {{ getModuleTranslated(unit) }} - {{ getModuleTitle(unit) }}
+                            </option>
+                        </select>
+                        <select
+                            id="file-types"
+                            class="mr-4 mt-4 max-w-sm h-[44px] bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            [(ngModel)]="selectedDownloadType"
+                            [ngModelOptions]="{standalone: true}"
+                            (change)="filterDownloadResources()"
+                        >
+                            <option value="" selected>{{ 'course-create.selectfiletype' | translate }}</option>
+                            <option
+                                *ngFor="let type of downloadFileTypes"
+                                [value]="type.type"
+                            >
+                                {{ type.type }}
+                            </option>
+                        </select>
+                        <button 
+                            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                            *ngIf="courseDownloadMode != 'add' && courseDownloadMode != 'edit'"
+                            [ngStyle]="{ 'background-color': buttonColor}"
+                            (click)="addCourseDownload()"
+                        >
+                            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                            </svg>
+                            <span class="text-white text-md font-semibold uppercase">{{ 'member-type-registration.addnew' | translate }}</span>
+                        </button>
+                        <button 
+                            class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                            *ngIf="courseDownloadMode == 'add' || courseDownloadMode == 'edit'"
+                            (click)="cancelShowDownload()" 
+                            [ngStyle]="{
+                                'border-color': buttonColor,
+                                'background-color': '#fff',
+                            }"
+                        >
+                            <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                            </svg>
+                            <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                        </button>
+                    </div>
+                    <div *ngIf="showDownloadDetails">
+                        <div class="flex items-center justify-center my-8 relative">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'es'"
+                                [(ngModel)]="courseDownloadTitle"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !courseDownloadTitle }"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'en'"
+                                [(ngModel)]="courseDownloadTitleEn"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'fr'"
+                                [(ngModel)]="courseDownloadTitleFr"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'eu'"
+                                [(ngModel)]="courseDownloadTitleEu"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'ca'"
+                                [(ngModel)]="courseDownloadTitleCa"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'de'"
+                                [(ngModel)]="courseDownloadTitleDe"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                            <input 
+                                type="text" 
+                                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                *ngIf="selectedLanguage == 'it'"
+                                [(ngModel)]="courseDownloadTitleIt"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'club-create.title' | translate }}">
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative">
+                            <select
+                                id="units"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedDownloadUnitId"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedDownloadUnitId }"
+                                (change)="handleChangeDownloadUnit($event)"
+                            >
+                                <option value="" disabled selected>{{ 'course-create.selectunit' | translate }}</option>
+                                <option
+                                    *ngFor="let unit of courseUnits"
+                                    [value]="unit.id"
+                                >
+                                {{ unit?.number }}. {{ getModuleTranslated(unit) }} - {{ getModuleTitle(unit) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="flex items-center justify-center my-8 relative" *ngIf="selectedDownloadUnitId">
+                            <div class="w-full max-w-full">
+                                <file-pond
+                                    *ngIf="selectedLanguage == 'es'"
+                                    #downloadPond
+                                    [options]="downloadPondOptions"
+                                    [files]="downloadPondFiles"
+                                    (oninit)="downloadPondHandleInit()"
+                                    (onaddfile)="downloadPondHandleAddFile($event)"
+                                >
+                                </file-pond>
+                                <file-pond
+                                    *ngIf="selectedLanguage == 'en'"
+                                    #downloadPond
+                                    [options]="downloadPondOptionsEn"
+                                    [files]="downloadPondFilesEn"
+                                    (oninit)="downloadPondHandleInitEn()"
+                                    (onaddfile)="downloadPondHandleAddFileEn($event)"
+                                >
+                                </file-pond>
+                                <file-pond
+                                    *ngIf="selectedLanguage == 'it'"
+                                    #downloadPond
+                                    [options]="downloadPondOptionsIt"
+                                    [files]="downloadPondFilesIt"
+                                    (oninit)="downloadPondHandleInitIt()"
+                                    (onaddfile)="downloadPondHandleAddFileIt($event)"
+                                >
+                                </file-pond>
+                        </div>
+                        </div>
+                        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveDownload()"
+                            >
+                                {{ 'plan-create.savechanges' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="!showDownloadDetails">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th></th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.module' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.unit' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.title' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.filetype' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.action' | translate }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of courseDownloads;let i = index;" 
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="text-xs px-2 py-1">
+                                        <div class="flex flex-col relative justify-center items-center w-full">
+                                            <svg (click)="moveUp('downloads', courseDownloads, i)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                            </svg>
+                                            <svg (click)="moveDown('downloads', courseDownloads, i)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.course_module?.number + '. ' + getModuleTitle(item.course_module) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1 max-w-[300px]">
+                                        {{ language == 'en' ? (item?.title_en || item?.title) : (language == 'fr' ? (item?.title_fr || item?.title) : item?.title) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.filename }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ getFileType(item) }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1 flex items-center py-4">
+                                        <svg (click)="viewCourseDownload(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+                                            <path d="M10 0C4.612 0 0 5.336 0 7c0 1.742 3.546 7 10 7 6.454 0 10-5.258 10-7 0-1.664-4.612-7-10-7Zm0 10a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+                                        </svg>
+                                        <svg (click)="editCourseDownload(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                        </svg>
+                                        <svg (click)="deleteCourseDownload(item)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </mat-tab>
+            <mat-tab label="{{ 'course-assessment.courseassessment' | translate }}" *ngIf="id > 0">
+                <div class="my-8">
+                    <div class="flex mb-8 items-center align-center">
+                        <button 
+                            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                            [ngStyle]="{ 'background-color': buttonColor}"
+                            (click)="goToAssessments()"
+                        >
+                            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                <path d="M19 11V9a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L12 2.757V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L2.929 4.343a1 1 0 0 0 0 1.414l.536.536L2.757 8H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0 1.414l1.414 1.414a1 1 0 0 0 1.414 0l.536-.535L8 17.243V18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H18a1 1 0 0 0 1-1Z"/>
+                                <path d="M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                                </g>
+                            </svg>
+                            <span class="text-white text-md font-semibold uppercase">{{ 'course-assessment.manageassessments' | translate }}</span>
+                        </button>
+                        <button 
+                            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                            *ngIf="courseAssessmentMode != 'add' && courseAssessmentMode != 'edit'"
+                            [ngStyle]="{ 'background-color': buttonColor}"
+                            (click)="addCourseAssessment()"
+                        >
+                            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                            </svg>
+                            <span class="text-white text-md font-semibold uppercase">{{ 'course-assessment.addcourseassessment' | translate }}</span>
+                        </button>
+                        <button 
+                            class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                            *ngIf="courseAssessmentMode == 'add' || courseAssessmentMode == 'edit'"
+                            (click)="cancelShowAssessment()" 
+                            [ngStyle]="{
+                                'border-color': buttonColor,
+                                'background-color': '#fff',
+                            }"
+                        >
+                            <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                            </svg>
+                            <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                        </button>
+                    </div>
+                    <div *ngIf="showAssessmentDetails">
+                        <div class="flex items-center justify-between my-8 relative">
+                            <select
+                                id="assessment"
+                                class="mr-2 rounded-[10px] bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedAssessment"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedAssessment }"
+                            >
+                                <option value="" disabled selected>{{ 'course-assessment.assessment' | translate }}</option>
+                                <option
+                                    *ngFor="let assessment of assessments"
+                                    [value]="assessment.id"
+                                >
+                                    {{ assessment.title }}
+                                </option>
+                            </select>
+                            <select
+                                id="assessment-timing"
+                                class="rounded-[10px] bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedAssessmentTiming"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedAssessmentTiming }"
+                                (change)="handleChangeAssessmentTiming($event)"
+                            >
+                                <option value="" disabled selected>{{ 'course-assessment.showcourseassessment' | translate }}</option>
+                                <option
+                                    *ngFor="let timing of assessmentTimings"
+                                    [value]="timing.value"
+                                >
+                                    {{ timing.text }}
+                                </option>
+                            </select>
+                            <div class="px-2">{{ selectedAssessmentTiming ? ('course-assessment.of' | translate) : '' }}</div>
+                            <select
+                                id="assessment-timing-type"
+                                class="rounded-[10px] bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedAssessmentTimingType"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedAssessmentTimingType }"
+                            >
+                                <option value="" disabled selected>{{ 'courses.selecttype' | translate }}</option>
+                                <option
+                                    *ngFor="let type of assessmentTimingsTypes"
+                                    [value]="type.value"
+                                >
+                                    {{ type.text }}
+                                </option>
+                            </select>
+                            <ng-container *ngIf="selectedAssessmentTimingType == 'module'">
+                                <select
+                                    id="assessment-module"
+                                    class="ml-2 rounded-[10px] bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    [(ngModel)]="selectedAssessmentModule"
+                                    [ngModelOptions]="{standalone: true}"
+                                    [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedAssessmentTimingType }"
+                                >
+                                    <option value="" disabled selected>{{ 'course-create.selectmodule' | translate }}</option>
+                                    <option
+                                        *ngFor="let module of courseModules"
+                                        [value]="module.id"
+                                    >
+                                        {{ module.number }}. {{ getModuleTitle(module) }}
+                                    </option>
+                                </select>
+                            </ng-container>
+                        </div>
+                        <div class="flex items-center justify-between my-8 relative">
+                            <input 
+                                type="number" 
+                                class="text-lg shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none mr-4" 
+                                [(ngModel)]="passingRate"
+                                [ngModelOptions]="{standalone: true}"
+                                placeholder="{{ 'course-assessment.passingrate' | translate }}">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-assessment.requiredtopass' | translate}}
+                                </label>
+                                <label
+                                    for="setting-191"
+                                    class="flex items-center w-full justify-between cursor-pointer"
+                                >
+                                    <div class="relative mr-1">
+                                        <input
+                                            id="setting-191"
+                                            name="setting-191"
+                                            type="checkbox"
+                                            class="sr-only"
+                                            [(ngModel)]="requirePass" 
+                                            [ngModelOptions]="{standalone: true}"
+                                        />
+                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveAssessment()"
+                            >
+                                {{ 'plan-create.savechanges' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="!showAssessmentDetails">
+                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-assessment.assessment' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-assessment.showcourseassessment' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-assessment.passingrate' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-assessment.requiredtopass' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'course-create.action' | translate }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of courseAssessments;let i = index;" 
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.assessment_title }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.course_assessment_timing }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.passing_rate }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        <svg
+                                            *ngIf="item?.required_to_pass"
+                                            [ngStyle]="{'color': '#5cb85c'}" class="mr-2 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                        </svg>
+                                    </td>
+                                    <td class="text-xs px-2 py-1 flex items-center py-4">
+                                        <svg (click)="editCourseAssessment(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                        </svg>
+                                        <svg (click)="deleteCourseAssessment(item)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</ng-container>
+<ng-container *ngIf="!isLoading && !(superAdmin || canCreateCourse)">
+    <app-no-access></app-no-access>  
+</ng-container>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-lg max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'club-create.uploadimage' | translate }}
+                </h3>
+                <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                    <div class="flex items-center relative">
+                        <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                        <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                    </div>
+                    <div class="flex items-center relative">
+                        <a href="javascript:;" (click)="imageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                            {{ 'image-cropper.save' | translate }}
+                        </a>
+                    </div>
+                </div>
+                <image-cropper 
+                    [canvasRotation]="canvasRotation"
+                    [transform]="transform"
+                    [imageChangedEvent]="imageChangedEvent" 
+                    [maintainAspectRatio]="false"
+                    [cropperMinWidth]="360" 
+                    [cropperMinHeight]="320" 
+                    format="png" 
+                    outputType="both"
+                    (imageCropped)="imageCropped($event)" 
+                    (imageLoaded)="imageLoaded()" 
+                    (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()"
+                    output="base64">
+                </image-cropper>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="py-10">
+    <div class="w-full max-w-full">
+        <div class="text-4xl font-semibold pt-24 sm:pt-24 md:pt-4 lg:pt-4">{{ 'startups.startup' | translate }}</div>
+        <div class="mt-10 w-full max-w-full sm:w-full sm:max-w-full md:w-10/12 md:w-10/12 lg:w-10/12 lg:w-10/12">
+            <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row mb-24">
+                <div class="mt-4">
+                    <img 
+                        *ngIf="startupImage"
+                        class="rounded-l-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[345px] md:max-w-[345px] lg:w-[345px] lg:max-w-[345px] sm:h-auto md:h-[382px] lg:h-[382px] max-h-auto md:max-h-auto lg:max-h-auto"
+                        width="345"
+                        height="382"
+                        [ngSrc]="startupImage"
+                        [ngStyle]="{'box-shadow': '0px 40px 54px -45px #00000099'}"
+                    />
+                </div>
+                <div 
+                    class="flex flex-col justify-between px-[58px] rounded-r-[30px]"
+                    [ngStyle]="{'background-color': '#f6f6f6'}"
+                >
+                    <div class="pt-3 text-3xl font-semibold">{{ startupTitle }}</div>
+                    <div class="py-3 whitespace-pre-wrap text-sm w-full">{{ startupDescription }}</div>
+                    <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row items-center">
+                        <ng-container  *ngIf="startup?.members?.length > 0">
+                            <div class="mr-4 mb-4 sm:mb-4 md:mb-0 lg:mb-0">
+                                <div class="flex flex-wrap">
+                                    <ng-container *ngFor="let member of startup?.members; let i = index">
+                                        <img
+                                            class="rounded-full max-w-[55px] max-h-[55px] object-cover object-top" 
+                                            [ngClass]="{'-ml-6': i > 0}"
+                                            width="55"
+                                            height="55"
+                                            [ngSrc]="apiPath + '/' + (member?.image || 'empty_avatar.png')"
+                                        />
+                                    </ng-container>
+                                </div>
+                            </div>
+                            <div>{{ startup?.members?.length }} {{ startup?.members?.length > 1 ? ('plan-details.members' | translate) : ('plan-details.member' | translate) }}</div>
+                        </ng-container>
+                    </div>
+                    <div class="py-3">
+                        <div class="flex text-sm font-medium flex-wrap">
+                            <span>{{ startup?.city }}</span>
+                            <span class="px-2">{{ startup?.project_start_year ? '•' : '' }}</span>
+                            <span>{{ startup?.project_start_year  }}</span>
+                        </div>
+                    </div>
+                    <div class="pb-8">
+                        <div class="flex flex-wrap">
+                            <ng-container *ngFor="let sector of startup?.sectors; let i = index;">
+                                <div class="border border-black rounded-xl px-4 py-[4px] mr-2 mb-2">
+                                    <div class="text-xs" title="{{sector?.category}}">{{ sector?.category }}</div>
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

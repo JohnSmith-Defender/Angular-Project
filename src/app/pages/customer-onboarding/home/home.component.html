@@ -1,0 +1,134 @@
+<ng-container *ngIf="!isloading && user?.role == 'Admin'">
+    <app-page-title title="{{ 'sidebar.customeronboarding' | translate }}"></app-page-title>
+    <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4">
+        <button 
+            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+            [ngStyle]="{
+                'background-color': buttonColor,
+                'opacity': createHover ? 1.5 : 1,
+                'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+            }" 
+            (click)="handleCreateRoute()"
+            (mouseover)="toggleCreateHover(true)"
+            (mouseleave)="toggleCreateHover(false)"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+            </svg>
+            <span class="text-white text-md font-semibold uppercase">{{ 'create-discount.createnew' | translate }}</span>
+        </button>
+    </div>
+    <div class="pt-6">
+        <div class="flex flex-wrap items-center w-full max-w-full">
+            <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearchChanged($event)"
+                    (doSearch)="handleSearchChanged($event)"
+                >
+                </app-search>
+            </div>
+            <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0"></div>
+        </div>
+    </div>
+    <div class="pt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-8 py-2 pb-20">
+            <ng-container *ngFor="let customer of companies | paginate: {itemsPerPage: 24, currentPage: p}">
+                <app-customer-card
+                    [id]="customer?.id"
+                    [path]="customer?.path"
+                    [name]="customer?.entity_name"
+                    [image]="customer?.image"
+                    [buttonColor]="buttonColor"
+                    (onEdit)="handleEdit($event)"
+                    (onDelete)="handleDelete($event)"
+                >
+                </app-customer-card>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'customer-onboarding.sitedetails' | translate }}
+                </h3>
+                <form class="space-y-6">
+                    <div class="w-full">
+                        <div>
+                            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'create-discount.companyname' | translate}}
+                            </label>
+                            <input 
+                                type="text" 
+                                name="name" 
+                                id="name" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !customerName }" 
+                                placeholder="{{'create-discount.companyname' | translate}}" 
+                                required=""
+                                [(ngModel)]="customerName"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div class="mt-4">
+                            <label for="domain" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                URL
+                            </label>
+                            <div class="flex items-center">
+                                <label class="block mr-4 text-sm font-medium text-gray-900 dark:text-white">
+                                    https://
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="domain" 
+                                    id="domain" 
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !customerURL }"  
+                                    placeholder="URL" 
+                                    required=""
+                                    [(ngModel)]="customerURL"
+                                    [ngModelOptions]="{standalone: true}">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="saveSiteDetails()"
+                        [ngStyle]="{
+                            'background-color': buttonColor
+                        }"
+                    >
+                        {{ 'company-settings.save' | translate }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>
+{{user?.role}}
+<ng-container *ngIf="!isloading && user?.role != 'Admin'">
+    <app-no-access></app-no-access>  
+</ng-container>

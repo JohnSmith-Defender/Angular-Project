@@ -1,0 +1,22 @@
+<div class="w-[368px] h-[461px] rounded-2xl bg-[#FCFCFC] pt-1 flex flex-col">
+  <img class="flex-none w-[368px] h-[264px] object-cover rounded-t-2xl" [src]="cardData.image" *ngIf="cardData.image" />
+
+  <div class="flex-1 pl-5 pr-6 pt-2 pb-7 flex flex-col justify-between">
+    <div class="flex space-x-3">
+      <div class="bg-[#D0D0D0] rounded-md w-20 h-6"></div>
+      <div class="bg-[#D0D0D0] rounded-md w-20 h-6"></div>
+    </div>
+    <div class="pb-[3px]">
+      <p class="font-semibold text-base">{{cardData.title}}</p>
+      <p class="w-[200px] truncate text-sm mb-3">{{cardData.description}} </p>
+      <!-- star starts -->
+      <div class="flex">
+        <star-rating [starType]="'svg'" [rating]="4"></star-rating>
+      </div>
+      <!-- star ends -->
+    </div>
+    <div class="ml-auto px-3 py-1 text-white text-sm rounded-md bg-[#A77FE0] opacity-50">
+      Comprar - {{cardData.currency}} {{cardData.amount}}
+    </div>
+  </div>
+</div>

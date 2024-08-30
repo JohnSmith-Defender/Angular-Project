@@ -1,0 +1,16 @@
+<app-voice-call-room
+    [isLoading]="isLoading"
+    [buttonColor]="buttonColor"
+    [statusText]="statusText"
+    [name]="name"
+    [image]="image"
+    [micMuted]="micMuted"
+    [personalData]="personalData"
+    [showActions]="showActions"
+    [invalidPasscode]="invalidPasscode"
+    [requirePasscode]="requirePasscode"
+    (toggleMic)="handleToggleMic()"
+    (endCall)="handleEndCall()"
+    (validatePasscode)="handleValidatePasscode($event)"
+>
+</app-voice-call-room>

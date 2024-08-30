@@ -1,0 +1,432 @@
+<app-page-title title="Keap"></app-page-title>
+<div class="container flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+    <div class="mt-3 sm:mt-3 md:mt-0 lg:mt-0 flex">
+        <app-button-group class="flex justify-end"
+            [buttonColor]="buttonColor"
+            [buttonList]="buttonList"
+            (onButtonClick)="handleChangeViewMode($event)"
+        >
+        </app-button-group>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="relative mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+        <div class="pt-1.5 mb-6 flex justify-end">
+            <button 
+                class="mr-4 flex items-center py-1.5 p-2.5 rounded-[10px] justify-evenly"
+                [ngStyle]="{'background-color': buttonColor}" 
+                (click)="addNew()"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                </svg>
+                <span class="text-white text-sm">{{ 'member-type-registration.addnew' | translate }}</span>
+            </button>
+            <button 
+                class="flex items-center py-1.5 p-2.5 rounded-[10px] justify-evenly hover:bg-black"
+                [ngStyle]="{'background-color': buttonColor}" 
+                (click)="setServiceAccountKey()"
+            >
+                <svg class="w-3 h-3 text-white mr-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    <path d="M19 11V9a1 1 0 0 0-1-1h-.757l-.707-1.707.535-.536a1 1 0 0 0 0-1.414l-1.414-1.414a1 1 0 0 0-1.414 0l-.536.535L12 2.757V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v.757l-1.707.707-.536-.535a1 1 0 0 0-1.414 0L2.929 4.343a1 1 0 0 0 0 1.414l.536.536L2.757 8H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h.757l.707 1.707-.535.536a1 1 0 0 0 0 1.414l1.414 1.414a1 1 0 0 0 1.414 0l.536-.535L8 17.243V18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-.757l1.707-.708.536.536a1 1 0 0 0 1.414 0l1.414-1.414a1 1 0 0 0 0-1.414l-.535-.536.707-1.707H18a1 1 0 0 0 1-1Z"/>
+                    <path d="M10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                    </g>
+                </svg>
+                <span class="text-white text-sm">{{ 'keap.serviceaccountkey' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="py-6">
+    <div class="w-full min-w-full py-8">
+        <div class="mat-table-responsive">
+            <mat-table [dataSource]="dataSource" matSort>
+                <ng-container *ngIf="viewMode == 'hooks' || viewMode == 'integrations'">
+                    <ng-container matColumnDef="title">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-create.title' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="title"> {{ row.title }} </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="viewMode == 'logs'">
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-details.name' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="name"> {{ row.name }} </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="event_type">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'crm.eventtype' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="event_type"> {{ row.event_type }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="tag">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'keap.tag' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="tag"> {{ row.tag }} </mat-cell>
+                </ng-container>
+                <ng-container *ngIf="viewMode == 'hooks' || viewMode == 'integrations'">
+                    <ng-container matColumnDef="course">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'course-create.course' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="course"> {{ getCourseName(row) }} </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="viewMode == 'logs'">
+                    <ng-container matColumnDef="course">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'course-create.course' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="course"> {{ getCourseTitle(row) }} </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="viewMode == 'hooks' || viewMode == 'integrations'">
+                    <ng-container matColumnDef="last_execution">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'keap.lastexecuted' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="last_execution"> {{ row?.last_execution ? (row?.last_execution | date: 'dd MMM yyyy') : '-' }} </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container *ngIf="viewMode == 'logs'">
+                    <ng-container matColumnDef="date">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'ranking.date' | translate }} </mat-header-cell>
+                        <mat-cell *matCellDef="let row" data-label="last_execution"> {{ row?.created_at | date: 'dd MMM yyyy' }} </mat-cell>
+                    </ng-container>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'your-admin-area.action' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="action">
+                        <div class="flex items-center">
+                            <ng-container *ngIf="viewMode == 'hooks' || viewMode == 'integrations'">
+                                <div *ngIf="viewMode == 'hooks'" class="flex items-center justify-between relative ml-4">
+                                    <label
+                                        for="status-{{row.id}}"
+                                        class="flex items-center w-full justify-between cursor-pointer"
+                                    >
+                                        <div class="relative mr-1">
+                                            <input
+                                                id="status-{{row.id}}"
+                                                name="status"
+                                                type="checkbox"
+                                                class="sr-only"
+                                                [checked]="row?.status == 1 ? true : false"
+                                                (change)="editHookStatus($event, row)"
+                                            />
+                                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div *ngIf="viewMode == 'integrations'" class="flex items-center justify-between relative ml-4">
+                                    <label
+                                        for="status-{{row.id}}"
+                                        class="flex items-center w-full justify-between cursor-pointer"
+                                    >
+                                        <div class="relative mr-1">
+                                            <input
+                                                id="status-{{row.id}}"
+                                                name="status"
+                                                type="checkbox"
+                                                class="sr-only"
+                                                [checked]="row?.status == 1 ? true : false"
+                                                (change)="editIntegrationStatus($event, row)"
+                                            />
+                                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <div class="ml-4 flex items-center">
+                                    <svg (click)="editRow(row)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer mr-4 w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                                    </svg>
+                                    <svg (click)="confirmDeleteRow(row)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                        <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                    </svg>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="viewMode == 'logs'">
+                                <svg (click)="resendEmail(row)" class="hover:cursor-pointer w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                                    <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                                    <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                                </svg>
+                            </ng-container>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            </mat-table>
+        </div>
+        <mat-paginator
+            #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+            [showFirstLastButtons]="true"
+        ></mat-paginator>
+    </div>
+</div>
+<button #modalbutton2 data-modal-target="item-modal2" data-modal-toggle="item-modal2" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal2" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton2 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal2">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <ng-container *ngIf="showKeapModal">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'keap.serviceaccountkey' | translate }}
+                    </h3>
+                    <form class="space-y-6">
+                        <div class="mb-2 relative">
+                            <label for="service-account-key" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'course-create.credits' | translate }}
+                            </label>
+                            <input 
+                                id="service-account-key"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !serviceAccountKey }"
+                                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                type="text" 
+                                placeholder="{{ 'keap.serviceaccountkey' | translate }}" 
+                                [(ngModel)]="serviceAccountKey"
+                                [ngModelOptions]="{standalone: true}"
+                                required
+                            >
+                        </div>
+                        <ol>
+                            <li><img style="width:80%;margin-bottom:15px;" src="./assets/images/keap-apisettings.png" /></li>
+                            <li><img style="width:80%;margin-bottom:15px;" src="./assets/images/keap-serviceaccountkey-add.png" /></li>
+                            <li><img style="width:80%;margin-bottom:15px;" src="./assets/images/keap-serviceaccountkey-copy.png" /></li>
+                        </ol>
+                        <button type="button" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-hide="item-modal" 
+                            [ngStyle]="{'background-color': buttonColor}"
+                            [disabled]="!serviceAccountKey"
+                            (click)="saveServiceAccountKey()"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="showEditKeapHookModal">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ mode == 'add' ? ('member-type-registration.addnew' | translate) : ('wall.edit' | translate) }}
+                    </h3>
+                    <form class="space-y-6">
+                        <div class="mb-2 relative">
+                            <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'wall.title' | translate }}
+                            </label>
+                            <input 
+                                id="title"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !title }"
+                                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                type="text" 
+                                placeholder="{{ 'wall.title' | translate }}" 
+                                [(ngModel)]="title"
+                                [ngModelOptions]="{standalone: true}"
+                                required
+                            >
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="event-type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'plan-create.selecteventtype' | translate }}
+                            </label>
+                            <select 
+                                id="event-type" 
+                                [(ngModel)]="selectedEventType"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedEventType }"
+                            >
+                                <option value="" disabled selected>{{ 'plan-create.selecteventtype' | translate }}*</option>
+                                <option
+                                    *ngFor="let type of hookEventTypes"
+                                    [value]="type.event_type"
+                                >
+                                    {{ type?.event_type }} - {{ getEventTypeDescription(type) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="tag" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'keap.selecttag' | translate }}
+                            </label>
+                            <select 
+                                id="tag" 
+                                [(ngModel)]="selectedTagId"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedTagId }"
+                                (change)="handleChangeTag($event)"
+                            >
+                                <option value="" disabled selected>{{ 'keap.selecttag' | translate }}*</option>
+                                <option
+                                    *ngFor="let tag of keapTags"
+                                    [value]="tag.id"
+                                >
+                                    {{ tag?.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="course" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'keap.selectcourse' | translate }}
+                            </label>
+                            <select 
+                                id="course" 
+                                [(ngModel)]="selectedCourse"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedCourse }"
+                                (change)="handleChangeTag($event)"
+                            >
+                                <option value="" disabled selected>{{ 'keap.selectcourse' | translate }}*</option>
+                                <option
+                                    *ngFor="let course of courses"
+                                    [value]="course.id"
+                                >
+                                    {{ getCourseTitle(course) }}
+                                </option>
+                            </select>
+                        </div>
+                        <button type="button" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-hide="item-modal" 
+                            [ngStyle]="{'background-color': buttonColor}"
+                            (click)="saveKeapHook()"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="showEditKeapIntegrationModal">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ mode == 'add' ? ('member-type-registration.addnew' | translate) : ('wall.edit' | translate) }}
+                    </h3>
+                    <form class="space-y-6">
+                        <div class="mb-2 relative">
+                            <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'wall.title' | translate }}
+                            </label>
+                            <input 
+                                id="title"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !title }"
+                                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                type="text" 
+                                placeholder="{{ 'wall.title' | translate }}" 
+                                [(ngModel)]="title"
+                                [ngModelOptions]="{standalone: true}"
+                                required
+                            >
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="event-type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'plan-create.selecteventtype' | translate }}
+                            </label>
+                            <select 
+                                id="event-type" 
+                                [(ngModel)]="selectedEventType"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedEventType }"
+                            >
+                                <option value="" disabled selected>{{ 'plan-create.selecteventtype' | translate }}*</option>
+                                <option
+                                    *ngFor="let type of hookEventTypes"
+                                    [value]="type.event_type"
+                                >
+                                    {{ type?.event_type }} - {{ getEventTypeDescription(type) }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="tag" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'keap.selecttag' | translate }}
+                            </label>
+                            <select 
+                                id="tag" 
+                                [(ngModel)]="selectedTagId"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedTagId }"
+                                (change)="handleChangeTag($event)"
+                            >
+                                <option value="" disabled selected>{{ 'keap.selecttag' | translate }}*</option>
+                                <option
+                                    *ngFor="let tag of keapTags"
+                                    [value]="tag.id"
+                                >
+                                    {{ tag?.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2 relative">
+                            <label for="course" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'keap.selectcourse' | translate }}
+                            </label>
+                            <select 
+                                id="course" 
+                                [(ngModel)]="selectedCourse"
+                                [ngModelOptions]="{standalone: true}"
+                                class="bg-white border border-1 border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [ngStyle]="{'border-color': buttonColor}"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedCourse }"
+                                (change)="handleChangeTag($event)"
+                            >
+                                <option value="" disabled selected>{{ 'keap.selectcourse' | translate }}*</option>
+                                <option
+                                    *ngFor="let course of courses"
+                                    [value]="course.id"
+                                >
+                                    {{ getCourseTitle(course) }}
+                                </option>
+                            </select>
+                        </div>
+                        <button type="button" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-hide="item-modal" 
+                            [ngStyle]="{'background-color': buttonColor}"
+                            (click)="saveKeapIntegration()"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

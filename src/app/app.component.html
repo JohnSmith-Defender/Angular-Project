@@ -1,0 +1,28 @@
+<ng-template #content>
+    <router-outlet></router-outlet>
+</ng-template>
+<ng-container [ngSwitch]="layout">
+    <ng-container *ngIf="isAuthenticated$ | async; else notAuthorized">
+        <app-layout-main class="main-layout" *ngSwitchCase="PageLayout.Main" [newUpdatesAvailable]="newUpdatesAvailable">
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </app-layout-main>
+
+        <app-layout-left-banner *ngSwitchCase="PageLayout.LeftBanner">
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </app-layout-left-banner>
+
+        <app-layout-main class="main-layout" *ngSwitchDefault>
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </app-layout-main>
+    </ng-container>
+    
+    <ng-template #notAuthorized>
+        <app-layout-left-banner *ngSwitchCase="PageLayout.LeftBanner">
+            <ng-container *ngTemplateOutlet="content"></ng-container>
+        </app-layout-left-banner>
+
+        <app-layout-blank *ngSwitchCase="PageLayout.Blank">
+            <router-outlet></router-outlet>
+        </app-layout-blank>
+    </ng-template>
+</ng-container>

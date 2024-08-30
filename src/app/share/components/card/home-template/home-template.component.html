@@ -1,0 +1,24 @@
+<div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <a href="#">
+        <img class="p-8 rounded-t-lg" [src]="image" alt="product image" />
+    </a>
+    <div class="p-5 pb-3 rounded-b-lg" [ngStyle]="{'background-color': active ? '#1d2327' : 'transparent'}">
+        <a href="javascript:;" class="block mb-3 flex items-center justify-between">
+            <h5 class="text-base capitalize font-semibold tracking-tight dark:text-white"
+            [ngClass]="{'text-white': active, 'text-gray-900': !active}">
+                {{ active ? (('campaigns.active' | translate) + ': ' + name) : name }}
+            </h5>
+            <div class="flex">
+                <a *ngIf="!active" href="javascript:;" 
+                    (click)="activate()"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    {{'guest-landing.activate' | translate}}
+                </a>
+                <a href="javascript:;" (click)="goToImageGallery()"
+                    class="ml-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    {{'landing-pages.preview' | translate}}
+                </a>
+            </div>
+        </a>
+    </div>
+</div>

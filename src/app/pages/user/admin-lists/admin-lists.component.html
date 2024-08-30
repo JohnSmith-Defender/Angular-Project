@@ -1,0 +1,81 @@
+<div
+    class="container flex items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3"
+    [ngClass]="{'flex-col': isMobile}"
+>
+    <h1 class="text-2xl" 
+        [ngClass]="{'text-center mb-4': isMobile}">
+        {{ 'company-settings.managelanding' | translate }}
+    </h1>
+</div>
+<div class="pt-6">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6"></div>
+        <div class="pt-1.5 mb-6">
+            <app-button-group class="flex justify-end"
+                [buttonColor]="buttonColor"
+                [buttonList]="buttonList"
+                [subcategoryList]="subButtonList"
+                (onButtonClick)="filterByType($event)"
+                (onSubButtonClick)="filterByStatus($event)"
+            >
+            </app-button-group>
+        </div>
+    </div>
+</div>
+<app-plans-admin-list 
+    *ngIf="filter == 'plans'"
+    [list]="list"
+    [company]="company"
+    [buttonColor]="buttonColor"
+    [primaryColor]="primaryColor"
+    [canCreatePlan]="canCreatePlan"
+    [plansTitle]="plansTitle"
+    [userId]="userId"
+    [superAdmin]="superAdmin"
+    [language]="language"
+    [status]="status"
+    [isUESchoolOfLife]="isUESchoolOfLife"
+>
+</app-plans-admin-list>
+<app-clubs-admin-list 
+    *ngIf="filter == 'clubs'"
+    [list]="list"
+    [company]="company"
+    [buttonColor]="buttonColor"
+    [primaryColor]="primaryColor"
+    [canCreateClub]="canCreateClub"
+    [clubsTitle]="clubsTitle"
+    [userId]="userId"
+    [superAdmin]="superAdmin"
+    [language]="language"
+    [status]="status"
+>
+</app-clubs-admin-list>
+<app-job-offers-admin-list 
+    *ngIf="filter == 'canalempleo'"
+    [list]="list"
+    [company]="company"
+    [buttonColor]="buttonColor"
+    [primaryColor]="primaryColor"
+    [canCreateJobOffer]="canCreateJobOffer"
+    [jobOffersTitle]="jobOffersTitle"
+    [userId]="userId"
+    [superAdmin]="superAdmin"
+    [language]="language"
+    [status]="status"
+>
+</app-job-offers-admin-list>
+<app-city-guide-admin-list 
+    *ngIf="filter == 'cityguide'"
+    [list]="list"
+    [company]="company"
+    [buttonColor]="buttonColor"
+    [primaryColor]="primaryColor"
+    [canCreateCityGuide]="canCreateCityGuide"
+    [cityGuideTitle]="cityGuideTitle"
+    [userId]="userId"
+    [superAdmin]="superAdmin"
+    [language]="language"
+    [status]="status"
+>
+</app-city-guide-admin-list>

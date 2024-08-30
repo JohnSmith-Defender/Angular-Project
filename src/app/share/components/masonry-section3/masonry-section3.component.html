@@ -1,0 +1,112 @@
+<div class="h-[600px] max-h-[600px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-[16px] justify-evenly relative"> 
+    <div class="h-[600px] max-h-[600px] row-span-2 rounded-lg relative cursor-pointer" 
+        [routerLink]="[club1Data?.path]" *ngIf="club1Data?.id > 0">
+        <div class="grid grid-cols-1 justify-evenly relative h-full max-h-full sm:h-full">
+            <img class="border object-cover w-full max-w-full h-full max-h-full max-h-full rounded-t-lg shadow" 
+                width="344" height="306" *ngIf="club1Data?.image" [ngSrc]="club1Data?.image" alt=""
+                [ngStyle]="{'border-color': buttonColor}">
+            <div class="rounded-b-lg" [ngStyle]="{'background-color': buttonColor}">
+                <div class="flex flex-col justify-evenly text-white h-full max-h-full p-9">
+                    <div class="font-bold pb-4">{{ club1Data?.title }}</div>
+                    <div class="p-2 border border-white rounded-[10px] cursor-pointer w-32 text-center text-xs font-bold uppercase">{{ 'plan-details.join' | translate }}</div>
+                    <div class="flex text-xs text-white py-4">
+                        <span>{{club1Data?.category}}</span> <span *ngIf="club1Data?.city" class="px-3">•</span> <span>{{club1Data?.city}}</span>
+                    </div>
+                    <div class="flex pt-4 sm:pt-4 md:pt-0 lg:pt-0">
+                        <svg class="w-6 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 2-8.4 7.05a1 1 0 0 1-1.2 0L1 2m18 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1m18 0v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2"/>
+                        </svg>
+                        <svg class="w-6 h-4 ml-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <div class="h-full max-h-full col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 rounded-lg cursor-pointer"
+        [routerLink]="[club2Data?.path]" *ngIf="club2Data?.id > 0">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-evenly h-full max-h-full sm:h-full sm:max-h-full md:h-[292px] md:max-h-[292px] lg:h-[292px] lg:max-h-[292px]">
+            <div class="rounded-l-lg">
+                <img class="border h-full max-h-full sm:h-full sm:max-h-full md:h-[292px] md:max-h-[292px] lg:h-[292px] lg:max-h-[292px] w-full max-w-full rounded-l-lg shadow" 
+                    width="347" height="300" *ngIf="club1Data?.image" [ngSrc]="club2Data?.image" alt=""
+                    [ngStyle]="{'border-color': '#1C393D'}"
+                    [ngClass]="company?.id == 12 || company?.id == 35 ? 'object-cover' : 'object-contain'">
+            </div> 
+            <div class="rounded-r-lg" [ngStyle]="{'background-color': buttonColor || '#1C393D'}">
+                <div class="flex flex-col justify-evenly text-white h-full max-h-full p-9">
+                    <div class="font-bold pb-4">{{ club2Data?.title }}</div>
+                    <div class="uppercase p-2 border border-white rounded-[10px] cursor-pointer w-32 text-center text-xs font-bold">{{ 'club-details.join' | translate }}</div>
+                    <div class="flex text-xs text-white py-4">
+                        <span>{{club2Data?.category}}</span> <span *ngIf="club2Data?.city" class="px-3">•</span> <span>{{club2Data?.city}}</span>
+                    </div>
+                    <div class="flex pt-4 sm:pt-4 md:pt-0 lg:pt-0">
+                        <svg class="w-6 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 2-8.4 7.05a1 1 0 0 1-1.2 0L1 2m18 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1m18 0v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2"/>
+                        </svg>
+                        <svg class="w-6 h-4 ml-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <div class="h-[600px] max-h-[600px] row-span-2 rounded-lg relative cursor-pointer" 
+        [routerLink]="[club3Data?.path]" *ngIf="club3Data?.id > 0">
+        <div class="grid grid-cols-1 justify-evenly relative h-full max-h-full">
+            <img class="border object-cover w-full max-w-full h-full max-h-full max-h-full rounded-t-lg shadow" 
+                width="344" height="306" *ngIf="club3Data?.image" [ngSrc]="club3Data?.image" alt=""
+                [ngStyle]="{'border-color': buttonColor}">
+            <div class="rounded-b-lg" [ngStyle]="{'background-color': buttonColor}">
+                <div class="flex flex-col justify-evenly text-white h-full max-h-full p-9">
+                    <div class="font-bold pb-4">{{ club3Data?.title }}</div>
+                    <div class="p-2 border border-white rounded-[10px] cursor-pointer w-32 text-center text-xs font-bold uppercase">{{ 'plan-details.join' | translate }}</div>
+                    <div class="flex text-xs text-white py-4">
+                        <span>{{club3Data?.category}}</span> <span *ngIf="club3Data?.city" class="px-3">•</span> <span>{{club3Data?.city}}</span>
+                    </div>
+                    <div class="flex pt-4 sm:pt-4 md:pt-0 lg:pt-0">
+                        <svg class="w-6 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 2-8.4 7.05a1 1 0 0 1-1.2 0L1 2m18 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1m18 0v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2"/>
+                        </svg>
+                        <svg class="w-6 h-4 ml-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <div class="club4 h-full max-h-full col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 rounded-lg cursor-pointer"
+        [routerLink]="[club4Data?.path]" *ngIf="club4Data?.id > 0">
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-evenly h-full max-h-full sm:h-full sm:max-h-full md:h-[292px] md:max-h-[292px] lg:h-[292px] lg:max-h-[292px]">
+            <div class="rounded-l-lg">
+                <img class="border h-full max-h-full sm:h-full sm:max-h-full md:h-[292px] md:max-h-[292px] lg:h-[292px] lg:max-h-[292px] w-full max-w-full rounded-l-lg shadow" 
+                    width="347" height="300" *ngIf="club1Data?.image" [ngSrc]="club4Data?.image" alt=""
+                    [ngStyle]="{'border-color': '#1C393D'}"
+                    [ngClass]="company?.id == 12 || company?.id == 35 ? 'object-cover' : 'object-contain'">
+            </div> 
+            <div class="rounded-r-lg" [ngStyle]="{'background-color': buttonColor || '#1C393D'}">
+                <div class="flex flex-col justify-evenly text-white h-full max-h-full p-9">
+                    <div class="font-bold pb-4">{{ club4Data?.title }}</div>
+                    <div class="uppercase p-2 border border-white rounded-[10px] cursor-pointer w-32 text-center text-xs font-bold">{{ 'club-details.join' | translate }}</div>
+                    <div class="flex text-xs text-white py-4">
+                        <span>{{club4Data?.category}}</span> <span *ngIf="club4Data?.city" class="px-3">•</span> <span>{{club4Data?.city}}</span>
+                    </div>
+                    <div class="flex pt-4 sm:pt-4 md:pt-0 lg:pt-0">
+                        <svg class="w-6 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 2-8.4 7.05a1 1 0 0 1-1.2 0L1 2m18 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1m18 0v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2"/>
+                        </svg>
+                        <svg class="w-6 h-4 ml-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 12.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/>
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 3h-2l-.447-.894A2 2 0 0 0 12.764 1H7.236a2 2 0 0 0-1.789 1.106L5 3H3a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V5a2 2 0 0 0-2-2Z"/>
+                        </svg>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>

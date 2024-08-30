@@ -1,0 +1,653 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="pt-20 sm:pt-20 md:pt-14 lg:pt-14 pb-8 course-container">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 relative" *ngIf="course">
+        <div class="transition duration-700 ease-in-out z-10 col-span-1 h-full overflow-auto md:absolute lg:absolute md:top-0 lg:top-0 w-full max-w-full sm:w-full sm:max-w-full md:w-[350px] md:max-w-[350px] lg:w-[350px] lg:max-w-[350px]" 
+            [ngClass]="{'h-full': canAccessLesson() && course?.course_modules?.length > 0 && !(hasCourseStarted(course) && course?.locked == 1 && !superAdmin) && !(hasCourseStarted(course) && (!course?.locked && showBuyNow) && !superAdmin)}"
+            *ngIf="!isExpanded">
+            <div class="text-4xl font-semibold" [ngClass]="{'pb-4': !courseProgress}">{{ courseTitle }}</div>
+            <ng-container *ngIf="(hasCourseStarted(course) && (!course?.locked && !showBuyNow)) || superAdmin">
+                <div *ngIf="course?.course_modules?.length > 0 && selectedUnit?.title && courseProgress > 0" 
+                    class="mt-2 mb-4 w-full max-w-full sm:w-full sm:max-w-full md:w-[350px] lg:w-[350px]">
+                    <div class="w-full bg-gray-200 rounded-[10px] dark:bg-gray-700">
+                        <div class="text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full" 
+                            [ngClass]="{'bg-gray-600': courseProgress <= 0, 'bg-blue-600': courseProgress > 0}"
+                            [ngStyle]="{'width': (courseProgress + '%') || '0%'}"> 
+                            {{courseProgress}}%
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="(hasCourseStarted(course) && (!course?.locked && !showBuyNow)) || superAdmin">
+                <div *ngIf="course?.course_modules?.length > 0 && selectedUnit?.title">
+                    <ng-container *ngIf="beginningCourseAssessment?.assessment_id > 0">
+                        <div class="hover:cursor-pointer bg-[#F8F4F4] min-h-[32px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]"
+                            (click)="displayAssessment(beginningCourseAssessment)">
+                            <div class="font-bold">
+                                {{ 'course-assessment.courseassessment' | translate }}
+                                <div class="font-normal">{{ getAssessmentTitle(beginningCourseAssessment) }} - {{beginningCourseAssessment?.assessment_details?.length}} {{'quizzes-popup.questions' | translate}}</div>
+                            </div>
+                            <div>
+                                <svg *ngIf="!beginningCourseAssessment?.ratings" [ngStyle]="{'color': buttonColor}" class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13 19-6-5-6 5V2a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17Z"/>
+                                </svg>
+                                <svg *ngIf="beginningCourseAssessment?.ratings" [ngStyle]="{'color': '#5cb85c'}" class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                  </svg>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngFor="let module of course?.course_modules">
+                        <div class="bg-[#F8F4F4] min-h-[32px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                            <div class="font-bold">
+                                {{ getCourseModuleTitle(module) }}
+                                <ng-container *ngIf="expandedModuleId == module.id && module?.description">
+                                    <div class="font-normal">{{ getCourseModuleDescription(module) }}</div>
+                                </ng-container>
+                            </div>
+                            <div></div>
+                            <div *ngIf="getModuleStatus(module)"></div>
+                            <div class="hover:cursor-pointer">
+                                <ng-container *ngIf="expandedModuleId != module.id && !checkLockAccess(module.id)">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}" 
+                                        (click)="expandModule(module)"
+                                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                                    </svg>
+                                </ng-container>
+                                <ng-container *ngIf="expandedModuleId == module.id  && !checkLockAccess(module.id)">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}"
+                                        (click)="expandModule(module)"
+                                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                    </svg>
+                                </ng-container>
+                                <ng-container *ngIf="checkLockAccess(module.id)">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}"
+                                        (click)="selectBlockModule(module)"
+                                        class="mt-1 w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                        <path d="M14 7h-1.5V4.5a4.5 4.5 0 1 0-9 0V7H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Zm-5 8a1 1 0 1 1-2 0v-3a1 1 0 1 1 2 0v3Zm1.5-8h-5V4.5a2.5 2.5 0 1 1 5 0V7Z"/>
+                                    </svg>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="expandedModuleId == module.id">
+                            <ng-container *ngFor="let unit of module.units; let i = index;">
+                                <div class="module-units" (mouseover)="hovered = i" (mouseout)="hovered = -1" 
+                                    [ngStyle] ="{'background-color' : hovered == i ? (companyId == 52 || companyId == 65 ? '#fcf352' : hoverColor) : 'transparent'}">
+                                    <div *ngIf="getModuleCategoryTitle(module.units, unit, i)" class="px-[12px]">
+                                        {{ getModuleCategoryTitle(module.units, unit, i) }}
+                                    </div>
+                                    <div class="flex items-center py-[10px] px-[12px] justify-between hover:cursor-pointer" (click)="selectUnit(unit)">
+                                        <div style="max-width:80%;" 
+                                            [style.font-size]="course.text_size_unit+'px'" 
+                                            [style.line-height]="course.text_size_unit*4/3+'px'" 
+                                            [ngStyle]="{'font-size': courseTextSize,
+                                                'line-height': courseLineHeight,
+                                                'font-weight': (selectedUnit.id == unit.id || unit?.Company_Course_Unit_Users[0]?.progress == 100) ? 'bold' : 'normal'}">
+                                            {{ getCourseUnitTitle(unit) }}
+                                        </div>
+                                        <div class="unit-progress">
+                                            <ng-container *ngIf="unit?.Company_Course_Unit_Users[0]?.progress == 100">
+                                                <img class="w-[16px] h-[16px] complete" src="./assets/images/new-design/icons/Progress-completed.png" />
+                                            </ng-container>
+                                            <ng-container *ngIf="unit?.Company_Course_Unit_Users[0]?.progress != 100 && unit?.Company_Course_Unit_Users[0]?.visited == 0">
+                                                <img class="min-w-[16px] min-h-[16px] w-[16px] h-[16px] complete" src="./assets/images/new-design/icons/Progress-incomplete.png" />
+                                            </ng-container>
+                                            <ng-container *ngIf="unit?.Company_Course_Unit_Users[0]?.progress != 100 && unit?.Company_Course_Unit_Users[0]?.visited == 1">
+                                                <svg style="opacity:0.3" [ngStyle]="{'color': 'green'}" class="w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m7 10 2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                                </svg>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="afterModuleAssessments?.length > 0">
+                                <ng-container *ngFor="let assessment of afterModuleAssessments; let a = index;">
+                                    <ng-container *ngIf="assessment?.module_id == module.id">
+                                        <div class="flex items-center py-[10px] px-[12px] justify-between hover:cursor-pointer" (click)="displayAssessment(assessment)">
+                                            <div style="max-width:80%;" 
+                                                [style.font-size]="course.text_size_unit+'px'" 
+                                                [style.line-height]="course.text_size_unit*4/3+'px'" 
+                                                [ngStyle]="{'font-size': courseTextSize,
+                                                    'line-height': courseLineHeight,
+                                                    'font-weight': currentAssessment?.assessment_id == assessment?.assessment_id ? 'bold' : 'normal'}">
+                                                    {{ 'course-assessment.courseassessment' | translate }}
+                                                    <div>{{ getAssessmentTitle(assessment) }} - {{assessment?.assessment_details?.length}} {{'quizzes-popup.questions' | translate}}</div>
+                                            </div>
+                                            <div class="unit-progress">
+                                                <ng-container *ngIf="assessment?.ratings">
+                                                    <img class="w-[16px] h-[16px] complete" src="./assets/images/new-design/icons/Progress-completed.png" />
+                                                </ng-container>
+                                                <ng-container *ngIf="!assessment?.ratings">
+                                                    <img class="w-[16px] h-[16px] min-w-[16px] min-h-[16px] complete" src="./assets/images/new-design/icons/Progress-incomplete.png" />
+                                                </ng-container>
+                                            </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="courseIntroPDFURL">
+                        <div (click)="openIntroPDF()" class="bg-[#F8F4F4] min-h-[32px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                            <div class="font-bold hover:cursor-pointer">
+                                {{ 'course-details.coursecontent' | translate }}
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="endCourseAssessment?.assessment_id > 0">
+                        <div class="hover:cursor-pointer bg-[#F8F4F4] min-h-[32px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]"
+                            (click)="displayAssessment(endCourseAssessment)">
+                            <div class="font-bold">
+                                {{ 'course-assessment.courseassessment' | translate }}
+                                <div class="font-normal">{{ getAssessmentTitle(endCourseAssessment) }} - {{endCourseAssessment?.assessment_details?.length}} {{'quizzes-popup.questions' | translate}}</div>
+                            </div>
+                            <div>
+                                <svg *ngIf="!endCourseAssessment?.ratings" [ngStyle]="{'color': buttonColor}" class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m13 19-6-5-6 5V2a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17Z"/>
+                                </svg>
+                                <svg *ngIf="endCourseAssessment?.ratings" [ngStyle]="{'color': '#5cb85c'}" class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                  </svg>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+        <ng-container *ngIf="(hasCourseStarted(course) && (!course?.locked && !showBuyNow)) || superAdmin || showIntroPDF">
+            <div maximize #maximize="maximize" class="z-10 w-full max-w-full transition duration-700 ease-in-out" 
+                *ngIf="course?.course_modules?.length > 0 && selectedUnit?.title && !showAssessment"
+                [ngClass]="{
+                    'ml-0 sm:ml-0 md:ml-[416px] lg:ml-[416px] col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2': !isExpanded,
+                    'col-span-3': isExpanded,
+                }"
+                >
+                <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row justify-between" [ngClass]="{'vidalytics-div1': selectedUnit?.option == 'Vidalytics'}">
+                    <div class="flex items-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 font-semibold text-4xl font-semibold">
+                        {{ showIntroPDF ? ('course-details.coursecontent' | translate) : (isModuleLocked ? selectedModuleTitle : getCourseUnitTitle(selectedUnit)) }}
+                        <div class="flex justify-en ml-4" *ngIf="!isMobile">
+                            <div class="grid grid-cols-2 gap-2">
+                                <button
+                                    class="w-6 h-6 p-1 cursor-pointer"
+                                    (click)="minimizeWindow()"
+                                >
+                                    <svg [ngStyle]="{'color': buttonColor}" class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 9h4m0 0V5m0 4L4 4m15 5h-4m0 0V5m0 4 5-5M5 15h4m0 0v4m0-4-5 5m15-5h-4m0 0v4m0-4 5 5"/>
+                                    </svg>                                
+                                </button>
+                                <button
+                                    class="w-6 h-6 p-1 cursor-pointer"
+                                    (click)="maximizeWindow()"
+                                >
+                                    <svg [ngStyle]="{'color': buttonColor}" class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H4m0 0v4m0-4 5 5m7-5h4m0 0v4m0-4-5 5M8 20H4m0 0v-4m0 4 5-5m7 5h4m0 0v-4m0 4-5-5"/>
+                                    </svg>
+                                </button>
+                            </div> 
+                        </div>
+                    </div>
+                    <div *ngIf="!showIntroPDF" class="mb-4 sm:mb-4 md:mb-0 lg:mb-0 flex items-center">
+                        <div class="flex items-center align-center uppercase mr-4" *ngIf="selectedUnit?.Company_Course_Unit_Users[0]?.progress == 100">
+                            <img class="w-4 h-4 mr-2" src="./assets/images/new-design/icons/Progress-completed.png" />
+                            {{ 'courses.completed' | translate }}
+                        </div>
+                        <div 
+                            [ngStyle]="{'background-color': buttonColor}"
+                            class="text-sm rounded-[15px] text-white py-3 uppercase px-4 hover:cursor-pointer h-[42px] ml-[10px] text-center"
+                            [ngClass]="{'w-[220px]': companyId == 65, 'w-[175px]': companyId != 65}"
+                            (click)="markComplete(selectedUnit.id, true)" 
+                            *ngIf="!autoCompleteLesson && selectedUnit?.Company_Course_Unit_Users[0]?.progress != 100 && (selectedUnit?.module_id == selectedModuleId && !isModuleLocked) && canAccessLesson()"
+                        >
+                            {{ 'course-details.markascomplete' | translate }}
+                        </div>
+                        <div 
+                            *ngIf="selectedUnit?.Company_Course_Unit_Users[0]?.progress == 100"
+                            [ngStyle]="{'background-color': buttonColor}"
+                            class="text-sm rounded-[15px] text-white py-3 uppercase px-4 hover:cursor-pointer ml-[15px] h-[42px]"
+                            (click)="resetStatus(selectedUnit.id, true)" 
+                        >
+                            {{ 'company-reports.reset' | translate }}
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8" [ngClass]="{'vidalytics-div2': selectedUnit?.option == 'Vidalytics'}">
+                    <div class="content-container">
+                        <ng-container *ngIf="isModuleLocked">
+                            <div style="display:flex;flex-direction:row;align-items:center;">
+                                <img style="width:40px;" src="./assets/images/blocked.png" />
+                                <div style="margin-left:10px;font-style:italic;opacity:0.75;">
+                                    {{ blockedModuleText || (id == 151 ? ('course-details.courseblockedone' | translate) : ('course-details.courseblocked' | translate)) }}
+                                    <ng-container *ngIf="superAdmin"><div><small [ngStyle]="{'color': buttonColor}">*{{ 'course-details.adminview' | translate }}</small></div></ng-container>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="selectedUnit?.module_id == selectedModuleId && (!isModuleLocked || superAdmin)">
+                            <ng-container *ngIf="!canAccessLesson()">
+                                <div style="display:flex;flex-direction:row;align-items:center;">
+                                    <img style="width:40px;" src="./assets/images/blocked.png" />
+                                    <div style="margin-left:10px;font-style:italic;opacity:0.75;">
+                                        {{ 'course-details.needpreviouslessoncomplete' | translate }}
+                                        <ng-container *ngIf="superAdmin"><div><small [ngStyle]="{'color': buttonColor}">*{{ 'course-details.adminview' | translate }}</small></div></ng-container>
+                                    </div>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="canAccessLesson() || superAdmin || selectedUnit?.video_always_available">
+                                <ng-container *ngIf="!showIntroPDF && selectedUnit?.Company_Course_Unit_Type?.type == 'video'">
+                                    <div class="bg-black relative rounded-[10px]">
+                                        <ng-container *ngIf="selectedUnit?.option == 'YouTube' || selectedUnit?.option == 'Vimeo' || selectedUnit?.option == 'External' || selectedUnit?.option == 'Vidalytics'">
+                                            <div class="video-wrap relative" *ngIf="course?.video_cover || selectedUnit?.video_cover">
+                                                <div class="box-video relative rounded-[10px]" [ngClass]="{'open': playCurrentVideo}">
+                                                    <ng-container *ngIf="!selectedUnit?.video_cover && !playCurrentVideo">
+                                                        <div class="absolute top-0 left-0 w-full h-[560px] rounded-[10px]" style="background-image: url('{{ courseSrc + course?.video_cover }}');background-size:contain;background-repeat:no-repeat;background-color:#000;background-position:center;">
+                                                            <div class="video-title" *ngIf="showTitle">
+                                                                <p class="text-white">{{ language == 'eu' ? selectedUnit?.title_eu : (language == 'en' ? selectedUnit?.title_en : ( language == 'ca' ? selectedUnit?.title_ca : (language == 'de' ? selectedUnit?.title_de : (language == 'fr' ? selectedUnit?.title_fr : selectedUnit?.title)) ) ) }}</p>
+                                                            </div>
+                                                            <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                                                        </div>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="selectedUnit?.video_cover && !playCurrentVideo">
+                                                        <div class="absolute top-0 left-0 w-full h-[560px]" style="background-image: url('{{ courseSrc + selectedUnit?.video_cover }}');background-size:contain;background-repeat:no-repeat;background-color:#000;background-position:center;">
+                                                            <div class="video-title" *ngIf="showTitle">
+                                                                <p class="text-white">{{ language == 'eu' ? selectedUnit?.title_eu : (language == 'en' ? selectedUnit?.title_en : ( language == 'ca' ? selectedUnit?.title_ca : (language == 'de' ? selectedUnit?.title_de : (language == 'fr' ? selectedUnit?.title_fr : selectedUnit?.title)) ) ) }}</p>
+                                                            </div>
+                                                            <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                                                        </div>
+                                                    </ng-container>
+                                                    <div *ngIf="!playCurrentVideo" class="blur"></div>
+                                                    <div 
+                                                        class="video-container" 
+                                                        style="opacity:0;" 
+                                                        [innerHtml]="playCurrentVideo ? (addAutoPlay(selectedLesson) | safeContentHtml: 'html') : (selectedLesson | safeContentHtml: 'html')" 
+                                                        *ngIf="selectedUnit?.url?.indexOf('iframe') >= 0 || selectedUnit?.vimeo_id > 0">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="!course?.video_cover && !selectedUnit?.video_cover">
+                                                <div class="video-container" 
+                                                    [innerHtml]="selectedLesson | safeContentHtml: 'html'" 
+                                                    *ngIf="selectedUnit?.url?.indexOf('iframe') >= 0 || selectedUnit?.vimeo_id > 0">
+                                                </div>
+                                            </div>
+                                            <ng-container *ngIf="(course?.video_cover || selectedUnit?.video_cover) && selectedUnit?.url?.indexOf('iframe') < 0 && !selectedUnit?.vimeo_id">
+                                                <div class="video-wrap relative">
+                                                    <div class="box-video relative rounded-[10px]" [ngClass]="{'open': playCurrentVideo}">
+                                                        <div *ngIf="!selectedUnit?.video_cover && !playCurrentVideo"  
+                                                            class="absolute top-0 left-0 w-full h-[560px] rounded-[10px]" style="background-image: url('{{ courseSrc + course?.video_cover }}');background-size:contain;background-repeat:no-repeat;background-color:#000;background-position:center;">
+                                                            <div class="video-title" *ngIf="showTitle">
+                                                                <p class="text-white">{{ language == 'eu' ? selectedUnit?.title_eu : (language == 'en' ? selectedUnit?.title_en : ( language == 'ca' ? selectedUnit?.title_ca : (language == 'de' ? selectedUnit?.title_de : (language == 'fr' ? selectedUnit?.title_fr : selectedUnit?.title)) ) ) }}</p>
+                                                            </div>
+                                                            <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                                                        </div>
+                                                        <div *ngIf="selectedUnit?.video_cover && !playCurrentVideo" 
+                                                            class="absolute top-0 left-0 w-full h-[560px]" style="background-image: url('{{ courseSrc + selectedUnit?.video_cover }}');background-size:contain;background-repeat:no-repeat;background-color:#000;background-position:center;">
+                                                            <div class="video-title" *ngIf="showTitle">
+                                                                <p class="text-white">{{ language == 'eu' ? selectedUnit?.title_eu : (language == 'en' ? selectedUnit?.title_en : ( language == 'ca' ? selectedUnit?.title_ca : (language == 'de' ? selectedUnit?.title_de : (language == 'fr' ? selectedUnit?.title_fr : selectedUnit?.title)) ) ) }}</p>
+                                                            </div>
+                                                            <div class="bt-play" (click)="playVideo()" [ngStyle]="{'background-color': buttonColor, top: showTitle ? '60%' : '50%'}"></div>
+                                                        </div>
+                                                        <div *ngIf="!playCurrentVideo" class="blur"></div>
+                                                        <div class="video-container">
+                                                            <iframe 
+                                                                class="iframe-ctrl"
+                                                                id="{{ 'iframe-' + selectedUnit.id }}"
+                                                                [src]="safeLessonURL" 
+                                                                width="100%" 
+                                                                height="50vh"
+                                                                *ngIf="selectedUnit?.url?.indexOf('iframe') < 0"
+                                                                allowfullscreen="allowfullscreen" 
+                                                                mozallowfullscreen="mozallowfullscreen" 
+                                                                msallowfullscreen="msallowfullscreen" 
+                                                                oallowfullscreen="oallowfullscreen" 
+                                                                webkitallowfullscreen="webkitallowfullscreen"
+                                                                allow=autoplay
+                                                                [ngStyle]="{
+                                                                    'height': selectedUnit?.option == 'Vidalytics' ? '560px' : '560px', 
+                                                                    'background-color': selectedUnit?.option == 'Vidalytics' ? 'transparent' : 'initial',
+                                                                    'border': selectedUnit?.option == 'Vidalytics' ? 'none' : 'initial'
+                                                                }"
+                                                            >
+                                                            </iframe>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ng-container>
+                                            <ng-container *ngIf="(!course?.video_cover && !selectedUnit?.video_cover) && !selectedUnit?.vimeo_id">
+                                                <iframe 
+                                                    class="iframe-ctrl"
+                                                    id="{{ 'iframe-' + selectedUnit.id }}"
+                                                    [src]="safeLessonURL" 
+                                                    width="100%" 
+                                                    height="50vh"
+                                                    *ngIf="selectedUnit?.url?.indexOf('iframe') < 0"
+                                                    allowfullscreen="allowfullscreen" 
+                                                    mozallowfullscreen="mozallowfullscreen" 
+                                                    msallowfullscreen="msallowfullscreen" 
+                                                    oallowfullscreen="oallowfullscreen" 
+                                                    webkitallowfullscreen="webkitallowfullscreen"
+                                                    allow=autoplay
+                                                    scrolling="no"
+                                                    [ngStyle]="{
+                                                        'height': selectedUnit?.option == 'Vidalytics' ? '560px' : '456px', 
+                                                        'background-color': selectedUnit?.option == 'Vidalytics' ? 'transparent' : 'initial',
+                                                        'border': selectedUnit?.option == 'Vidalytics' ? 'none' : 'initial'
+                                                    }"
+                                                >
+                                                </iframe>
+                                            </ng-container>
+                                        </ng-container>
+                                        <ng-container *ngIf="selectedUnit?.option == 'Self-hosted'">
+                                            <ng-container *ngIf="course?.video_cover && !selectedUnit?.video_cover">
+                                                <video controls controlsList="nodownload" width="100%" height="195px" id="video-{{ selectedUnit.id }}" poster="{{ courseSrc + course?.video_cover }}" #selfHostedVideo
+                                                    class="object-cover rounded-lg"
+                                                    [ngClass]="{
+                                                        'h-[calc(100vh_-_200px)]': isExpanded,
+                                                        'max-h-[546px]': !isExpanded
+                                                    }">
+                                                    <source src="{{selfHostedVideoSrc}}" type="video/mp4" />
+                                                </video>
+                                            </ng-container>
+                                            <ng-container *ngIf="selectedUnit?.video_cover">
+                                                <video controls controlsList="nodownload" width="100%" height="195px" id="video-{{ selectedUnit.id }}" poster="{{ courseSrc + selectedUnit?.video_cover }}" #selfHostedVideo
+                                                    class="object-cover rounded-lg"
+                                                    [ngClass]="{
+                                                        'h-[calc(100vh_-_200px)]': isExpanded,
+                                                        'max-h-[546px]': !isExpanded
+                                                    }">
+                                                    <source src="{{selfHostedVideoSrc}}" type="video/mp4" />
+                                                </video>
+                                            </ng-container>
+                                            <ng-container *ngIf="(!course?.video_cover && !selectedUnit?.video_cover)">
+                                                <video controls controlsList="nodownload" width="100%" height="195px" id="video-{{ selectedUnit.id }}" #selfHostedVideo
+                                                    class="object-cover rounded-lg"
+                                                    [ngClass]="{
+                                                        'h-[calc(100vh_-_200px)]': isExpanded,
+                                                        'max-h-[546px]': !isExpanded
+                                                    }">
+                                                    <source src="{{selfHostedVideoSrc}}" type="video/mp4" />
+                                                </video>
+                                            </ng-container>
+                                        </ng-container>
+                                    </div>
+                                    <p [innerHTML]="getVideoDescription(selectedUnit)" class="mt-4"></p>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="canAccessLesson() || superAdmin || showIntroPDF">
+                                <ng-container *ngIf="!showIntroPDF && selectedUnit?.Company_Course_Unit_Type?.type == 'podcast'">
+                                    <ng-container *ngIf="selectedLesson">
+                                        <div class="audio-container" [innerHtml]="selectedLesson | safeContentHtml: 'html'"></div>
+                                    </ng-container>
+                                    <ng-container *ngIf="selectedUnit?.file?.changingThisBreaksApplicationSecurity">
+                                        <div class="audio-container">
+                                            <audio controls controlsList="nodownload">
+                                                <source [src]="selectedUnit?.file?.changingThisBreaksApplicationSecurity" type="audio/mpeg">
+                                                {{ 'course-details.audionotsupported' | translate }}
+                                            </audio>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="showIntroPDF || selectedUnit?.Company_Course_Unit_Type?.type == 'pdf' || selectedUnit?.Company_Course_Unit_Type?.type == 'others'">
+                                    <div class="min-h-[500px]">
+                                        <div *ngIf="!showDocumentViewer && !showIntroPDF" role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                                            <svg aria-hidden="true" class="w-8 h-8 mr-2 mt-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                                            <span class="sr-only">Loading...</span>
+                                        </div>
+                                        <ngx-doc-viewer
+                                            url="{{ courseUnitSrc + getFileContent(selectedUnit) }}"
+                                            viewer="google"
+                                            style="width:100%;height:546px;"
+                                            *ngIf="showDocumentViewer && selectedUnit?.Company_Course_Unit_Type?.type != 'pdf' && !showIntroPDF"
+                                        ></ngx-doc-viewer>
+                                        <iframe 
+                                            id="{{ 'iframe-' + (showIntroPDF ? 1 : selectedUnit.id) }}"
+                                            [src]="showIntroPDF ? getCourseIntroPDFURLSrc() : selectedUnitSafeFileUrl" 
+                                            width="100%" 
+                                            height="546px"
+                                            *ngIf="showIntroPDF || (showDocumentViewer && selectedUnit?.Company_Course_Unit_Type?.type == 'pdf')"
+                                        >
+                                        </iframe>
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="!showIntroPDF && selectedUnit?.Company_Course_Unit_Type?.type == 'text'">
+                                    <div [ngClass]="{
+                                        'h-[calc(100vh_-_200px)]': isExpanded,
+                                        'min-h-[300px]': !isExpanded
+                                    }" [innerHtml]="getCourseTextContent()">
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="!showIntroPDF && selectedUnit?.Company_Course_Unit_Type?.type == 'script' && selectedUnit?.script">
+                                   <ng-container *ngIf="selectedUnit?.script?.indexOf('</iframe>') >= 0 || (selectedUnit?.script?.indexOf('<iframe') >= 0 && selectedUnit?.script?.indexOf('/>') >= 0)">
+                                        <div class="script-container bg-black"
+                                            [ngClass]="{
+                                                'script-full-height': isiFrameHeight100Percent(),
+                                                'h-[calc(100vh_-_200px)]': isExpanded,
+                                                'min-h-[300px]': !isExpanded
+                                            }"
+                                            [innerHtml]="getScriptContent(selectedUnit) | safeContentHtml: 'html'">
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="selectedUnit?.script?.indexOf('</script>') >= 0">
+                                        <div class="script-container bg-black" 
+                                            [innerHtml]="getScript() | safeContentHtml: 'html'"
+                                            [ngClass]="{
+                                                'h-[calc(100vh_-_200px)]': isExpanded,
+                                                'min-h-[300px]': !isExpanded
+                                            }">
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <ng-container *ngIf="!showIntroPDF && (canAccessLesson() || superAdmin)">
+                        <div class="flex justify-evenly flex-wrap py-8" *ngIf="selectedUnit?.cta == 1 && (!isModuleLocked || superAdmin)">
+                            <ng-container *ngIf="ctaList?.length > 0">
+                                <a *ngFor="let item of ctaList" class="cta rounded-[10px] text-white py-4 font-semibold px-8 hover:cursor-pointer" [href]="item?.cta_link" target="_blank" [ngStyle]="{'background-color': buttonColor}">
+                                    {{ item?.cta_text }}
+                                </a>
+                            </ng-container>
+                        </div>
+                        <div *ngIf="hasAudio && audios?.length > 0 && (!isModuleLocked || superAdmin)" class="downloads-section">
+                            <div class="download-title">Audio</div>
+                            <div *ngFor="let audio of audios">
+                                <div class="audio-container" style="margin-top:10px;">
+                                    <audio controls controlsList="nodownload">
+                                        <source [src]="audio.audioFile.changingThisBreaksApplicationSecurity" type="audio/mpeg">
+                                        {{ 'course-details.audionotsupported' | translate }}
+                                    </audio>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!showIntroPDF && (canAccessLesson() || superAdmin) && (selectedUnit?.module_id == selectedModuleId && (!isModuleLocked || superAdmin))">
+                        <div class="flex justify-between mt-8">
+                            <div>
+                                <div 
+                                    *ngIf="!isLessonFirst" 
+                                    class="rounded-[15px] h-[52px] py-[13px] px-8 hover:cursor-pointer border" 
+                                    (click)="goToPreviousLesson()" 
+                                    [ngStyle]="{'color': buttonColor, 'border-color': buttonColor}"
+                                >
+                                    {{ 'course-details.previouslesson' | translate }}
+                                </div>
+                                <div *ngIf="isLessonFirst" class="empty">&nbsp;</div>
+                            </div>
+                            <div>
+                                <div 
+                                    *ngIf="!isLessonLast" 
+                                    class="rounded-[15px] text-white h-[52px] py-[13px] px-8 hover:cursor-pointer" 
+                                    (click)="goToNextLesson()"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                >
+                                    {{ 'course-details.nextlesson' | translate }}
+                                </div>
+                                <div *ngIf="isLessonLast" class="empty">&nbsp;</div>
+                            </div>
+                        </div>
+                        <div class="pb-8 sm:pb-8 md:pb-0 lg:pb-0" *ngIf="courseDownloads?.length > 0">
+                            <div class="text-lg font-semibold my-8">{{'course-details.downloads' | translate}}</div>
+                            <div *ngFor="let download of courseDownloads" class="flex flex-wrap" (click)="downloadFileResource(download)">
+                                <div class="w-full max-w-full">
+                                    <a [href]="downloadCourseUnitSrc + download?.id + '/' + getDownloadFile(download)" 
+                                        download target="_blank" class="w-full max-w-full flex">
+                                        <div class="mr-4 mb-4 hover:cursor-pointer">
+                                            <svg *ngIf="getDownloadType(download) == 'pdf'" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 18a.969.969 0 0 0 .933 1h12.134A.97.97 0 0 0 15 18M1 7V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2v5M6 1v4a1 1 0 0 1-1 1H1m0 9v-5h1.5a1.5 1.5 0 1 1 0 3H1m12 2v-5h2m-2 3h2m-8-3v5h1.375A1.626 1.626 0 0 0 10 13.375v-1.75A1.626 1.626 0 0 0 8.375 10H7Z"/>
+                                            </svg>
+                                            <svg *ngIf="getDownloadType(download) == 'mp4'" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                                <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                                                <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z"/>
+                                            </svg>
+                                            <svg *ngIf="getDownloadType(download) == 'mp3'" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                                <path d="M5 5V.13a2.98 2.98 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Zm1.5 10c.828 0 1.5-.448 1.5-1s-.672-1-1.5-1-1.5.448-1.5 1 .672 1 1.5 1Z"/>
+                                                <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM12 10a1 1 0 0 1-1-1 2.971 2.971 0 0 0-1-2.237V13.5a.963.963 0 0 1-.037.185c.019.104.031.21.037.315a3.283 3.283 0 0 1-3.5 3A3.283 3.283 0 0 1 3 14a3.283 3.283 0 0 1 3.5-3 3.942 3.942 0 0 1 1.5.3V5a1 1 0 0 1 1.316-.948C9.467 4.1 13 5.321 13 9a1 1 0 0 1-1 1Z"/>
+                                            </svg>
+                                            <svg *ngIf="!(getDownloadType(download) == 'pdf' || getDownloadType(download) == 'mp4' || getDownloadType(download) == 'mp3')" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M6 1v4a1 1 0 0 1-1 1H1m14-4v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"/>
+                                            </svg>
+                                        </div>
+                                        <div>{{ getDownloadFilename(download) }}</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="showComments && hasCourseVideoComments && (selectedUnit?.Company_Course_Unit_Type?.type == 'video' && (canAccessLesson() || superAdmin))">
+                        <div class="my-4">
+                            <app-comments
+                                [newComment]="newComment"
+                                [list]="commentsList"
+                                [superAdmin]="superAdmin"
+                                [primaryColor]="primaryColor"
+                                [buttonColor]="buttonColor"
+                                (addComment)="handleAddComment($event)"
+                                (addChildComment)="handleAddChildComment($event)"
+                                (deleteComment)="handleDeleteComment($event)"
+                                (deleteChildComment)="handleDeleteChildComment($event)"
+                                (reactToComment)="handleReactToComment($event)">
+                            </app-comments>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="showAssessment">
+            <div class="ml-0 sm:ml-0 md:ml-[416px] lg:ml-[416px] col-span-1 sm:col-span-1 md:col-span-2 lg:col-span-2 w-full max-w-full">
+                <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row justify-between">
+                    <div class="text-4xl font-semibold text-4xl font-semibold">{{ getAssessmentTitle(currentAssessment) }}</div>
+                </div>
+                <div class="mt-8">
+                    <div class="content-container">
+                        <div class="min-h-[500px]">
+                            <app-course-assessment
+                                [company]="company"
+                                [buttonColor]="buttonColor"
+                                [primaryColor]="primaryColor"
+                                [userId]="userId"
+                                [superAdmin]="superAdmin"
+                                [language]="language"
+                                [courseId]="id"
+                                [assessment]="currentAssessment"
+                                (onFinishAssessment)="handleFinishAssessment($event)"
+                                (onResetAssessment)="handleResetAssessment($event)"
+                            >
+                            </app-course-assessment>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="pt-32" *ngIf="(hasCourseStarted(course) && (!course?.locked && !showBuyNow)) || superAdmin">
+        <div *ngIf="course && (!course?.course_modules || course?.course_modules?.length == 0)" class="center">
+            {{ 'course-details.nomodules' | translate }}
+        </div>
+        <div *ngIf="course && !selectedUnit?.title" class="center">
+            {{ 'course-details.nounitsfound' | translate }}
+        </div>
+    </div>
+    <ng-container *ngIf="hasCourseStarted(course) && (!course?.locked && showBuyNow) && !superAdmin">
+        <div class="no-access text-center">
+            {{ 'courses.noaccess' | translate }}
+        </div>
+        <app-no-access></app-no-access>
+    </ng-container>
+    <div *ngIf="hasCourseStarted(course) && course?.locked == 1 && !superAdmin" class="center">
+        <app-no-access></app-no-access>
+    </div>
+    <div *ngIf="!hasCourseStarted(course) && !superAdmin" class="center">
+        {{ getCourseNotStartedText(course) }}
+    </div>
+</div>
+<button #completemodalbutton data-modal-target="complete-modal" data-modal-toggle="complete-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="complete-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="max-w-lg relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closecompletemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="complete-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'tutors.completed' | translate }}
+                </h3>
+                <form class="space-y-6">
+                    <div class="flex justify-center">
+                        <div class="mr-4">{{'course-create.creditsearned' | translate}}: </div>
+                        <div class="font-semibold">{{course?.course_credits}}</div>
+                    </div>
+                    <div class="my-8 text-center">
+                        <div class="mb-4">
+                            {{'event-survey.rating' | translate}} <span class="font-semibold">{{course?.title}}</span>?
+                        </div>
+                        <star-rating 
+                            [size]="'large'" 
+                            [starType]="'svg'" 
+                            [rating]="0"
+                            (starClickChange)="onClick($event)"
+                            (ratingChange)="onRatingChange($event)"
+                            (hoverRatingChange)="onHoverRatingChange($event)"
+                        ></star-rating>
+                    </div>
+                    <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                        <span
+                            class="text-center hover:cursor-pointer w-full inline-block h-[40px] text-sm px-6 py-[10px] mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                            [ngStyle]="{'background-color': rating ? buttonColor : '#c7c7c7'}"
+                            (click)="submitEvaluation()"
+                        >
+                            {{ 'members.send' | translate }}
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

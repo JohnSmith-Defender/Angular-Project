@@ -1,0 +1,89 @@
+<div class="bg-[#F8F4F4] relative mb-6 relative"
+    [ngClass]="{'p-6 rounded-[16px]': post?.parent_group_comment_id == 0, 
+        'border border-t-3 border-b-0 border-r-0 border-l-0 pt-6': post?.parent_group_comment_id > 0
+    }">
+    <div>
+        <div class="whitespace-pre-wrap text-sm sm:mr-0 md:mr-32 lg:mr-32" [innerHTML]="truncatedContent | safeContentHtml: 'html'"></div>
+        <ng-container *ngIf="content?.length > truncate">
+            <div class="mt-2 text-sm cursor-pointer font-semibold" *ngIf="expandedContent" [ngStyle]="{'color': buttonColor}" (click)="showLess()">{{ 'club-details.seeless' | translate }}</div>
+            <div class="mt-2 text-sm cursor-pointer font-semibold" *ngIf="!expandedContent" [ngStyle]="{'color': buttonColor}" (click)="readMore()">{{ 'club-details.readmore' | translate }}</div>
+        </ng-container>
+    </div>
+    <div class="sm:relative m:absolute lg:absolute top-6 sm:my-8 md:my-0 lg:my-0"
+        [ngClass]="{'right-6': post?.parent_group_comment_id == 0, 'right-0': post?.parent_group_comment_id > 0}">
+        <div class="flex">
+            <img class="w-6 object-contain sm:ml-0 md:ml-4 lg:ml-4 hover:cursor-pointer" 
+                (click)="motherComponent.heart(post)"
+                [src]="post.liked || isCurrentUserLiked(post) ? './assets/community-icons/heart-active.png' : './assets/community-icons/heart.png'" />
+            <ng-container *ngIf="superAdmin">
+                <img class="w-6 object-contain ml-4 hover:cursor-pointer" 
+                    (click)="deletePost(post)"
+                    src="./assets/images/icons/action-delete.png" />
+            </ng-container>
+        </div>
+    </div>
+    <div class="my-8">
+        <div class="sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row justify-between">
+            <div class="flex items-center">
+                <img class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                    [ngSrc]="post?.CompanyUser?.image == 'default-avatar.jpg' || post?.CompanyUser?.image == 'empty_avatar.png' ? './assets/images/default-profile.png' : getImage(post?.CompanyUser?.image)"
+                />
+                <div>
+                    <div class="font-semibold text-sm">{{post?.CompanyUser?.first_name}} {{post?.CompanyUser?.last_name}}</div>
+                    <div class="opacity-70 text-xs">{{post?.createdAt | date:'dd MMM yyyy H:mm a'}}</div>
+                </div>
+            </div>
+            <div class="flex items-center">
+                <div class="text-sm lowercase">{{ post?.Company_Group_Comment_Reactions?.length }} {{ 'wall.likes' | translate }}</div>
+                <div class="text-sm lowercase ml-12">{{ post?.CommentChild?.length || 0 }} {{ 'plan-details.comments' | translate }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-4 mb-8">
+        <div class="relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+            <img class="mr-6 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                [ngSrc]="me?.image == 'default-avatar.jpg' || me?.image == 'empty_avatar.png' ? ('./assets/images/default-profile.png') : (apiPath + me?.image)"
+            />
+            <div class="rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-white" 
+                (blur)="getNewComment($event)" 
+                (focus)="focusNewComment($event)"
+                (focusout)="getNewComment($event)" 
+                contenteditable 
+                [innerHTML]="newComment"
+                [ngClass]="{'text-gray-400': isNewCommentPlaceholder()}"
+            ></div>
+            <button 
+                class="w-28 h-[46px] flex items-center p-3.5 rounded-[10px] justify-evenly sm:ml-0 md:ml-4 lg:ml-4"
+                (click)="handleAddComment()" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': commentHover ? 1.5 : 1,
+                    'filter': commentHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (mouseover)="toggleCommentHover(true)"
+                (mouseleave)="toggleCommentHover(false)"
+            >
+                <span class="text-white text-sm font-medium">{{ 'posts.post' | translate }}</span>
+            </button>
+        </div>
+    </div>
+    <div class="mb-8" *ngIf="post?.CommentChild?.length > 0">
+        <ng-container *ngFor="let child of post?.CommentChild">
+            <app-group-post 
+                [buttonColor]="buttonColor" 
+                [language]="language" 
+                [post]="child" 
+                [motherComponent]="motherComponent"
+                [groupId]="groupId"
+                [groupMembers]="groupMembers" 
+                [superAdmin]="superAdmin"
+                [showPin]="groupOwner || superAdmin ? true : false" 
+                [me]="me"
+                [userId]="me?.id"
+                [companyId]="companyId"
+                (handleDelete)="deletePost($event)"
+                (handleRefresh)="refreshPosts()"
+            ></app-group-post>
+        </ng-container>
+    </div>
+</div>

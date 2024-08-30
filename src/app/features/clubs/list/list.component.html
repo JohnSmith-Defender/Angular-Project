@@ -1,0 +1,126 @@
+<app-page-title [title]="title" [subtitle]="subtitle"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4" *ngIf="view != 'joined'">
+    <button 
+        class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+        *ngIf="canCreateGroup" 
+        [ngStyle]="{
+            'background-color': buttonColor,
+            'opacity': createHover ? 1.5 : 1,
+            'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+        }" 
+        (click)="handleCreateRoute()"
+        (mouseover)="toggleCreateHover(true)"
+        (mouseleave)="toggleCreateHover(false)"
+    >
+        <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+        </svg>
+        <span class="text-white text-md font-semibold uppercase">{{ createNewTitle(pageName) }}</span>
+    </button>
+    <button 
+        class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 border flex items-center h-[52px] p-3.5 px-8 rounded-[15px] justify-center transition duration-700 ease-in-out"
+        *ngIf="isMyClubsActive && myClubs?.title_es && userId > 0"
+        [ngStyle]="{
+            'border-color':  myClubsHover ? 'transparent' : buttonColor,
+            'background-color': myClubsHover ? buttonColor : '#fff',
+        }"
+        (click)="goToDashboard()"
+        (mouseover)="toggleMyClubsHover(true)"
+        (mouseleave)="toggleMyClubsHover(false)"
+    >
+        <span class="text-md font-semibold uppercase" 
+            [ngStyle]="{'color': myClubsHover ? '#fff' : buttonColor}">
+            {{ getMyClubsTitle() }}
+        </span>
+    </button>
+</div>
+<div class="pt-6" *ngIf="!parentComponent">
+    <div class="flex flex-wrap items-center w-full max-w-full"
+        [ngClass]="{'justify-between': filterTypeControl == 'button'}">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0" *ngIf="showFilters">
+            <ng-container *ngFor="let setting of filterSettings">
+                <ng-container *ngIf="setting?.field == 'category' && setting?.filter_type == 'dropdown'">
+                    <app-filter
+                        [mode]="'clubs'"
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        [list]="list"
+                        [defaultActiveFilter]="defaultActiveFilter"
+                        [filterSettings]="filterSettings"
+                        (filterList)="filteredCity($event)"
+                        (onButtonClick)="filteredCategory($event)"
+                        (onFilterClick)="filterViewChanged($event)"
+                    ></app-filter>
+                </ng-container>
+                <ng-container *ngIf="setting?.field == 'category' && setting?.active == 1 && setting?.filter_type != 'dropdown'">
+                    <app-button-group
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        (onButtonClick)="filteredCategory($event)"
+                    ></app-button-group>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="w-full max-w-full">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-evenly relative h-full max-h-full gap-8 py-8">
+        <ng-container *ngIf="companyId == 32">
+            <ng-container *ngFor="let group of filteredGroup">
+                <app-club-card
+                    [group]="group"
+                    [selectedClubId]="selectedClubId"
+                    [id]="group?.id"
+                    [title]="group?.title"
+                    [image]="group?.image"
+                    [buttonColor]="buttonColor"
+                    [companyId]="companyId"
+                    [parentComponent]="parentComponent"
+                    [isMember]="group?.is_member"
+                    [category]="group?.category"
+                    [city]="group?.city"
+                    [contactEmail]="group?.contact_email"
+                    [mailto]="group?.mailto"
+                    [contactInstagram]="group?.contact_instagram"
+                    (handleDetailsClick)="goToClubDetails($event)"
+                >
+                </app-club-card>
+            </ng-container>  
+        </ng-container>
+        <ng-container *ngIf="companyId != 32">
+            <ng-container *ngFor="let group of filteredGroup | paginate: {itemsPerPage: 8, currentPage: p}">
+                <app-club-card
+                    [group]="group"
+                    [selectedClubId]="selectedClubId"
+                    [id]="group?.id"
+                    [title]="group?.title"
+                    [image]="group?.image"
+                    [buttonColor]="buttonColor"
+                    [companyId]="companyId"
+                    [parentComponent]="parentComponent"
+                    [isMember]="group?.is_member"
+                    [category]="group?.category"
+                    [city]="group?.city"
+                    [contactEmail]="group?.contact_email"
+                    [mailto]="group?.mailto"
+                    [contactInstagram]="group?.contact_instagram"
+                    (handleDetailsClick)="goToClubDetails($event)"
+                >
+                </app-club-card>
+            </ng-container>
+        </ng-container>
+    </div> 
+    <div *ngIf="filteredGroup?.length > 0 && companyId != 32" class="text-center">
+        <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>

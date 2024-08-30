@@ -1,0 +1,291 @@
+<ng-container *ngIf="!isLoading && (superAdmin || canCreateOffer)">
+    <app-page-title [title]="pageTitle"></app-page-title>
+    <div class="pt-6">
+        <ng-container *ngIf="languages?.length > 1">
+            <div class="pt-1.5 mb-6">
+                <app-button-group class="flex justify-center"
+                    [buttonColor]="buttonColor"
+                    [buttonList]="buttonList"
+                    (onButtonClick)="handleChangeLanguageFilter($event)"
+                >
+                </app-button-group>
+            </div>
+            <div class="p-1 bg-white text-xs text-center flex rounded-lg justify-center align-center items-center w-screen-md max-w-screen-md mx-auto" 
+                *ngIf="showLanguageNote" (click)="closeLanguageNote()">
+                {{ 'dialog.changelanguagetitledesc' | translate }}
+                <svg class="ml-4 font-bold w-2 h-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+            </div>
+        </ng-container>
+    </div>
+    <div class="pt-6">
+        <form [formGroup]="offerForm" (ngSubmit)="saveOffer()">
+            <div class="flex items-center justify-center mb-8 relative">
+                <div class="max-w-xl mr-8">
+                    <img width="160" height="192" src="./assets/images/540.png" />
+                </div>
+                <div class="relative">
+                    <input 
+                        required 
+                        type="file"
+                        id="photo" 
+                        style="display:none;"
+                        (change)="fileChangeEvent($event)"
+                    />
+                    <div 
+                        class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                        [ngClass]="{'p-6': !imgSrc}"
+                    >
+                        <div
+                            class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                            [ngClass]="{'w-28 h-28': !imgSrc, 'w-60 h-60': imgSrc}"
+                        >
+                            <img *ngIf="!imgSrc" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                            <img *ngIf="imgSrc" class="rounded-xl object-contain" src="{{ imgSrc }}" />
+                        </div>
+                    </div>
+                    <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                        <label
+                            for="photo"
+                            [ngStyle]="{'background-color': buttonColor}"
+                            class="btn text-white"
+                        >
+                            {{ 'club-create.uploadimage' | translate }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center justify-center mb-4 relative">
+                <input 
+                    *ngIf="selectedLanguage == 'es'"
+                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': offerForm.get('title')?.errors }"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title" 
+                    placeholder="{{ 'club-create.title' | translate }}*" 
+                    required>
+                <input 
+                    *ngIf="selectedLanguage == 'en'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_en" 
+                    placeholder="{{ 'club-create.title' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'fr'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_fr" 
+                    placeholder="{{ 'club-create.title' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'eu'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_eu" 
+                    placeholder="{{ 'club-create.title' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'ca'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_ca" 
+                    placeholder="{{ 'club-create.title' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'de'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_de" 
+                    placeholder="{{ 'club-create.title' | translate }}">
+            </div>
+            <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                <div class="flex items-center justify-center relative">
+                    <mat-form-field class="w-full datetime-picker-field" 
+                        [ngClass]="{'field-error': offerForm.get('valid_since')?.errors }"
+                    >
+                        <input matInput [ngxMatDatetimePicker]="picker" placeholder="{{ 'create-discount.validsince' | translate }}*" 
+                        formControlName="valid_since">
+                        <ngx-mat-datepicker-toggle matSuffix [for]="picker"></ngx-mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <mat-form-field class="w-full datetime-picker-field"
+                        [ngClass]="{'field-error': offerForm.get('valid_until')?.errors }"
+                    >
+                        <input matInput [ngxMatDatetimePicker]="picker1" placeholder="{{ 'create-discount.validuntil' | translate }}*" 
+                        formControlName="valid_until">
+                        <ngx-mat-datepicker-toggle matSuffix [for]="picker1"></ngx-mat-datepicker-toggle>
+                        <ngx-mat-datetime-picker #picker1></ngx-mat-datetime-picker>
+                    </mat-form-field>
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="company_name" 
+                        placeholder="{{ 'create-discount.companyname' | translate }}">
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="address" 
+                        placeholder="{{ 'create-discount.address' | translate }}">
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="phone" 
+                        placeholder="{{ 'create-discount.phone' | translate }}">
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="website" 
+                        placeholder="{{ 'create-discount.website' | translate }}">
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="email" 
+                        placeholder="{{ 'create-discount.email' | translate }}">
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="discountTypes?.length > 0">
+                    <select
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !discountType }"
+                        id="discount-type"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder
+                        [(ngModel)]="discountType"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'create-discount.selecttype' | translate }}</option>
+                        <option
+                            *ngFor="let type of discountTypes"
+                            [value]="type.id"
+                        >
+                            {{ language == 'en' ? type.name_EN : type.name_ES }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="discountCategories?.length > 0 && companyId != 12">
+                    <select
+                        id="discount-category"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder
+                        [(ngModel)]="discountCategory"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'create-discount.selectcategory' | translate }}</option>
+                        <option
+                            *ngFor="let category of discountCategories"
+                            [value]="category.id"
+                        >
+                            {{ getCategoryTitle(category) }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex items-center justify-center mb-4 relative">
+                <input 
+                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': offerForm.get('discount_code')?.errors }"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="discount_code" 
+                    placeholder="{{ 'create-discount.discountcode' | translate }}*" 
+                    required>
+            </div>
+            <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="price" 
+                        placeholder="{{ 'create-discount.price' | translate }}">
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input 
+                        type="text" 
+                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="percent" 
+                        placeholder="{{ 'create-discount.percent' | translate }}">
+                </div>
+            </div>
+            <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 my-8">
+                <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Write.png" />
+                <div class="font-light text-xl">{{ 'landing.description' | translate }}</div>
+            </div>
+            <div class="flex items-center justify-center mb-4 relative">
+                <quill-editor [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': offerForm.get('description')?.errors }" *ngIf="selectedLanguage == 'es'" class="w-full max-w-full content-editor" formControlName="description"></quill-editor>
+                <quill-editor *ngIf="selectedLanguage == 'en'" class="w-full max-w-full content-editor" formControlName="description_en"></quill-editor>
+                <quill-editor *ngIf="selectedLanguage == 'fr'" class="w-full max-w-full content-editor" formControlName="description_fr"></quill-editor>
+                <quill-editor *ngIf="selectedLanguage == 'eu'" class="w-full max-w-full content-editor" formControlName="description_eu"></quill-editor>
+                <quill-editor *ngIf="selectedLanguage == 'ca'" class="w-full max-w-full content-editor" formControlName="description_ca"></quill-editor>
+                <quill-editor *ngIf="selectedLanguage == 'de'" class="w-full max-w-full content-editor" formControlName="description_de"></quill-editor>
+            </div>
+            <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                <button
+                    type="submit"
+                    class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                    [ngStyle]="{'background-color': buttonColor}"
+                    [ngClass]="{'disabled:opacity-75': issaving}"
+                    [disabled]="issaving"
+                >
+                    {{ !issaving ? ('plan-create.savechanges' | translate) : ('plan-create.pleasewait' | translate) }}
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-container>
+<ng-container *ngIf="!isLoading && !(superAdmin || canCreateOffer)">
+    <app-no-access></app-no-access>  
+</ng-container>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'club-create.uploadimage' | translate }}
+                </h3>
+                <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                    <div class="flex items-center relative">
+                        <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                        <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                    </div>
+                    <div class="flex items-center relative">
+                        <a href="javascript:;" (click)="imageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                            {{ 'image-cropper.save' | translate }}
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <image-cropper 
+                        [canvasRotation]="canvasRotation"
+                        [transform]="transform"
+                        [imageChangedEvent]="imageChangedEvent" 
+                        [cropperMinWidth]="360"
+                        [cropperMinWidth]="320"
+                        format="png" 
+                        outputType="both"
+                        (imageCropped)="imageCropped($event)" 
+                        (imageLoaded)="imageLoaded()" 
+                        (cropperReady)="cropperReady()"
+                        (loadImageFailed)="loadImageFailed()"
+                        output="base64">
+                    </image-cropper>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

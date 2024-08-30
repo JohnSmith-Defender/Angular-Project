@@ -1,0 +1,46 @@
+<nav class="mobile-menu bg-white border-gray-200 dark:bg-gray-900">
+  <button #outsidebutton data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
+    <span class="sr-only">Open main menu</span>
+    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+    </svg>
+  </button>
+  <div class="hidden p-4 flex flex-row flex-wrap gap-2 w-11/12 shadow rounded-lg" id="navbar-default">
+    <ng-container *ngFor="let menu of menus$ | async">
+      <div
+        *ngIf="menu?.course_wall != 11"
+        [ngStyle]="{'color': selectedTab == menu.path || menu?.new_button == 1 || selectedTab == (menu.path?.replace('activity-feed-', '').replace('/', '')) || (menu?.course_wall == 11 && selectedTab >=200) ? buttonColor : '#1e1e1e'}"
+        class="border border-white rounded-[10px] py-2 px-4 w-full max-w-full sm:w-full sm:max-w-full md:w-auto md:max-w-auto lg:w-auto lg:max-w-auto"
+      >
+          <ng-container *ngIf="menu?.new_button == 1">
+              <a
+                  class="rounded-lg p-2 flex items-center justify-center text-sm text-white"
+                  [href]="menu?.path"
+                  (click)="changeSelectedTab(menu.path)"
+                  target="_blank"
+                  [ngStyle]="{'background-color': buttonColor}"
+              >
+                  {{ getMenuTitle(menu) }}
+              </a>
+          </ng-container>
+          <ng-container *ngIf="!menu?.new_button && !menu?.course_wall">
+            <a
+              href="javascript:;"
+              class="flex items-center text-sm"
+              (click)="changeSelectedTab(menu.path)"
+              [ngStyle]="{'color': selectedTab == menu.path ? buttonColor : '#1e1e1e'}"
+            >
+              <fa-icon 
+                *ngIf="getMenuFaIcon(menu)"
+                class="fa flex items-center px-2 text-sm" 
+                [icon]="getMenuFaIcon(menu)"
+                [ngStyle]="{'color': selectedTab == menu.path ? buttonColor : '#1e1e1e'}"
+              >
+              </fa-icon>
+              {{ getMenuTitle(menu) }}
+            </a>
+          </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</nav>

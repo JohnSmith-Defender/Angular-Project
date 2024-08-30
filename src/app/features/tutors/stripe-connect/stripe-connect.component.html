@@ -1,0 +1,84 @@
+<app-page-title title="Stripe Connect"></app-page-title>
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg my-6">
+    <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <caption class="p-5 text-lg font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+            {{'stripe-account.setupaccount' | translate}}
+            <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+                {{'stripe-account.stripeconnectdesc' | translate}}
+            </p>
+        </caption>
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    {{'course-create.course' | translate}}
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Account ID
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    {{'customer.setup' | translate}} {{'landing.status' | translate}}
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    <span>{{'member-type-registration.action' | translate}}</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngIf="stripeAccounts?.length > 0">
+                <tr *ngFor="let item of stripeAccounts; let i = index;" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {{ item?.name }}
+                    </th>
+                    <td class="px-6 py-4">
+                        {{ item?.account_id }}
+                    </td>
+                    <td class="px-6 py-4">
+                        <div *ngIf="item?.status == 'enabled'" class="flex bg-[#d8f7c2] py-1 px-4 items-center w-6/12 rounded-lg justify-center">
+                            <div class="capitalize mr-1 text-[#218403] text-xs">{{'course-details.complete' | translate}}</div>
+                            <div>
+                                <svg class="w-3 h-3 text-[#218403] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div *ngIf="item?.status == 'incomplete'" class="flex bg-[#ffe7f3] py-1 px-4 items-center w-6/12 rounded-lg justify-center">
+                            <div class="capitalize mr-1 text-[#e43456] text-xs">{{'company-settings.incomplete' | translate}}</div>
+                            <div>
+                                <svg class="w-3 h-3 text-[#e43456] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <ng-container *ngIf="!item?.account_id">
+                            <a href="javascript:;" 
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-6"
+                                (click)="configureStripeConnect(item)"
+                            >
+                                {{ 'stripe-account.setupaccount' | translate }}
+                            </a>
+                       </ng-container>
+                       <ng-container *ngIf="item?.account_id">
+                            <a href="javascript:;" 
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline mr-6"
+                                (click)="getStripeLoginLink(item)"
+                            >
+                                {{ 'member-type-registration.access' | translate }} Stripe
+                            </a>
+                       </ng-container>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+    <div *ngIf="!isLoading && (!stripeAccounts || (stripeAccounts?.length == 0))" 
+    class="text-center opacity-75 my-8">
+    {{ 'tutor-stripe.notconnected' | translate }}
+</div>
+</div>
+<div *ngIf="isStripeRestricted && !isLoading">
+    <p class="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">
+        <span class="font-semibold text-left text-gray-900 bg-white dark:text-white dark:bg-gray-800">{{'guests.note' | translate}}: </span>{{'stripe-account.incompletestripesetup' | translate }}
+     </p>
+</div>

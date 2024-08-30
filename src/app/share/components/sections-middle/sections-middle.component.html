@@ -1,0 +1,194 @@
+<div class="mx-auto max-w-full sm:max-w-full md:max-w-full lg:max-w-[1200px]">
+    <ng-container *ngIf="plans?.length > 0">
+        <app-section-title [title]="plansSectionTitle" [border]="'bottom'"></app-section-title>
+        <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-4 pb-12">
+            <ng-container *ngIf="homeCalendar && planCalendar">
+                <div>
+                    <app-plans-calendar
+                      [hasDateSelected]="hasDateSelected"
+                      [showPastEvents]="mode == 'history' ? true : false"
+                      [joinedPlan]="joinedPlan"
+                      [courses]="courses"
+                      [groups]="groups"
+                      [courseCategoriesAccessRoles]="courseCategoriesAccessRoles"
+                      [allCourseCategories]="allCourseCategories"
+                      [courseCategoryMapping]="courseCategoryMapping"
+                      [admin1]="admin1"
+                      [admin2]="admin2"
+                      [superAdmin]="superAdmin"
+                      [calendarFilterMode]="calendarFilterMode"
+                      [canCreatePlan]="canCreatePlan"
+                      (handleCalendarDateChange)="handleCalendarDateChanged($event)" 
+                      (handleJoinChange)="handleJoinChanged($event)"
+                      (handleExitCalendarFilter)="exitCalendarEventMode()"
+                      [notifier]="childNotifier"
+                      [isUESchoolOfLife]="isUESchoolOfLife"
+                      [plansList]="plansList"
+                      [campus]="campus"
+                      [mode]="mode"
+                    >
+                    </app-plans-calendar>
+                </div>
+            </ng-container>
+            <ng-container *ngFor="let item of plans; let even=even; let i = index;">
+                <app-plan-image-text-card
+                    [image]="item?.image"
+                    [title]="item?.title"
+                    [date]="item?.date"
+                    [id]="item?.id"
+                    [planTypeId]="item?.plan_type_id"
+                    [privacy]="item?.privacy"
+                    [privateType]="item?.private_type"
+                    [featuredTitle]="''"
+                    [excerpt]="item?.excerpt"
+                    [address]="item?.address"
+                    [credits]="item?.credits"
+                    [price]="item?.price"
+                    [buttonColor]="buttonColor"
+                    [page]="'list'"
+                    [companyId]="company?.d"
+                    (handleDetailsClick)="handleDetailsClickRoute(item)"
+                >
+                </app-plan-image-text-card>
+            </ng-container>
+        </div>
+        <div class="flex items-center justify-center pb-8 mb-6 w-full sm:w-full md:w-8/12 lg:w-4/12 mx-auto">
+            <button
+                type="button"
+                class="w-full inline-block min-h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                [ngStyle]="{'background-color': buttonColor}"
+                (click)="goToPlansList()"
+            >
+                {{ getMorePlansTitle() }}
+            </button>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="clubs?.length > 0">
+        <div>
+            <div class="md:-ml-4 md:-mr-4 md:bg-[#f9f9f9] lg:h-[225px]">
+                <app-section-title [title]="groupsSectionTitle" [align]="'center'"></app-section-title>
+                <div class="mx-auto max-w-full sm:max-w-full md:max-w-full lg:max-w-[1200px] grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-4 pb-12">
+                    <ng-container *ngFor="let item of clubs; let even=even; let i = index;">
+                        <app-club-image-text-card
+                            [image]="item?.image"
+                            [title]="item?.title"
+                            [id]="item?.id"
+                            [buttonColor]="buttonColor"
+                            [companyId]="company?.id"
+                            (handleDetailsClick)="handleClubDetailsClickRoute(item)"
+                        >
+                        </app-club-image-text-card>
+                    </ng-container>
+                </div>
+                <div class="mx-auto w-full">
+                    <div class="flex items-center justify-center pb-16 mb-6 w-full sm:w-full md:w-3/12 lg:w-2/12 mx-auto">
+                        <button
+                            type="button"
+                            class="border rounded-[10px] w-full inline-block min-h-[40px] bg-white text-sm px-6 py-2 font-semibold rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                            [ngStyle]="{'color': buttonColor, 'border-color': buttonColor}"
+                            [routerLink]="['/clubs']"
+                        >
+                        {{ getMoreClubsTitle() }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div 
+                class="hidden sm:hidden md:hidden lg:inline-block w-screen relative left-2/4 h-[550px] -z-10" 
+                [ngStyle]="{'background-color': primaryColor, 'margin-left': '-50vw'}"
+            >
+                &nbsp;
+            </div>
+        </div>
+    </ng-container>
+    <div *ngIf="cityGuides?.length > 0 || jobOffers?.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">
+        <div *ngIf="cityGuides?.length > 0">
+            <app-section-title [title]="cityGuidesSectionTitle" [border]="'bottom'"></app-section-title>
+            <div class="grid grid-cols-1 gap-4 pt-4 pb-12">
+                <ng-container *ngFor="let item of cityGuides; let even=even; let i = index;">
+                   <app-city-guide-card
+                        [image]="item?.image"
+                        [title]="item?.title"
+                        [id]="item?.id"
+                        [description]="item?.description"
+                        [buttonColor]="buttonColor"
+                        [companyId]="company?.id"
+                        (handleDetailsClick)="handleCityGuideDetailsClickRoute(item)"
+                    >
+                    </app-city-guide-card> 
+                </ng-container>
+            </div>
+            <div class="flex items-center justify-center pb-8 mb-6 w-full sm:w-full md:w-8/12 lg:w-4/12 mx-auto">
+                <button
+                    type="button"
+                    class="w-full inline-block min-h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                    [ngStyle]="{'background-color': buttonColor}"
+                    (click)="goToCityGuidesList()"
+                >
+                    {{ 'search.viewmore' | translate }}
+                </button>
+            </div>
+        </div>
+        <div *ngIf="jobOffers?.length > 0">
+            <app-section-title [title]="jobOffersSectionTitle" [border]="'bottom'"></app-section-title>
+            <div class="grid grid-cols-1 gap-4 pt-4 pb-12">
+                <ng-container *ngFor="let item of jobOffers; let even=even; let i = index;">
+                    <app-job-offer-card
+                        [title]="item?.title"
+                        [type]="item?.type"
+                        [id]="item?.id"
+                        [area]="item?.area"
+                        [description]="item?.description"
+                        [buttonColor]="buttonColor"
+                        [companyId]="company?.id"
+                        (handleDetailsClick)="handleJobOfferDetailsClickRoute(item)"
+                    >
+                    </app-job-offer-card>
+                </ng-container>
+            </div>
+            <div class="flex items-center justify-center pb-8 mb-6 w-full sm:w-full md:w-8/12 lg:w-4/12 mx-auto">
+                <button
+                    type="button"
+                    class="w-full inline-block min-h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                    [ngStyle]="{'background-color': buttonColor}"
+                    (click)="goToJobOffersList()"
+                >
+                    {{ 'search.viewmore' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+    <ng-container *ngIf="courses?.length > 0">
+        <app-section-title [title]="coursesSectionTitle" [border]="'bottom'"></app-section-title>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4 pb-12">
+            <ng-container *ngFor="let item of courses; let even=even; let i = index;">
+              <div *ngIf="item?.object_type == 'course'" 
+                class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+                (click)="goToCourseDetails(item)">
+                <div class="relative">
+                  <img class="rounded-t-lg w-full object-cover" [src]="item.image" [alt]="item.title" loading="lazy" />
+                  <div class="test__body absolute inset-0 p-4 text-white flex flex-col">
+                    <div class="mt-auto">
+                      <span class="test__tag bg-white bg-opacity-60 py-1 px-4 rounded-md text-black text-sm">
+                        {{item?.category}}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-5">
+                  <a href="javascript:;">
+                      <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{item?.title}}</h5>
+                  </a>
+                  <a href="javascript:;" class="inline-flex items-center px-6 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    [ngStyle]="{'background-color': buttonColor}">
+                    {{item?.button_text}}
+                    <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>

@@ -1,0 +1,867 @@
+<app-breadcrumb 
+    [level1Title]="level1Title"
+    [level2Title]="level2Title"
+    [level3Title]="level3Title"
+    [level4Title]="level4Title"
+    [buttonColor]="buttonColor"
+    (goBack)="handleGoBack()"
+/>
+<div class="py-16">
+    <div class="flex items-center justify-between border border-b-2 border-l-0 border-r-0 border-t-0 pb-3 mb-6">
+        <h1 class="text-2xl font-600">{{ getFeatureTitle() }}</h1>
+        <button 
+            class="min-w-[137px] inline-block h-[40px] text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+            [ngStyle]="{
+                'background-color': buttonColor
+            }"
+            type="button"
+            data-modal-target="name-modal" data-modal-toggle="name-modal" 
+        > 
+            {{ 'landing.edit' | translate }}
+        </button>
+    </div>
+    <div id="name-modal" data-modal-backdrop="static" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="name-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="px-6 py-6 lg:px-8">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">{{ 'member-type-registration.feature' | translate }}</h3>
+                    <form class="space-y-6" action="#">
+                        <div *ngIf="isSpanishEnabled">
+                            <label for="namees" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (ES)</label>
+                            <input 
+                                type="text" name="namees" id="namees" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.namees' | translate }}" [(ngModel)]="featureNameEs" required>
+                        </div>
+                        <div *ngIf="isEnglishEnabled">
+                            <label for="nameen" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (EN)</label>
+                            <input 
+                                type="text" name="nameen" id="nameen" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.nameen' | translate }}" [(ngModel)]="featureNameEn" required>
+                        </div>
+                        <div *ngIf="isFrenchEnabled">
+                            <label for="namefr" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (FR)</label>
+                            <input 
+                                type="text" name="namefr" id="namefr" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.namefr' | translate }}" [(ngModel)]="featureNameFr" required>
+                        </div>
+                        <div *ngIf="isBasqueEnabled">
+                            <label for="nameeu" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (EU)</label>
+                            <input 
+                                type="text" name="nameeu" id="nameeu" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.nameeu' | translate }}" [(ngModel)]="featureNameEu" required>
+                        </div>
+                        <div *ngIf="isCatalanEnabled">
+                            <label for="nameca" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (CA)</label>
+                            <input 
+                                type="text" name="nameca" id="nameca" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.nameca' | translate }}" [(ngModel)]="featureNameCa" required>
+                        </div>
+                        <div *ngIf="isGermanEnabled">
+                            <label for="namede" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (DE)</label>
+                            <input 
+                                type="text" name="namede" id="namede" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.namede' | translate }}" [(ngModel)]="featureNameDe" required>
+                        </div>
+                        <div *ngIf="isItalianEnabled">
+                            <label for="nameit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.name' | translate }} (IT)</label>
+                            <input 
+                                type="text" name="nameit" id="nameit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                placeholder="{{ 'company-settings.nameit' | translate }}" [(ngModel)]="featureNameIt" required>
+                        </div>
+                        <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveFeatureName()"
+                            data-modal-hide="name-modal" 
+                            [ngStyle]="{
+                                'background-color': buttonColor
+                            }"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+    <div class="w-full min-w-full">
+        <div class="relative mb-6">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <mat-paginator
+        #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" *ngIf="pageSize == 200" class="mb-5"
+        (page)="getPageDetails($event)"
+        [showFirstLastButtons]="true"
+    ></mat-paginator>
+        <div class="mat-table-responsive">
+            <mat-table [dataSource]="dataSource" matSort>
+                <ng-container matColumnDef="image">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="image"> 
+                        <img class="w-8" src="./assets/images/settings-icon-rounded.png">
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'company-settings.name' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="name">
+                        {{ row?.name }}
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'company-settings.description' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="name">
+                        <div class="pb-2">
+                            <div>{{ row?.description }}</div>
+                            <div class="mt-2" *ngIf="row?.show_action_button">
+                                <button class="w-[130px] text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                    (click)="performAction(row)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'members.setup' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef>{{ 'company-settings.action' | translate }}</mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="action"> 
+                        <div class="action-flex">
+                            <ng-container *ngIf="row.active == 1">
+                                <button
+                                    class="min-w-[137px] inline-block h-[40px] text-sm px-6 py-2 font-semibold rounded-[10px] border border-1 bg-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                    (click)="deactivate(row.id)"
+                                    [ngStyle]="{
+                                        'border-color': buttonColor,
+                                        'color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.deactivate' | translate }}
+                                </button>
+                            </ng-container>
+                            <ng-container *ngIf="row.active == 0">
+                                <button 
+                                    class="min-w-[137px] inline-block h-[40px] text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none" 
+                                    (click)="activate(row.id)"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                >
+                                    {{ 'company-settings.activate' | translate }}
+                                </button>
+                            </ng-container>
+                        </div>
+                    </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+        </div>
+        <mat-paginator
+            #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" *ngIf="pageSize < 200"
+            (page)="getPageDetails($event)"
+            [showFirstLastButtons]="true"
+        ></mat-paginator>
+    </div>
+</div>
+<button #settingmodalbutton data-modal-target="setting-modal" data-modal-toggle="setting-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="setting-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full"
+        [ngClass]="{'max-w-2xl': showGuestRegistrationFieldsModal,
+            'max-w-md': !showGuestRegistrationFieldsModal && !showFilterModal && !showPaymentMethodsModal,
+            'max-w-4xl': showFilterModal || showPaymentMethodsModal,
+        }">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closesettingmodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="setting-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ (showFilterModal ? ('landing.filtersettings' | translate) : selectedSettingTitle)  ||  popupTitle || ('company-settings.settings' | translate) }}
+                </h3>
+                <form class="space-y-6" action="#">
+                    <ng-container *ngIf="showTutorBookingsCommissionPerHourModal">
+                        <div>
+                            <label 
+                                for="bookingcommissionperhour" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "tutor-stripe.commission" | translate }} / {{ "timeunits.hours" | translate }}
+                            </label>
+                            <input 
+                                type="text" 
+                                name="bookingcommissionperhour" 
+                                id="bookingcommissionperhour" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !bookingcommissionperhour}"
+                                placeholder="{{ 'company-settings.bookingcommissionperhour' | translate }}*" 
+                                [(ngModel)]="bookingcommissionperhour" 
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                        <button 
+                            type="button" 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveTutorBookingCommissionPerHour()"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="showTutorBookingsCommissionModal">
+                        <div>
+                            <label 
+                                for="bookingcommissionpercentage" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "tutor-stripe.commission" | translate }} %
+                            </label>
+                            <input 
+                                type="text" 
+                                name="bookingcommissionpercentage" 
+                                id="bookingcommissionpercentage" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !bookingcommissionpercentage}"
+                                placeholder="{{ 'company-settings.bookingcommissionpercentage' | translate }}*" 
+                                [(ngModel)]="bookingcommissionpercentage" 
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                        <button 
+                            type="button" 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveTutorBookingCommissionPercentage()"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="showFeaturedTextModal">
+                        <div>
+                            <label 
+                                for="featured-text-value" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "company-settings.value" | translate }}
+                            </label>
+                            <input 
+                                type="text" 
+                                name="featured-text-value" 
+                                id="featured-text-value" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !featuredTextValue}"
+                                placeholder="{{ 'company-settings.value' | translate }}*" 
+                                [(ngModel)]="featuredTextValue" 
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                        <div *ngIf="isEnglishEnabled">
+                            <label 
+                                for="featured-text-value-en" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "company-settings.value" | translate }} (EN)
+                            </label>
+                            <input 
+                                type="text" 
+                                name="featured-text-value-en" 
+                                id="featured-text-value-en" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !featuredTextValueEn}"
+                                placeholder="{{ 'company-settings.value' | translate }} (EN)" 
+                                [(ngModel)]="featuredTextValueEn" 
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isFrenchEnabled">
+                            <label 
+                                for="featured-text-value-en" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "company-settings.value" | translate }} (FR)
+                            </label>
+                            <input 
+                                type="text" 
+                                name="featured-text-value-fr" 
+                                id="featured-text-value-fr" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !featuredTextValueFr}"
+                                placeholder="{{ 'company-settings.value' | translate }} (FR)" 
+                                [(ngModel)]="featuredTextValueFr" 
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isBasqueEnabled">
+                            <label 
+                                for="featured-text-value-en" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "company-settings.value" | translate }} (EU)
+                            </label>
+                            <input 
+                                type="text" 
+                                name="featured-text-value-eu" 
+                                id="featured-text-value-eu" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !featuredTextValueEu}"
+                                placeholder="{{ 'company-settings.value' | translate }} (EU)" 
+                                [(ngModel)]="featuredTextValueEu" 
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isCatalanEnabled">
+                            <label 
+                                for="featured-text-value-en" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "company-settings.value" | translate }} (CA)
+                            </label>
+                            <input 
+                                type="text" 
+                                name="featured-text-value-ca" 
+                                id="featured-text-value-ca" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !featuredTextValueCa}"
+                                placeholder="{{ 'company-settings.value' | translate }} (CA)" 
+                                [(ngModel)]="featuredTextValueCa" 
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <div *ngIf="isGermanEnabled">
+                            <label 
+                                for="featured-text-value-en" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "company-settings.value" | translate }} (DE)
+                            </label>
+                            <input 
+                                type="text" 
+                                name="featured-text-value-ca" 
+                                id="featured-text-value-ca" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !featuredTextValueDe}"
+                                placeholder="{{ 'company-settings.value' | translate }} (DE)" 
+                                [(ngModel)]="featuredTextValueDe" 
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <button 
+                            type="button" 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveFeaturedTextValue()"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="showGuestRegistrationFieldsModal">
+                        <div class="mt-4 mb-8">
+                            <div class="flex mb-8 items-center align-center">
+                                <button 
+                                    class="h-[40px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                                    *ngIf="fieldMode != 'add' && fieldMode != 'edit'"
+                                    [ngStyle]="{ 'background-color': buttonColor}"
+                                    (click)="addExistingField()"
+                                >
+                                    <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                    </svg>
+                                    <span class="text-white text-md font-semibold uppercase">{{ 'member-type-registration.addexisting' | translate }}</span>
+                                </button>
+                                <button 
+                                    class="h-[40px] flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                                    *ngIf="fieldMode == 'add' || fieldMode == 'edit'"
+                                    (click)="cancelShowField()" 
+                                    [ngStyle]="{
+                                        'border-color': buttonColor,
+                                        'background-color': '#fff',
+                                    }"
+                                >
+                                    <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                                    </svg>
+                                    <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div *ngIf="showFieldDetails">
+                            <div class="flex items-center justify-center relative w-full max-w-full">
+                                <div class="mb-2 relative w-full max-w-full">
+                                    <label for="profile-field" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'member-type-registration.selecttype' | translate }}</label>
+                                    <select
+                                        id="profile-field"
+                                        class="rounded-lg bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        [(ngModel)]="selectedField"
+                                        [ngModelOptions]="{standalone: true}"
+                                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': fieldFormSubmitted && !selectedField }"
+                                        (change)="handleFieldChange($event)"
+                                    >
+                                        <option value="" disabled selected>{{ 'member-type-registration.selecttype' | translate }}</option>
+                                        <option
+                                            *ngFor="let field of allRegistrationFields"
+                                            [value]="field.id"
+                                        >
+                                            {{ language == 'en' ? field.field_display_en : field.field_display_es }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center relative w-full max-w-full">
+                                <div class="mb-2 relative w-full max-w-full">
+                                    <label for="label" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                        {{ 'member-type-registration.label' | translate }}
+                                    </label>
+                                    <input 
+                                        id="label"
+                                        type="text" 
+                                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="fieldDesc"
+                                        [ngModelOptions]="{standalone: true}"
+                                        [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': fieldFormSubmitted && !fieldDesc }"
+                                        placeholder="{{ 'member-type-registration.label' | translate }}">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between relative pt-4">
+                                <div class="text-left block mb-4 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'member-type-registration.required' | translate}}
+                                </div>
+                                <label
+                                    for="setting-1"
+                                    class="flex items-center justify-between cursor-pointer"
+                                >
+                                    <div class="relative mr-1">
+                                        <input
+                                            id="setting-1"
+                                            name="setting-1"
+                                            type="checkbox"
+                                            class="sr-only"
+                                            [(ngModel)]="requiredField" 
+                                            [ngModelOptions]="{standalone: true}"
+                                        />
+                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <table *ngIf="!showFieldDetails" class="my-8 w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                <tr>
+                                    <th></th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'member-type-registration.field' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'member-type-registration.type' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'member-type-registration.required' | translate }}
+                                    </th>
+                                    <th scope="col" class="px-2 py-1">
+                                        {{ 'member-type-registration.action' | translate }}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let item of filteredProfileFields; let i = index;" 
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                    <td class="text-xs px-2 py-1">
+                                        <div class="flex flex-col relative justify-center items-center w-full">
+                                            <svg (click)="moveUp('registration-fields', filteredProfileFields, i, item)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                            </svg>
+                                            <svg (click)="moveDown('registration-fields', filteredProfileFields, i, item)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-3 h-3 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ language == 'en' ? (item?.field_display_en ? item?.field_display_en : item?.field_display_es) : item?.field_display_es }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        {{ item?.field_type }}
+                                    </td>
+                                    <td class="text-xs px-2 py-1">
+                                        <svg
+                                            *ngIf="item?.required == 1"
+                                            [ngStyle]="{'color': '#5cb85c'}" class="mr-2 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                                        </svg>
+                                        <svg 
+                                            *ngIf="item?.required != 1"
+                                            [ngStyle]="{'color': '#d9534f'}" class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                                        </svg>
+                                    </td>
+                                    <td class="text-xs px-2 py-1 flex items-center max-w-[80px] py-4">
+                                        <svg (click)="editField(item)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                            <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                            <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                        </svg>
+                                        <svg (click)="deleteField(item)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                        </svg>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div *ngIf="showFieldDetails" class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveField()"
+                            >
+                                {{ 'plan-create.savechanges' | translate }}
+                            </button>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="showApproveClubActivitiesModal">
+                        <mat-form-field appearance="outline" class="w-full">
+                            <mat-label>{{ 'your-admin-area.selectrole' | translate }}</mat-label>
+                            <mat-select 
+                                [(ngModel)]="selectedUserRoles"
+                                [ngModelOptions]="{standalone: true}"
+                                required 
+                                multiple 
+                            >
+                                <mat-option *ngFor="let role of userRoles" [value]="role">
+                                    {{ language == 'en' ? (role?.name_EN || role?.name_ES) : role?.name_ES }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveUserRoles()"
+                            >
+                                {{ 'company-settings.save' | translate }}
+                            </button>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="showFilterModal">
+                        <table class="w-full my-4">
+                            <tr>
+                                <th class="text-left font-semibold text-sm">{{ 'member-type-registration.field' | translate }}</th>
+                                <th class="text-left font-semibold text-sm">{{ 'guest-landing.activate' | translate }}</th>
+                                <th class="text-left font-semibold text-sm">{{ 'landing.selecttext' | translate }}</th>
+                                <th class="text-left font-semibold text-sm" *ngIf="id == 1 || id == 4 || id == 5 || id == 23">{{ 'landing.display' | translate }}</th>
+                            </tr>
+                            <tr *ngFor="let setting of filterSettings" class="table-row">
+                                <td class="py-2">{{ setting?.text }}</td>
+                                <td class="text-center">
+                                    <div class="flex items-center justify-between w-full">
+                                        <div class="flex items-center justify-between w-full relative">
+                                            <label
+                                                for="category-status-{{setting?.id}}"
+                                                class="flex items-center w-full justify-between cursor-pointer"
+                                            >
+                                                <div class="relative mr-1">
+                                                    <input
+                                                        id="category-status-{{setting?.id}}"
+                                                        type="checkbox"
+                                                        class="sr-only"
+                                                        [(ngModel)]="setting.status"
+                                                        [ngModelOptions]="{standalone: true}"
+                                                    />
+                                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-2">
+                                    <div class="flex items-center justify-center mb-4 pr-4">
+                                        <input
+                                            class="text-sm shadow appearance-none border border-gray-600 rounded-[10px] w-full mt-2 h-[42px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                            placeholder="{{ 'landing.selecttext' | translate }}"
+                                            [(ngModel)]="setting.select_text"
+                                            [ngModelOptions]="{standalone: true}"
+                                        />
+                                    </div>
+                                </td>
+                                <td class="py-2" *ngIf="id == 1 || id == 4 || id == 5 || id == 23">
+                                    <div *ngIf="setting?.field == 'category'" 
+                                        class="flex items-center justify-center relative w-full max-w-full">
+                                        <div class="mb-2 relative w-full max-w-full">
+                                            <select
+                                                id="filter"
+                                                class="rounded-lg bg-white border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                [(ngModel)]="selectedFilter"
+                                                [ngModelOptions]="{standalone: true}"
+                                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedFilter }"
+                                                (change)="handleFilterChange($event)"
+                                            >
+                                                <option value="" selected>{{ 'member-type-registration.selecttype' | translate }}</option>
+                                                <option value="dropdown">{{ 'member-type-registration.selectfield' | translate }}</option>
+                                                <option value="button">{{ 'services.link' | translate }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button
+                                class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="saveFilter()"
+                            >
+                                {{ 'members.save' | translate }}
+                            </button>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="showMenteeLimitModal">
+                        <div>
+                            <label 
+                                for="menteelimit" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'company-settings.noofmentee' | translate }}
+                            </label>
+                            <input 
+                                type="number" 
+                                name="menteelimit" 
+                                id="menteelimit" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'bg-red-50 border border-red-500': !createMenteeLimit}"
+                                placeholder="{{ 'company-settings.noofmentee' | translate }}*" 
+                                [(ngModel)]="createMenteeLimit" 
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                        <div>
+                            <label 
+                                for="limitmessage" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ "landing.message" | translate }}
+                            </label>
+                            <textarea id="limitmessage" cols="30" rows="6"
+                                class="w-full rounded-lg p-4 border border-gray-300"
+                                placeholder="{{ 'landing.message' | translate }}" 
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !limitMessage }"
+                                [(ngModel)]="limitMessage"
+                                [ngModelOptions]="{standalone: true}" 
+                                required>
+                            </textarea>
+                        </div>
+                        <button 
+                            type="button" 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveMenteeLimitSettings()"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="showHideOffersModal">
+                        <div>
+                            <label 
+                                for="hideoffers" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'plan-create.numberofdays' | translate }}
+                            </label>
+                            <input 
+                                type="number" 
+                                name="hideoffers" 
+                                id="hideoffers" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'p-6 rounded-xl bg-red-50 border border-red-500': !hideOffersDays}"
+                                placeholder="{{ 'plan-create.numberofdays' | translate }}*" 
+                                [(ngModel)]="hideOffersDays" 
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                        <button 
+                            type="button" 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveHideOffersDays()"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="showMinimumBalanceModal">
+                        <div>
+                            <label 
+                                for="minimumbalance" 
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'professionals.minimumbalance' | translate }}
+                            </label>
+                            <input 
+                                type="number" 
+                                name="minimumbalance" 
+                                id="minimumbalance" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                [ngClass]="{'bg-red-50 border border-red-500': !minimumBalance}"
+                                placeholder="{{ 'professionals.minimumbalance' | translate }}*" 
+                                [(ngModel)]="minimumBalance" 
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                        <button 
+                            type="button" 
+                            class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            (click)="saveMinimumBalance()"
+                            [ngStyle]="{'background-color': buttonColor}"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </ng-container>
+                    <ng-container *ngIf="showPaymentMethodsModal">
+                        <mat-tab-group #mtTab (selectedTabChange)="changeTab($event)" [(selectedIndex)]="tabIndex">
+                            <mat-tab label="Stripe">
+                                <div class="flex items-center justify-between w-full my-8">
+                                    <div class="flex items-center justify-between w-full relative">
+                                        <label
+                                            for="stripe"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="text-black text-sm capitalize">
+                                                {{'company-settings.activate' | translate}} Stripe
+                                            </div>
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="stripe"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="activeStripe"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="activeStripe">
+                                    <div>
+                                        <label 
+                                            for="stripepublickey" 
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ 'stripe-account.publishablekey' | translate }}
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            name="stripepublickey" 
+                                            id="stripepublickey" 
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                            [ngClass]="{'bg-red-50 border border-red-500': !stripePublicKey}"
+                                            placeholder="{{ 'stripe-account.publishablekey' | translate }}*" 
+                                            [(ngModel)]="stripePublicKey" 
+                                            [ngModelOptions]="{standalone: true}"
+                                            required>
+                                    </div>
+                                    <div>
+                                        <label 
+                                            for="stripesecretkey" 
+                                            class="block my-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ 'stripe-account.secretkey' | translate }}
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            name="stripesecretkey" 
+                                            id="stripesecretkey" 
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                            [ngClass]="{'bg-red-50 border border-red-500': !stripeSecretKey}"
+                                            placeholder="{{ 'stripe-account.secretkey' | translate }}*" 
+                                            [(ngModel)]="stripeSecretKey" 
+                                            [ngModelOptions]="{standalone: true}"
+                                            required>
+                                    </div>
+                                </ng-container>
+                                <div class="flex items-center justify-center mt-8 mb-4 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                                    <button 
+                                        type="button" 
+                                        class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="saveStripeSettings()"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                    >
+                                        {{ 'company-settings.save' | translate }}
+                                    </button>
+                                </div>
+                            </mat-tab>
+                            <mat-tab label="PayPal">
+                                <div class="flex items-center justify-between w-full my-8">
+                                    <div class="flex items-center justify-between w-full relative">
+                                        <label
+                                            for="paypal"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="text-black text-sm capitalize">
+                                                {{'company-settings.activate' | translate}} PayPal
+                                            </div>
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="paypal"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="activePayPal"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="activePayPal">
+                                    <div>
+                                        <label 
+                                            for="paypalclientid" 
+                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ 'settings.client_id' | translate }}
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            name="paypalclientid" 
+                                            id="paypalclientid" 
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                            [ngClass]="{'bg-red-50 border border-red-500': !paypalClientID}"
+                                            placeholder="{{ 'settings.client_id' | translate }}*" 
+                                            [(ngModel)]="paypalClientID" 
+                                            [ngModelOptions]="{standalone: true}"
+                                            required>
+                                    </div>
+                                    <div>
+                                        <label 
+                                            for="paypalsecret" 
+                                            class="block my-2 text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ 'settings.client_secret' | translate }}
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            name="paypalsecret" 
+                                            id="paypalsecret" 
+                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" 
+                                            [ngClass]="{'bg-red-50 border border-red-500': !paypalSecret}"
+                                            placeholder="{{ 'settings.client_secret' | translate }}*" 
+                                            [(ngModel)]="paypalSecret" 
+                                            [ngModelOptions]="{standalone: true}"
+                                            required>
+                                    </div>
+                                </ng-container>
+                                <div class="flex items-center justify-center mt-8 mb-4 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                                    <button 
+                                        type="button" 
+                                        class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                        (click)="savePayPalSettings()"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                    >
+                                        {{ 'company-settings.save' | translate }}
+                                    </button>
+                                </div>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </ng-container>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 

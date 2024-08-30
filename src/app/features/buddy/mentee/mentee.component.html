@@ -1,0 +1,124 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="pt-10 flex flex-col sm:flex-col md:flex-row lg:flex-row pb-20">
+    <div class="py-6 h-full max-h-full sm:h-full sm:max-h-full md:h-[591px] md:max-h-[591px] lg:h-[591px] lg:max-h-[591px] w-full max-w-full sm:w-full sm:max-w-full md:w-5/12 md:max-w-5/12 lg:w-5/12 lg:max-w-5/12 flex flex-col px-10">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <img class="w-32 h-32 rounded-full object-cover object-top" width="128" height="128" [src]="mentee?.mentee_image" alt="{{ mentee?.display_name }}">
+            </div>
+            <div class="flex-1 min-w-0 ms-4">
+                <div class="text-2xl leading-6 pb-2 font-bold">{{mentee?.display_name}}</div>
+                <div *ngIf="mentee?.mentee_campus">
+                    <span>{{mentee?.mentee_campus}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-lg leading-6 pb-2 py-6 flex flex-col bg-[#F8F4F4] px-16 rounded-lg w-full sm:w-full md:w-2/6 lg:w-2/6">
+        <div class="text-2xl leading-6 pb-2 font-bold border border-1 pb-4 mb-4 border-[#c7c7c7] border-t-0 border-l-0 border-r-0 pr-8">{{'plan-details.details' | translate }}</div>
+        <div class="text-sm border border-2 border-t-0 border-l-0 border-r-0">
+            <div *ngIf="mentee?.email_display" class="mb-4 flex items-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                        <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                        <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                    </svg>
+                </div>
+                <div>{{mentee?.email_display}}</div>
+            </div>
+            <div *ngIf="mentee?.phone_display" class="mb-4 flex items-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
+                        <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z"/>
+                    </svg>
+                </div>
+                <div>{{mentee?.phone_display}}</div>
+            </div>
+            <div *ngIf="mentee?.phone2_display" class="mb-4 flex items-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M5 4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4Zm12 12V5H7v11h10Zm-5 1a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H12Z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div>{{mentee?.phone2_display}}</div>
+            </div>
+            <div *ngIf="mentee?.registration_num" class="mb-4 flex items-center align-center">
+                <div class="mr-4">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M19.728 10.686c-2.38 2.256-6.153 3.381-9.875 3.381-3.722 0-7.4-1.126-9.571-3.371L0 10.437V18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-7.6l-.272.286Z"/>
+                        <path d="m.135 7.847 1.542 1.417c3.6 3.712 12.747 3.7 16.635.01L19.605 7.9A.98.98 0 0 1 20 7.652V6a2 2 0 0 0-2-2h-3V3a3 3 0 0 0-3-3H8a3 3 0 0 0-3 3v1H2a2 2 0 0 0-2 2v1.765c.047.024.092.051.135.082ZM10 10.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5ZM7 3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1H7V3Z"/>
+                    </svg>
+                </div>
+                <div>{{mentee?.registration_num}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="text-lg leading-6 pb-2 py-6 flex flex-col bg-[#F8F4F4] px-16 rounded-lg w-full sm:w-full md:w-2/6 lg:w-2/6">
+        <div class="text-2xl leading-6 pb-2 font-bold border border-1 pb-4 mb-4 border-[#c7c7c7] border-t-0 border-l-0 border-r-0 pr-8">{{'members.moreinformation' | translate}}</div>
+        <div class="text-sm mt-1 mb-4" *ngIf="mentee?.campus">
+            <div class="flex item-center">
+                <span class="font-semibold mr-2">{{'buddy.campus' | translate}}:</span>
+                <div>
+                    <span class="break-words">{{ mentee?.campus }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm mt-1 mb-4" *ngIf="mentee?.faculty">
+            <div class="flex item-center">
+                <span class="font-semibold mr-2">{{'buddy.faculty' | translate}}:</span>
+                <div>
+                    <span class="break-words">{{ mentee?.faculty }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm mt-1 mb-4" *ngIf="mentee?.business_units?.length > 0">
+            <div class="flex item-center">
+                <span class="font-semibold mr-2">{{'buddy.businessunit' | translate}}:</span>
+                <div>
+                    <div *ngFor="let unit of mentee?.business_units">
+                        <span class="break-words">{{ unit?.bussines_unit }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm mt-1 mb-4" *ngIf="mentee?.segments?.length > 0">
+            <div class="flex item-center">
+                <span class="font-semibold mr-2">{{'buddy.segment' | translate}}:</span>
+                <div>
+                    <div *ngFor="let segment of mentee?.segments">
+                        <span class="break-words">{{ segment?.segment }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm mb-4">
+            <div class="flex item-center" *ngIf="mentee?.types?.length > 0">
+                <span class="font-semibold mr-2">{{ 'plan-details.type' | translate }}:</span>
+                <div>
+                    <div *ngFor="let type of mentee?.types">
+                        <span class="break-words">{{ type?.type }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-sm mt-1 mb-4" *ngIf="mentee?.num_matricula?.length > 0">
+            <div class="flex item-center">
+                <span class="font-semibold mr-2">Num. Matrícula activa:</span>
+                <div>
+                    <div *ngFor="let unit of mentee?.num_matricula">
+                        <span class="break-words">{{ unit?.num_matricula }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

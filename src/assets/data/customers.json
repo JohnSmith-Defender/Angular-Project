@@ -1,0 +1,452 @@
+[
+    {  
+        "id": 12,  
+        "name": "KCN",
+        "url": "app.clubdenetworking.es",
+        "domain": "clubdenetworking.es"
+    },
+    {  
+        "id": 12,  
+        "name": "KCN",
+        "url": "kcn.vistingo.com",
+        "domain": "clubdenetworking.es"
+    },
+    {  
+        "id": 15,  
+        "name": "Asociacion Startups",
+        "url": "asociacionstartups.vistingo.com",
+        "domain": "asociacionstartups.es"
+    },
+    {  
+        "id": 15,  
+        "name": "Asociacion Startups",
+        "url": "as.vistingo.com",
+        "domain": "asociacionstartups.es"
+    },
+    {  
+        "id": 20,  
+        "name": "Mind Global Space",
+        "url": "mindglobalspace.org",
+        "domain": "mindglobalspace.org"
+    },
+    {  
+        "id": 20,  
+        "name": "Mind Global Space",
+        "url": "mindglobalstaging.vistingo.com",
+        "domain": "mindglobalspace.org"
+    },
+    {  
+        "id": 20,  
+        "name": "Mind Global Space",
+        "url": "mindglobalspace.vistingo.com",
+        "domain": "mindglobalspace.org"
+    },
+    {  
+        "id": 24,  
+        "name": "Colaborha",
+        "url": "colaborha.com",
+        "domain": "colaborha.com"
+    },
+    {  
+        "id": 25,  
+        "name": "VCP",
+        "url": "vcp.vistingo.com",
+        "domain": "vistingo.com"
+    },
+    {  
+        "id": 25,  
+        "name": "VCP",
+        "url": "vcpstaging.vistingo.com",
+        "domain": "vistingo.com"
+    },
+    {  
+        "id": 25,  
+        "name": "VCP",
+        "url": "vcpweb.vistingo.com",
+        "domain": "vistingo.com"
+    },
+    {  
+        "id": 27,  
+        "name": "Bizscool Comunidad",
+        "url": "comunidad.bizscool.com",
+        "domain": "bizscool.com"
+    },
+    {  
+        "id": 27,  
+        "name": "Bizscool Comunidad",
+        "url": "bizscoolstaging.vistingo.com",
+        "domain": "bizscool.com"
+    },
+    {  
+        "id": 27,  
+        "name": "Bizscool Comunidad",
+        "url": "bizscool.vistingo.com",
+        "domain": "bizscool.com"
+    },
+    {  
+        "id": 27,  
+        "name": "Bizscool Comunidad",
+        "url": "app.bizscool.com",
+        "domain": "bizscool.com"
+    },
+    {  
+        "id": 28,  
+        "name": "Ana Pola",
+        "url": "anapola.vistingo.com",
+        "domain": "anapola.com"
+    },
+    {  
+        "id": 30,  
+        "name": "Sunya",
+        "url": "sunya.vistingo.com",
+        "domain": "sunya.es"
+    },
+    {  
+        "id": 31,  
+        "name": "Fundacio Impulsa",
+        "url": "fundacioimpulsa.vistingo.com",
+        "domain": "fundacioimpulsa.org"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "vidauniversitaria.universidadeuropea.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "universidadeuropea.vistingo.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "uestaging.vistingo.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "ue.vistingo.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "schooloflife.vistingo.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "schooloflife.universidadeuropea.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 32,  
+        "name": "Universidad Europea",
+        "url": "schooloflifestaging.vistingo.com",
+        "domain": "universidadeuropea.com"
+    },
+    {  
+        "id": 33,  
+        "name": "Club Woman New Life",
+        "url": "clubwomannewlife.vistingo.com",
+        "domain": "clubwomannewlife.com"
+    },
+    {  
+        "id": 34,  
+        "name": "Neuropractitioner",
+        "url": "neuropractitioner.vistingo.com",
+        "domain": "neuropractitioner.com"
+    },
+    {  
+        "id": 35,  
+        "name": "Ameib",
+        "url": "ameib.vistingo.com",
+        "domain": "ameib.com"
+    },
+    {  
+        "id": 35,  
+        "name": "Ameib",
+        "url": "red.asociacionpachamama.org",
+        "domain": "ameib.com"
+    },
+    {  
+        "id": 35,  
+        "name": "Ameib",
+        "url": "red.vistingo.com",
+        "domain": "ameib.com"
+    },
+    {  
+        "id": 36,  
+        "name": "Agata Puig",
+        "url": "agatapuig.vistingo.com",
+        "domain": "agatapuig.com"
+    },
+    {  
+        "id": 37,  
+        "name": "Centro Corporer",
+        "url": "centrocorpore.vistingo.com",
+        "domain": "centrocorpore.com"
+    },
+    {  
+        "id": 37,  
+        "name": "Escuela Reflexologia",
+        "url": "escuelareflexologia.vistingo.com",
+        "domain": "centrocorpore.com"
+    },
+    {  
+        "id": 38,  
+        "name": "Sara Jane Browne",
+        "url": "sarajbrowne.vistingo.com",
+        "domain": "sarajbrowne.com"
+    },
+    {  
+        "id": 39,  
+        "name": "Carla Mendez Losi",
+        "url": "carlamendezlosi.vistingo.com",
+        "domain": "carlamendezlosi.com"
+    },
+    {  
+        "id": 40,  
+        "name": "Energías Vitales",
+        "url": "energiasvitales.vistingo.com",
+        "domain": "energiasvitales.com"
+    },
+    {  
+        "id": 41,  
+        "name": "Club Productividad en Equilibrio",
+        "url": "coachingconmarisa.vistingo.com",
+        "domain": "coachingconmarisa.es"
+    },
+    {  
+        "id": 41,  
+        "name": "Club Productividad en Equilibrio",
+        "url": "ccm.vistingo.com",
+        "domain": "coachingconmarisa.es"
+    },
+    {  
+        "id": 42,  
+        "name": "Eliku nutrizio aholkularitza",
+        "url": "elikuzentrua.vistingo.com",
+        "domain": "elikuzentrua.com"
+    },
+    {  
+        "id": 42,  
+        "name": "Eliku nutrizio aholkularitza",
+        "url": "elikuzentroa.vistingo.com",
+        "domain": "elikuzentrua.com"
+    },
+    {  
+        "id": 42,  
+        "name": "Eliku nutrizio aholkularitza",
+        "url": "eliku.vistingo.com",
+        "domain": "elikuzentrua.com"
+    },
+    {  
+        "id": 43,  
+        "name": "Sandra Vanessa Rodriguez",
+        "url": "sandravanessarodriguez.vistingo.com",
+        "domain": "sandravanessarodriguez.com"
+    },
+    {  
+        "id": 44,  
+        "name": "Silvia Carre",
+        "url": "clubvuela.silviacarre.com",
+        "domain": "silviacarre.com"
+    },
+    {  
+        "id": 44,  
+        "name": "Silvia Carre",
+        "url": "silviacarre.vistingo.com",
+        "domain": "silviacarre.com"
+    },
+    {  
+        "id": 44,  
+        "name": "Silvia Carre",
+        "url": "clubvuelastaging.vistingo.com",
+        "domain": "silviacarre.com"
+    },
+    {  
+        "id": 45,  
+        "name": "Sarah S English Club",
+        "url": "sarahsenglishclub.vistingo.com",
+        "domain": "sarahsenglishclub.com"
+    },
+    {  
+        "id": 46,  
+        "name": "Crecimiento Personal con María",
+        "url": "orientateconmaria.vistingo.com",
+        "domain": "orientateconmaria.com"
+    },
+    {  
+        "id": 47,  
+        "name": "YellowPea",
+        "url": "yellowpea.vistingo.com",
+        "domain": "yellowpea.com"
+    },
+    {  
+        "id": 48,  
+        "name": "Montserrat Sánchez - Tu Psicóloga EMDR en Madrid",
+        "url": "psicomon.vistingo.com",
+        "domain": "psicomon.com"
+    },
+    {  
+        "id": 49,  
+        "name": "Out Of The Box Mallorca",
+        "url": "outoftheboxmallorca.vistingo.com",
+        "domain": "outoftheboxmallorca.com"
+    },
+    {  
+        "id": 50,  
+        "name": "30 Libros",
+        "url": "30libros.vistingo.com",
+        "domain": "30libros.com"
+    },
+    {  
+        "id": 51,  
+        "name": "GIVENDA HAIR DESIGNERS",
+        "url": "givenda.vistingo.com",
+        "domain": "givenda.com"
+    },
+    {  
+        "id": 52,  
+        "name": "CURSO GENIUS",
+        "url": "cursogenius.vistingo.com",
+        "domain": "cursogenius.com"
+    },
+    {  
+        "id": 52,  
+        "name": "CURSO GENIUS",
+        "url": "cursogeniusstaging.vistingo.com",
+        "domain": "cursogenius.com"
+    },
+    {  
+        "id": 52,  
+        "name": "CURSO GENIUS",
+        "url": "genius.vistingo.com",
+        "domain": "cursogenius.com"
+    },
+    {
+        "id": 53,  
+        "name": "ESCUELA VETERINARIA CITOPET",
+        "url": "escuelaveterinariacitopet.vistingo.com",
+        "domain": "escuelaveterinariacitopet.com"
+    },
+    {
+        "id": 54,  
+        "name": "Soy Pilar Andujar",
+        "url": "soypilarandujar.vistingo.com",
+        "domain": "soypilarandujar.com"
+    },
+    {
+        "id": 55,  
+        "name": "TSC",
+        "url": "tsc.vistingo.com",
+        "domain": "tsc.com"
+    },
+    {
+        "id": 56,  
+        "name": "Centro Estética Victoria",
+        "url": "esteticavictoria.vistingo.com",
+        "domain": "esteticavictoria.es"
+    },
+    {
+        "id": 57,  
+        "name": "Doko",
+        "url": "doko.vistingo.com",
+        "domain": "doko.com"
+    },
+    {
+        "id": 58,  
+        "name": "CryptoDefi",
+        "url": "cryptodefi.vistingo.com",
+        "domain": "cryptodefi.com"
+    },
+    {
+        "id": 58,  
+        "name": "Sniping Money",
+        "url": "snipingmoney.ericarrillo.com",
+        "domain": "cryptodefi.com"
+    },
+    {
+        "id": 59,  
+        "name": "Maestrienda",
+        "url": "maestrienda.vistingo.com",
+        "domain": "maestrienda.com"
+    },
+    {
+        "id": 60,  
+        "name": "Co-nectando",
+        "url": "comunidad.co-nectando.com",
+        "domain": "conectando.com"
+    },
+    {
+        "id": 61,  
+        "name": "Connect-in",
+        "url": "connect-in.vistingo.com",
+        "domain": "connectin.com"
+    },
+    {
+        "id": 62,  
+        "name": "Club Olaya Landa",
+        "url": "clubolayalanda.vistingo.com",
+        "domain": "olayalanda.com"
+    },
+    {
+        "id": 62,  
+        "name": "Club Olaya Landa",
+        "url": "club.olayalanda.com",
+        "domain": "olayalanda.com"
+    },
+    {
+        "id": 63,  
+        "name": "Mima tu Imagen, Proyecta tu Esencia",
+        "url": "mimatuimagenyproyectatuesencia.vistingo.com",
+        "domain": "mimatuimagenyproyectatuesencia.com"
+    },
+    {
+        "id": 64,  
+        "name": "DT Monster Leads",
+        "url": "dtmonsterleads.vistingo.com",
+        "domain": "dtmonsterleads.com"
+    },
+    {
+        "id": 65,  
+        "name": "Curso Genius Italy",
+        "url": "cursogeniusitaly.vistingo.com",
+        "domain": "cursogeniusitaly.com"
+    },
+    {
+        "id": 65,  
+        "name": "Corso Genio",
+        "url": "corsogenio.vistingo.com",
+        "domain": "cursogeniusitaly.com"
+    },
+    {
+        "id": 66,  
+        "name": "Klub Okio Genio",
+        "url": "klubokio.vistingo.com",
+        "domain": "klubokio.com"
+    },
+    {  
+        "id": 52,  
+        "name": "Testimonios",
+        "url": "testimonios.vistingo.com",
+        "domain": "cursogenius.com"
+    },
+    {  
+        "id": 52,  
+        "name": "Testimonios",
+        "url": "testimoniosstaging.vistingo.com",
+        "domain": "cursogenius.com"
+    },
+    {  
+        "id": 67,  
+        "name": "ASTRO IDEAL",
+        "url": "astroideal.com",
+        "domain": "astroideal.com"
+    }
+]

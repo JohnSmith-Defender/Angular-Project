@@ -1,0 +1,63 @@
+<ng-container *ngIf="!isloading && superAdmin">
+    <app-page-title title="{{ 'company-settings.statistics' | translate }}"></app-page-title>
+    <div class="container w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+        <app-breadcrumb 
+            [level1Title]="level1Title"
+            [level2Title]="level2Title"
+            [level3Title]="level3Title"
+            [level4Title]="level4Title"
+            [buttonColor]="buttonColor"
+            (goBack)="handleGoBack()"
+        />
+    </div>
+    <div class="pt-6">
+        <div class="mb-4 border-b border-gray-200 dark:border-gray-700">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
+                <li class="me-2" role="presentation" *ngIf="questionnairesTitle">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg" id="questionnaires-tab" data-tabs-target="#questionnaires" type="button" role="tab" aria-controls="questionnaires" aria-selected="false">{{questionnairesTitle}}</button>
+                </li>
+                <li class="me-2" role="presentation" *ngIf="landingPagesTitle">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="landingpages-tab" data-tabs-target="#landingpages" type="button" role="tab" aria-controls="landingpages" aria-selected="false">{{ landingPagesTitle }}</button>
+                </li>
+                <li class="me-2" role="presentation" *ngIf="videosCTAsTitle">
+                    <button class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300" id="videosctas-tab" data-tabs-target="#videosctas" type="button" role="tab" aria-controls="videosctas" aria-selected="false">{{ videosCTAsTitle }}</button>
+                </li>
+            </ul>
+        </div>
+        <div id="default-tab-content">
+            <div class="hidden p-4 rounded-lg" id="questionnaires" role="tabpanel" aria-labelledby="questionnaires-tab">
+                <app-questionnaires-statistics-list
+                    [company]="company"
+                    [language]="language"
+                    [buttonColor]="buttonColor"
+                    [primaryColor]="primaryColor"
+                    [userId]="userId"
+                    [superAdmin]="superAdmin"
+                ></app-questionnaires-statistics-list>
+            </div>
+            <div class="hidden p-4 rounded-lg" id="landingpages" role="tabpanel" aria-labelledby="landingpages-tab">
+                <app-landing-pages-statistics-list
+                    [company]="company"
+                    [language]="language"
+                    [buttonColor]="buttonColor"
+                    [primaryColor]="primaryColor"
+                    [userId]="userId"
+                    [superAdmin]="superAdmin"
+                ></app-landing-pages-statistics-list>
+            </div>
+            <div class="hidden p-4 rounded-lg" id="videosctas" role="tabpanel" aria-labelledby="videosctas-tab">
+                <app-videos-ctas-statistics-list
+                    [company]="company"
+                    [language]="language"
+                    [buttonColor]="buttonColor"
+                    [primaryColor]="primaryColor"
+                    [userId]="userId"
+                    [superAdmin]="superAdmin"
+                ></app-videos-ctas-statistics-list>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<div *ngIf="!isloading && !superAdmin" class="center pt-16">
+    <app-no-access></app-no-access>
+</div>

@@ -1,0 +1,81 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="py-10">
+    <div class="w-full max-w-full">
+        <div class="text-4xl font-semibold pt-24 sm:pt-24 md:pt-4 lg:pt-4">{{ blogTitle }}</div>
+        <div *ngIf="superAdmin || blogOwner || canCreate" class="flex mt-3 sm:mt-3 md:mt-0 lg:mt-0">
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4 mr-4"
+                (click)="handleEditRoute()" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': editHover ? 1.5 : 1,
+                    'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (mouseover)="toggleEditHover(true)"
+                (mouseleave)="toggleEditHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                </svg>
+                <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+            </button>
+            <button 
+                class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                (click)="handleDelete()" 
+                [ngStyle]="{
+                    'border-color': deleteHover ? 'transparent' : buttonColor,
+                    'background-color': deleteHover ? buttonColor : '#fff',
+                }"
+                (mouseover)="toggleDeleteHover(true)"
+                (mouseleave)="toggleDeleteHover(false)"
+            >
+                <svg [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="w-2 h-2 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                </svg>
+                <span [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="text-md font-semibold uppercase">{{ 'plan-details.delete' | translate }}</span>
+            </button>
+        </div>
+        <div class="mt-10 w-full max-w-full sm:w-full sm:max-w-full md:w-10/12 md:w-10/12 lg:w-10/12 lg:w-10/12">
+            <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row mb-24">
+                <div class="mr-0 sm:mr-0 md:mr-[50px] lg:mr-[50px] mt-4">
+                    <img 
+                        *ngIf="blogImage"
+                        class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[345px] md:max-w-[345px] lg:w-[345px] lg:max-w-[345px] sm:h-auto md:h-[382px] lg:h-[382px] max-h-auto md:max-h-[382px] lg:max-h-[382px]"
+                        width="345"
+                        height="382"
+                        [ngSrc]="blogImage"
+                    />
+                    <div class="text-2xl font-semibold mt-8">
+                        {{blogAuthor}}
+                    </div>
+                    <div class="text-base">
+                        {{blog?.created_at | date:'dd MMM yyyy HH:mm a'}}
+                    </div>
+                </div>
+                <div *ngIf="showBlogDescription" class="whitespace-pre-wrap text-base w-full">
+                    <div [innerHtml]="blogDesc"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

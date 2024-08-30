@@ -1,0 +1,180 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-10">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <app-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearch($event)"
+                        (doSearch)="handleSearch($event)"
+                    >
+                    </app-search>
+                </div>
+            </div>
+        </div>
+        <div class="pt-1.5 mb-6 flex justify-end">
+            <button 
+                class="mr-4 flex items-center py-1.5 p-2.5 rounded-[10px] justify-evenly"
+                [ngStyle]="{'background-color': buttonColor}" 
+                (click)="showAssignStudentsModal()"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                </svg>
+                <span class="text-white text-sm">{{ 'course-students.assignstudentstocourses' | translate }}</span>
+            </button>
+            <button 
+                class="flex items-center py-1.5 p-2.5 rounded-[10px] justify-evenly hover:bg-black"
+                [ngStyle]="{'background-color': buttonColor}" 
+                (click)="downloadExcel()"
+            >
+                <svg class="w-3 h-3 text-white mr-1 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                    <path d="M7 11H5v1h2v-1Zm4 3H9v1h2v-1Zm-4 0H5v1h2v-1ZM5 5V.13a2.98 2.98 0 0 0-1.293.749L.88 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM13 16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6Zm-1-8H9a1 1 0 0 1 0-2h3a1 1 0 1 1 0 2Zm0-3H9a1 1 0 0 1 0-2h3a1 1 0 1 1 0 2Z"/>
+                    <path d="M11 11H9v1h2v-1Z"/>
+                </svg>
+                <span class="text-white text-sm">{{ 'company-reports.downloadCSV' | translate }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list course-students">
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="name"> {{ row.name }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="email">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.email' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="email"> {{ row.email }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="course">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.course' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="course"> {{ row.course }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="credits" *ngIf="courseCreditSetting">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'course-create.credits' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="credits"> 
+                    <div class="flex relative">
+                        {{ row.remaining_credits }}
+                        <fa-icon *ngIf="superAdmin" class="fa flex items-center hover:cursor-pointer ml-2" [icon]="editIcon" (click)="openEditStudentCredit(row)"></fa-icon>
+                    </div>
+                </mat-cell>
+            </ng-container>                               
+            <ng-container matColumnDef="start_date">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'edit-plan.start' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="start_date"> {{ row.start_date }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="status">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.status' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="status"> {{ row.status }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="current_module">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.current_module' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="current_module"> {{ row.current_module }}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="unit_details">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'course-create.unit' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="current_module" style="text-align: center">
+                    <fa-icon class="fa flex items-center hover:cursor-pointer" [icon]="viewIcon" (click)="viewUnits(row)"></fa-icon>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'job-offers.action' | translate }}</mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="action" style="text-align: center">
+                    <div class="flex">
+                        <fa-icon class="fa flex items-center hover:cursor-pointer mr-3" [icon]="sendEmailIcon" (click)="resendEmail(row)"></fa-icon>
+                        <fa-icon class="fa flex items-center hover:cursor-pointer" [icon]="unassignIcon" (click)="unassignUserFromCourse(row)"></fa-icon>
+                    </div>
+                </mat-cell>
+            </ng-container>
+            <ng-container>
+                <mat-header-row *matHeaderRowDef="studentReportsColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: studentReportsColumns">
+                </mat-row>
+            </ng-container>
+        </mat-table>
+    </div>
+    <div>
+        <mat-paginator #paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+        (page)="getPageDetails($event)"
+            [showFirstLastButtons]="true">
+        </mat-paginator>
+    </div>
+</div>
+<button #modalbutton2 data-modal-target="item-modal2" data-modal-toggle="item-modal2" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal2" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full"
+        [ngClass]="{'max-w-6xl': dialogMode == 'units',
+            'max-w-md': dialogMode == 'credit'
+        }">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton2 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal2">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 pt-4 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogMode == 'units' ? ('general-details.unitdetails' | translate) : ('course-create.credits' | translate) }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'credit'">
+                    <form class="space-y-6" [ngClass]="{'submitted': creditsFormSubmitted}">
+                        <div class="mb-2 relative">
+                            <label for="credit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'course-create.credits' | translate }}
+                            </label>
+                            <input 
+                                id="credit"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': creditsFormSubmitted && !credits }"
+                                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                                type="number" 
+                                placeholder="{{ 'course-create.credits' | translate }}" 
+                                [(ngModel)]="credits"
+                                [ngModelOptions]="{standalone: true}"
+                                required
+                            >
+                        </div>
+                        <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-hide="item-modal" 
+                            [ngStyle]="{'background-color': buttonColor}"
+                            [disabled]="!credits"
+                            (click)="updateCredits()"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'units'">
+                    <app-courses-units-list
+                        [userId]="selectedUserId"
+                        [companyId]="companyId"
+                        [courseId]="courseId"
+                        [course]="course"
+                        [name]="name"
+                        [buttonColor]="buttonColor"
+                        [primaryColor]="primaryColor"
+                    ></app-courses-units-list>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

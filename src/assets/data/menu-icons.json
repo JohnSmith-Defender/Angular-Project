@@ -1,0 +1,135 @@
+[  
+    {  
+        "path": "home",  
+        "icon": "./assets/menu-icons/menu-icon-home.png",
+        "icondark": "./assets/menu-icons/menu-icon-home-dark.png", 
+        "facode": "fa fa-home",
+        "activeicon": "./assets/images/new-design/icons/menus/Home-active.png"  
+    },  
+    {  
+        "path": "plans",  
+        "icon": "./assets/menu-icons/menu-icon-plans.png",  
+        "icondark": "./assets/menu-icons/menu-icon-plans-dark.png",  
+        "facode": "fas fa-calendar-alt",
+        "activeicon": "./assets/images/new-design/icons/menus/Plans-active.png"   
+    },  
+    {  
+        "path": "clubs",  
+        "icon": "./assets/menu-icons/menu-icon-clubs.png", 
+        "icondark": "./assets/menu-icons/menu-icon-clubs-dark.png",
+        "facode": "fa fa-users",
+        "activeicon": "./assets/images/new-design/icons/menus/Clubs-active.png"   
+    },
+    {  
+        "path": "employmentchannel",  
+        "icon": "./assets/menu-icons/menu-icon-employment-channel.png",
+        "icondark": "",  
+        "facode": "fa fa-sitemap",  
+        "activeicon": "./assets/images/new-design/icons/menus/Job-active.png"   
+    }, 
+    {  
+        "path": "cityguide",  
+        "icon": "./assets/menu-icons/menu-icon-city-guide.png",
+        "icondark": "./assets/menu-icons/menu-icon-city-guide-dark.png",  
+        "facode": "fas fa-city",  
+        "activeicon": "./assets/images/new-design/icons/menus/CityAgenda-active.png"   
+    }, 
+    {  
+        "path": "services",  
+        "icon": "./assets/menu-icons/menu-icon-offers.png",
+        "icondark": "./assets/menu-icons/menu-icon-offers-dark.png",
+        "facode": "fas fa-city",  
+        "activeicon": "./assets/images/new-design/icons/menus/CityAgenda-active.png"   
+    }, 
+    {  
+        "path": "discounts",  
+        "icon": "./assets/menu-icons/menu-icon-offers.png",
+        "icondark": "./assets/menu-icons/menu-icon-offers-dark.png",
+        "facode": "fa fa-users",  
+        "activeicon": "./assets/images/new-design/icons/menus/Clubs-active.png"   
+    }, 
+    {  
+        "path": "members",  
+        "icon": "./assets/menu-icons/menu-icon-members.png",
+        "icondark": "./assets/menu-icons/menu-icon-members-dark.png",
+        "facode": "fas fa-user-friends", 
+        "activeicon": "./assets/images/new-design/icons/menus/Buddy-active.png"   
+    },
+    {  
+        "path": "startups",  
+        "icon": "./assets/menu-icons/menu-icon-city-guide.png",
+        "icondark": "./assets/menu-icons/menu-icon-city-guide-dark.png",
+        "facode": "fa fa-sitemap",  
+        "activeicon": "./assets/images/new-design/icons/menus/Job-active.png"   
+    },
+    {  
+        "path": "courses",  
+        "icon": "./assets/menu-icons/menu-icon-courses.png",
+        "icondark": "./assets/menu-icons/menu-icon-courses-dark.png",
+        "facode": "fas fa-chalkboard-teacher",  
+        "activeicon": "./assets/images/new-design/icons/menus/Courses-active.png"   
+    },
+    {  
+        "path": "courses/list/nivelacion",  
+        "icon": "./assets/menu-icons/menu-icon-courses.png",
+        "icondark": "./assets/menu-icons/menu-icon-courses-dark.png",
+        "facode": "fas fa-chalkboard-teacher",  
+        "activeicon": "./assets/images/new-design/icons/menus/Courses-active.png"   
+    },
+    {  
+        "path": "dashboard",  
+        "icon": "./assets/images/new-design/icons/menus/Courses.png",
+        "icondark": "./assets/menu-icons/menu-icon-courses-dark.png",
+        "facode": "fas fa-chalkboard-teacher",  
+        "activeicon": "./assets/images/new-design/icons/menus/Courses-active.png"   
+    },
+    {  
+        "path": "tutors",  
+        "icon": "./assets/menu-icons/menu-icon-colleague.png",
+        "icondark": "./assets/menu-icons/menu-icon-colleague-dark.png",
+        "facode": "fas fa-user-friends",  
+        "activeicon": "./assets/images/new-design/icons/menus/Buddy-active.png"   
+    },
+    {  
+        "path": "blog",  
+        "icon": "./assets/menu-icons/menu-icon-blog.png",
+        "icondark": "./assets/menu-icons/menu-icon-blog-dark.png",
+        "facode": "fas fa-edit",  
+        "activeicon": "./assets/images/new-design/icons/menus/CityAgenda-active.png"   
+    },
+    {  
+        "path": "testimonials",  
+        "icon": "./assets/menu-icons/menu-icon-testimonials.png",
+        "icondark": "./assets/menu-icons/menu-icon-testimonials-dark.png",
+        "facode": "fa fa-edit",  
+        "activeicon": "./assets/images/new-design/icons/menus/CityAgenda-active.png"   
+    },
+    {  
+        "path": "buddy",  
+        "icon": "./assets/menu-icons/menu-icon-colleague.png",
+        "icondark": "./assets/menu-icons/menu-icon-colleague-dark.png", 
+        "facode": "fas fa-user-friends", 
+        "activeicon": "./assets/images/new-design/icons/menus/Buddy-active.png"   
+    },
+    {  
+        "path": "plans/list/history",  
+        "icon": "./assets/menu-icons/menu-icon-plans.png",  
+        "icondark": "./assets/menu-icons/menu-icon-plans-dark.png",  
+        "facode": "fas fa-calendar-alt",
+        "activeicon": "./assets/images/new-design/icons/menus/Plans-active.png"     
+    },
+    {  
+        "path": "shop",  
+        "icon": "./assets/menu-icons/menu-icon-shop.png",
+        "icondark": "./assets/menu-icons/menu-icon-shop-dark.png", 
+        "facode": "fas fa-user-friends", 
+        "activeicon": "./assets/images/new-design/icons/menus/Buddy-active.png"  
+    },
+    {
+        "path": "professionals",  
+        "icon": "./assets/menu-icons/menu-icon-clubs.png", 
+        "icondark": "./assets/menu-icons/menu-icon-clubs-dark.png",
+        "facode": "fa fa-users",
+        "activeicon": "./assets/images/new-design/icons/menus/Clubs-active.png"
+    }
+]  

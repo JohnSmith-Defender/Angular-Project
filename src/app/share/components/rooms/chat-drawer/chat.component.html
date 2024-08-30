@@ -1,0 +1,157 @@
+<!-- drawer component -->
+<div id="drawer-right"
+    class="shadow fixed top-0 right-0 z-40 h-screen transition-transform translate-x-full bg-[#F5F6F8] w-96 rounded-lg"
+    tabindex="-1" aria-labelledby="drawer-right-label"
+    [ngStyle]="{
+        'hidden': !canChat && isMobile,
+        'bottom': '0px !important',
+        'height': '800px !important',
+        'right': isMobile ? 'initial !important' : '0px !important',
+    }"
+    [ngClass]="{'z-50 left-0': isMobile && canChat}"
+    style="filter:drop-shadow(0 3.46px 3.46px rgb(0 0 0 / 0.25))">
+    <div class="fixed top-0 start-0 z-50 flex justify-between w-full">
+        <div class="min-h-[2.7rem] flex items-center gap-3 flex-wrap py-3 rounded-none sm:rounded-none md:rounded-t-lg lg:md:rounded-t-lg w-full px-4"
+            [ngStyle]="{'background-color': buttonColor}">
+            <div *ngIf="reloadData" class="flex items-center [&>*]:w-[2.7rem] [&>*]:h-[2.7rem] [&>*]:rounded-full [&>*]:bg-purple-400 [&>*]:p-0.5 [&>*]:-ml-2 [&>*:hover]:z-20 [&>*:hover]:scale-105 [&>*>img]:h-full [&>*>img]:w-full [&>*>img]:rounded-full [&>*>img]:object-cover transition-all duration-300">
+                <div>
+                    <img [src]="userImage" class="w-10 h-10 object-cover" [alt]="userName" loading="lazy">
+                </div>
+                <div>
+                    <img [src]="image" class="w-10 h-10 object-cover" [alt]="firstName" loading="lazy">
+                </div>
+            </div>
+            <div *ngIf="reloadData" class="text-white">
+                <h2 class="font-semibold leading-5">{{ userName }}, {{ firstName }}</h2>
+                <div *ngIf="chatTimer" class="flex items-center mt-1">
+                    <div class="bg-yellow-50 p-1 px-2 text-xs text-[#4bb543] font-medium rounded-lg">{{ timeDisplay }}</div>
+                    <div class="ml-2 text-xs text-white">{{ 'professionals.chatinprogress' | translate }}</div>
+                </div>
+            </div>
+            <div>
+                <button #closebutton type="button" (click)="closeChat()" data-drawer-hide="drawer-right" aria-controls="drawer-right"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-black rounded-lg text-sm w-8 h-8 absolute top-4 end-5 sm:end-5 mmd:end-2.5 lg:end-2.5 inline-flex items-center justify-center">
+                    <svg class="w-3 h-3 text-white hover:text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close menu</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white h-full relative mt-16">
+        <div class="h-[calc(100vh_-_136px)] p-4 overflow-y-auto">
+            <div class="text-center" *ngIf="!reloadData">
+                <div role="status">
+                    <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                        <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <ng-container *ngIf="reloadData">
+                <div *ngIf="canChat">
+                    <div class="text-sm font-semibold mb-2 uppercase">
+                        {{ 'settings.personaldata' | translate }}
+                    </div>
+                    <div class="py-3 px-4 bg-gray-50 rounded-lg">
+                        <ng-container *ngFor="let field of userData">
+                            <div *ngIf="field?.value && field?.value != '-'" 
+                                class="leading-3 space-y-0.5 font-medium text-left rtl:text-right flex flex-row items-center justify-between">
+                                <div class="text-sm font-semibold">{{ field?.label }}:</div>
+                                <div class="text-sm">{{ field?.value }}</div>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class="py-4" *ngIf="chatMessages?.length > 0">
+                        <ng-container *ngFor="let row of chatMessages; let i = index;">
+                            <div class="my-4 relative"
+                                [ngClass]="{'mt-8': i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId) }">
+                                <div>
+                                    <div class="flex gap-4">
+                                        <ng-container *ngIf="row.memberId == memberId">
+                                            <div class="text-sm text-white p-4 leading-5 w-full bg-blue-600 shadow relative before:content-['']"
+                                                [ngClass]="{
+                                                    'rounded-lg before:absolute before:w-3 before:h-3 before:bg-blue-600 before:rotate-45 before: before:-right-1 before:top-4': i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId),
+                                                    'rounded-l-lg rounded-br-lg': !(i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId))
+                                                }">
+                                                <p [innerHtml]="row.message"></p>
+                                                <div class="mt-2.5 text-xs text-white leading-none font-semibold">{{ row.date | date: 'dd MMM HH:mm' }}</div>
+                                            </div>
+                                            <div class="shrink-0 w-12 h-12 rounded-full bg-purple-400 p-0.5" *ngIf="i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId)">
+                                                <img [src]="row.memberImage" alt="" class="h-full w-full object-cover rounded-full">
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="row.memberId != memberId">
+                                            <div class="shrink-0 w-12 h-12 rounded-full bg-purple-400 p-0.5" *ngIf="i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId)">
+                                                <img [src]="row.memberImage" alt="" class="h-full w-full object-cover rounded-full">
+                                            </div>
+                                            <div class="text-sm p-4 leading-5 w-full bg-gray-100 shadow relative before:content-['']"
+                                                [ngClass]="{
+                                                    'rounded-lg before:absolute before:w-3 before:h-3 before:bg-gray-100 before:rotate-45 before: before:-left-1 before:top-4': i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId),
+                                                    'rounded-r-lg rounded-bl-lg': !(i == 0 || (i > 0 && chatMessages[i - 1].memberId != chatMessages[i].memberId))
+                                                }">
+                                                <p [innerHtml]="row.message"></p>
+                                                <div class="mt-2.5 text-xs text-gray-500 leading-none font-semibold"> {{ row.timestamp | date:'h:mm a' }}</div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div *ngIf="canChat && !chatTimer && chatRole !== 'recipient'" class="py-3 px-4 bg-yellow-50">
+                    <div class="text-base text-center">
+                        {{ waitingText }}
+                    </div>
+                </div>
+                <div *ngIf="!canChat">
+                    <div class="my-4 mb-2 font-semibold" *ngIf="insufficientBalanceTitle">{{ insufficientBalanceTitle }}</div>
+                    <div class="mb-4" *ngIf="insufficientBalanceDescription">{{ insufficientBalanceDescription }}</div>
+                    <a [routerLink]="['/users/account-recharge']" 
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white rounded-lg hover:bg-black focus:ring-4 focus:ring-blue-300 focus:outline-none"
+                        [ngStyle]="{'background-color': buttonColor}">
+                        {{ 'professionals.recharge' | translate }}
+                        <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 14 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M1 5h12m0 0L9 1m4 4L9 9" />
+                        </svg>
+                    </a>
+                </div>
+            </ng-container>
+        </div>
+        <div *ngIf="canChat && reloadData && chatTimer" 
+            class="w-full flex justify-between bg-[#f8f4f4] absolute bottom-16">
+            <textarea class="flex-grow m-2 py-2 px-4 mr-1 w-full px-0 text-sm text-gray-900 bg-white border border-0 resize-none rounded-lg" 
+                style="outline: none;"
+                placeholder="{{ 'buddy.message' | translate }}"
+                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': formSubmitted && !message }"
+                [(ngModel)]="message"
+                [ngModelOptions]="{standalone: true}" 
+                required>
+            </textarea>
+            <button class="m-2 outline-none" [disabled]="formSubmitted" (click)="sendMessage()">
+                <svg
+                    [ngStyle]="{'color': buttonColor}"
+                    class="svg-inline--fa fa-paper-plane fa-w-6 w-6 h-6 py-2 mr-2"
+                    aria-hidden="true"
+                    focusable="false"
+                    data-prefix="fas"
+                    data-icon="paper-plane"
+                    role="img"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                >
+                <path
+                    fill="currentColor"
+                    d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"
+                />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

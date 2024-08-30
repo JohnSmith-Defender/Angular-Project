@@ -1,0 +1,155 @@
+<ng-container [ngSwitch]="companyId">
+  <ng-container *ngIf="companyId != 67; else astroIdealHome">
+    <div
+      class="pt-24 sm:pt-24 md:pt-4 lg:pt-4 max-w-full sm:max-w-full md:max-w-[475px] lg:max-w-[475px]"
+      *ngIf="
+        companyId != 27 &&
+        loadedSettings &&
+        !(hasLandingTemplate && !hasPredefinedTemplate) &&
+        !isMiddleSectionTemplate
+      "
+    >
+      <h1 class="text-4xl font-bold mb-2">
+        {{
+          isUESchoolOfLife
+            ? schoolOfLifeTitle
+            : welcomeTitle || ("landing.welcometitle1" | translate)
+        }}
+      </h1>
+      <h1
+        class="text-4xl font-bold mb-2"
+        *ngIf="!welcomeTitle && !isUESchoolOfLife"
+      >
+        {{ "landing.welcometitle2" | translate }}
+        <span [ngStyle]="{ color: buttonColor }">{{ companyName }}</span>
+      </h1>
+      <div class="text-sm mt-8" *ngIf="!isUESchoolOfLife">
+        {{
+          welcomeTitle ? welcomeSubtitle : ("landing.welcomedesc" | translate)
+        }}
+      </div>
+    </div>
+    <div class="py-10">
+      <ng-container *ngIf="hasLandingTemplate && !hasPredefinedTemplate">
+        <div class="pt-12" [innerHtml]="html"></div>
+      </ng-container>
+      <app-video-section
+        [templateData]="predefinedTemplate"
+        [company]="company"
+        *ngIf="
+          predefinedTemplate?.has_video == 1 && predefinedTemplate?.video_file
+        "
+      >
+      </app-video-section>
+      <ng-container
+        *ngIf="predefinedTemplate?.has_title == 1 && companyId == 27"
+      >
+        <div class="text-center text-2xl font-semibold">
+          {{ predefinedTemplate?.video_title }}
+        </div>
+        <div class="text-center text-base">
+          {{ predefinedTemplate?.video_description }}
+        </div>
+      </ng-container>
+      <ng-container
+        *ngIf="predefinedTemplate?.has_courses == 1 && companyId == 27"
+      >
+        <app-courses-list [parentComponent]="'home'"></app-courses-list>
+      </ng-container>
+      <ng-container
+        *ngIf="
+          showModuleSections && !(hasLandingTemplate && !hasPredefinedTemplate)
+        "
+      >
+        <ng-container
+          *ngIf="
+            sectionsList?.length > 0 &&
+            !hasSectionsTemplate &&
+            !isMiddleSectionTemplate
+          "
+        >
+          <app-sections-masonry
+            *ngIf="sectionsList?.length > 0"
+            [userId]="userId"
+            [superAdmin]="superAdmin"
+            [company]="company"
+            [list]="sectionsList"
+            [allList]="sectionsList"
+            [isUESchoolOfLife]="isUESchoolOfLife"
+            [campus]="campus"
+            [bottomEventTitles]="bottomEventTitles"
+            [homeCalendar]="homeCalendar"
+          >
+          </app-sections-masonry>
+        </ng-container>
+        <ng-container
+          *ngIf="
+            sectionsList?.length > 0 &&
+            hasSectionsTemplate &&
+            !isMiddleSectionTemplate
+          "
+        >
+          <app-sections
+            *ngIf="sectionsList?.length > 0"
+            [userId]="userId"
+            [superAdmin]="superAdmin"
+            [company]="company"
+            [list]="sectionsList"
+            [allList]="sectionsList"
+            [isUESchoolOfLife]="isUESchoolOfLife"
+            [campus]="campus"
+            [bottomEventTitles]="bottomEventTitles"
+            [homeCalendar]="homeCalendar"
+            [hasSectionsTemplate]="hasSectionsTemplate"
+            [plansTitle]="plansTitle"
+            [groupsTitle]="groupsTitle"
+            [cityGuidesTitle]="cityGuidesTitle"
+            [jobOffersTitle]="jobOffersTitle"
+            [coursesTitle]="coursesTitle"
+            [discountsTitle]="discountsTitle"
+            [blogsTitle]="blogsTitle"
+            [membersTitle]="membersTitle"
+            [tutorsTitle]="tutorsTitle"
+            [planCalendar]="planCalendar"
+          >
+          </app-sections>
+        </ng-container>
+        <ng-container
+          *ngIf="
+            sectionsList?.length > 0 &&
+            !hasSectionsTemplate &&
+            isMiddleSectionTemplate
+          "
+        >
+          <app-sections-middle
+            *ngIf="sectionsList?.length > 0"
+            [userId]="userId"
+            [superAdmin]="superAdmin"
+            [company]="company"
+            [list]="sectionsList"
+            [allList]="sectionsList"
+            [isUESchoolOfLife]="isUESchoolOfLife"
+            [campus]="campus"
+            [bottomEventTitles]="bottomEventTitles"
+            [homeCalendar]="homeCalendar"
+            [hasSectionsTemplate]="hasSectionsTemplate"
+            [plansTitle]="plansTitle"
+            [groupsTitle]="groupsTitle"
+            [cityGuidesTitle]="cityGuidesTitle"
+            [jobOffersTitle]="jobOffersTitle"
+            [coursesTitle]="coursesTitle"
+            [discountsTitle]="discountsTitle"
+            [blogsTitle]="blogsTitle"
+            [membersTitle]="membersTitle"
+            [tutorsTitle]="tutorsTitle"
+            [planCalendar]="planCalendar"
+          >
+          </app-sections-middle>
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+  <ng-template #astroIdealHome>
+    <app-astroideal-home [companyId]="companyId" [language]="language" [buttonColor]="buttonColor"></app-astroideal-home>
+  </ng-template>
+</ng-container>

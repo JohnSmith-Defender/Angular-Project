@@ -1,0 +1,70 @@
+<div class="w-full relative bg-white border border-gray-200 rounded-lg shadow p-6 dark:bg-gray-800 dark:border-gray-700">
+    <div class="flow-root relative">
+        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+            <li class="relative">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <img [routerLink]="path" class="hover:cursor-pointer w-20 h-20 rounded-full object-cover object-top" width="75" height="75" [ngSrc]="image" alt="{{ name }}">
+                        <div class="font-semibold text-sm pt-4 text-center" [ngClass]="{'h-[36px]': references <= 0 }">
+                            {{references > 0 ? (references + ' ' + ('members.references' | translate)) : ''}}
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0 ms-4">
+                        <p [routerLink]="path" class="hover:cursor-pointer text-base text-gray2 font-bold text-gray-900 truncate dark:text-white">
+                            {{ name }}
+                        </p>
+                        <p class="leading-4 font-medium text-gray3 truncate dark:text-gray-400" [ngClass]="{'h-[16px]': !(sector && sector != 'null') }">
+                            <span class="text-sm">{{ sector && sector != 'null' ? sector : '' }}</span>
+                        </p>
+                        <p class="leading-4 truncate" [ngClass]="{'h-[16px]': !city }">
+                            <span class="text-xs uppercase">{{city}}</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="absolute -top-4 right-0 flex items-center align-center" *ngIf="logo && logo?.indexOf('null') < 0">
+                    <img class="object-contain rounded-full w-8 h-8" width="32" height="32" [ngSrc]="logo" *ngIf="logo && logo?.indexOf('null') < 0" alt="">
+                </div>
+                <div class="absolute bottom-0 right-0 flex items-center align-center">
+                    <a href="javascript:;" (click)="handleSendReference()" 
+                        [ngStyle]="{'background-color': buttonColor}" 
+                        class="mr-2 font-medium rounded-full text-sm p-[9px] text-center inline-flex items-center">
+                        <fa-icon 
+                            class="text-sm flex items-center justify-center ng-fa-icon text-white" 
+                            [icon]="sendIcon"
+                            (click)="handleSendReference()">
+                        </fa-icon>
+                    </a>
+                    <a [href]="linkedin" target="_blank" *ngIf="linkedin" [ngStyle]="{'background-color': buttonColor}" class="mr-2 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 15 15">
+                            <path fill-rule="evenodd" d="M7.979 5v1.586a3.5 3.5 0 0 1 3.082-1.574C14.3 5.012 15 7.03 15 9.655V15h-3v-4.738c0-1.13-.229-2.584-1.995-2.584-1.713 0-2.005 1.23-2.005 2.5V15H5.009V5h2.97ZM3 2.487a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" clip-rule="evenodd"/>
+                            <path d="M3 5.012H0V15h3V5.012Z"/>
+                        </svg>                
+                    </a>
+                    <a [href]="email" target="_blank" *ngIf="email" [ngStyle]="{'background-color': buttonColor}" class="mr-2 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                            <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                            <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                        </svg>
+                    </a>
+                    <a [href]="phone" target="_blank" *ngIf="phone" [ngStyle]="{'background-color': buttonColor}" class="mr-2 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                        <svg class="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
+                            <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z"/>
+                        </svg>
+                    </a>
+                    <a href="javascript:;" (click)="handleAudioCall()" *ngIf="hasCallFeature" [ngStyle]="{'background-color': buttonColor}" class="mr-2 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                        <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M5 8a1 1 0 0 1 1 1v3a4.006 4.006 0 0 0 4 4h4a4.006 4.006 0 0 0 4-4V9a1 1 0 1 1 2 0v3.001A6.006 6.006 0 0 1 14.001 18H13v2h2a1 1 0 1 1 0 2H9a1 1 0 1 1 0-2h2v-2H9.999A6.006 6.006 0 0 1 4 12.001V9a1 1 0 0 1 1-1Z" clip-rule="evenodd"/>
+                            <path d="M7 6a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V6Z"/>
+                        </svg>  
+                    </a>
+                    <a href="javascript:;" (click)="handleChat()" *ngIf="hasChatFeature" [ngStyle]="{'background-color': buttonColor}" class="mr-2 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+                        <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,299 @@
+<ng-container *ngIf="plans?.length > 0">
+  <app-page-title [mode]="'section'" [title]="plansSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12" >
+    <ng-container *ngIf="homeCalendar && planCalendar">
+      <div>
+        <app-plans-calendar
+          [hasDateSelected]="hasDateSelected"
+          [showPastEvents]="mode == 'history' ? true : false"
+          [joinedPlan]="joinedPlan"
+          [courses]="courses"
+          [groups]="groups"
+          [courseCategoriesAccessRoles]="courseCategoriesAccessRoles"
+          [allCourseCategories]="allCourseCategories"
+          [courseCategoryMapping]="courseCategoryMapping"
+          [admin1]="admin1"
+          [admin2]="admin2"
+          [superAdmin]="superAdmin"
+          [calendarFilterMode]="calendarFilterMode"
+          [canCreatePlan]="canCreatePlan"
+          (handleCalendarDateChange)="handleCalendarDateChanged($event)" 
+          (handleJoinChange)="handleJoinChanged($event)"
+          (handleExitCalendarFilter)="exitCalendarEventMode()"
+          [notifier]="childNotifier"
+          [isUESchoolOfLife]="isUESchoolOfLife"
+          [plansList]="plansList"
+          [campus]="campus"
+          [mode]="mode"
+        >
+        </app-plans-calendar>
+      </div>
+    </ng-container>
+    <ng-container *ngFor="let item of plans; let even=even; let i = index;">
+      <app-plan-card
+        [image]="item?.image"
+        [title]="item?.title"
+        [date]="item?.date"
+        [id]="item?.id"
+        [planTypeId]="item?.plan_type_id"
+        [privacy]="item?.privacy"
+        [privateType]="item?.private_type"
+        [featuredTitle]="''"
+        [excerpt]="item?.excerpt"
+        [address]="item?.address"
+        [credits]="item?.credits"
+        [price]="item?.price"
+        [buttonColor]="buttonColor"
+        [page]="'list'"
+        [companyId]="company?.id"
+        [bottomEventTitles]="bottomEventTitles"
+        (handleDetailsClick)="handleDetailsClickRoute(item)"
+      >
+      </app-plan-card>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="clubs?.length > 0">
+  <app-page-title [mode]="'section'" [title]="groupsSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of clubs; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'club'" 
+        class="row-span-2 hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+        [routerLink]="[item.path]">
+        <div class="relative">
+          <img class="rounded-t-lg w-full object-cover" [src]="item.image" [alt]="item.title" loading="lazy" />
+          <div class="test__body absolute inset-0 p-4 text-white flex flex-col">
+            <div class="mt-auto">
+              <span class="test__tag bg-white bg-opacity-60 py-1 px-4 rounded-md text-black text-sm">
+                {{item?.category}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="p-5 flex justify-between items-center align-center">
+          <h5 class="text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{item?.title}}</h5>
+          <a href="javascript:;" class="inline-flex items-center px-6 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            [ngStyle]="{'background-color': buttonColor}">
+            {{ 'club-details.join' | translate }}
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="cityGuides?.length > 0">
+  <app-page-title [mode]="'section'" [title]="cityGuidesSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of cityGuides; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'cityguide'" class="hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 before:bg-black before:bg-opacity-20"
+        [routerLink]="[item.path]"
+        [ngClass]="{'break-inside-avoid-column': !hasSectionsTemplate}">
+        <img class="w-full rounded-md object-cove h-full" [src]="item.image" [alt]="item.title" loading="lazy" />
+        <div class="test__body absolute inset-0 p-4 text-white flex flex-col">
+          <div class="relative">
+            <div class="flex justify-between">
+              <h1 class="test__title text-lg font-bold mb-3 pr-2">{{item?.title}}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="jobOffers?.length > 0">
+  <app-page-title [mode]="'section'" [title]="jobOffersSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of jobOffers; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'joboffer'" 
+        class="break-inside-avoid-column relative hover:cursor-pointer w-full max-w-full bg-white rounded-[10px] transition duration-700 ease-in-out" 
+        [ngStyle]="{'box-shadow': '0px 40px 54px -45px #00000099'}"
+        [routerLink]="[item.path]">
+        <div class="flex h-full">
+            <div class="w-4 rounded-l-lg" [ngStyle]="{'background-color': buttonColor}">&nbsp;</div>
+            <div class="py-4 bg-transparent text-[#1e1e1e] flex flex-col justify-evenly w-full pl-6 pr-12 rounded-r-[10px] transition duration-700 ease-in-out">
+                <div class="font-semibold text-medium pr-3">{{ item?.title }}</div>
+                <div class="text-sm py-3">
+                    <span>{{ item?.type }}</span><span class="px-3">•</span><span>{{ item?.area }}</span>
+                </div>
+                <div class="underline text-sm pb-3 transition duration-700 ease-in-out" [ngStyle]="{'color': buttonColor}">
+                    {{'landing.learnmore' | translate }}
+                </div>
+            </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="!isUESchoolOfLife && courses?.length > 0">
+  <app-page-title [mode]="'section'" [title]="coursesSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of courses; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'course'" 
+        class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+        (click)="goToCourseDetails(item)">
+        <div class="relative">
+          <img class="rounded-t-lg w-full object-cover" [src]="item.image" [alt]="item.title" loading="lazy" />
+          <div *ngIf="item?.category" class="test__body absolute inset-0 p-4 text-white flex flex-col">
+            <div class="mt-auto">
+              <span class="test__tag bg-white bg-opacity-60 py-1 px-4 rounded-md text-black text-sm">
+                {{item?.category}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="p-5">
+          <a href="javascript:;">
+              <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{item?.title}}</h5>
+          </a>
+          <a href="javascript:;" class="inline-flex items-center px-6 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            [ngStyle]="{'background-color': buttonColor}">
+            {{item?.button_text}}
+            <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="isUESchoolOfLife && coursesNivelacion?.length > 0">
+  <app-page-title [mode]="'section'" [title]="coursesNivelacionSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of coursesNivelacion; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'course'" 
+        class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+        (click)="goToCourseDetails(item)">
+        <div class="relative">
+          <img class="rounded-t-lg w-full h-auto sm:h-auto md:h-[250px] lg:h=[250px] object-cover" [src]="item.image" [alt]="item.title" loading="lazy" />
+          <div *ngIf="item?.category" class="test__body absolute inset-0 p-4 text-white flex flex-col">
+            <div class="mt-auto">
+              <span class="test__tag bg-white bg-opacity-60 py-1 px-4 rounded-md text-black text-sm">
+                {{item?.category}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="p-5">
+          <a href="javascript:;">
+              <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">{{item?.title}}</h5>
+          </a>
+          <a href="javascript:;" class="inline-flex items-center px-6 py-2 text-sm font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            [ngStyle]="{'background-color': buttonColor}">
+            {{item?.button_text}}
+            <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="discounts?.length > 0">
+  <app-page-title [mode]="'section'" [title]="discountsSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of discounts; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'discount' || item?.object_type == 'service'" class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 before:bg-black before:bg-opacity-20"
+        [routerLink]="[item.path]">
+        <img class="w-full rounded-md object-cover" [src]="item.image" [alt]="item.title" loading="lazy">
+        <div class="test__body absolute inset-0 p-4 text-white flex flex-col">
+          <div class="relative">
+            <div class="flex justify-between">
+              <h1 class="test__title text-lg font-bold mb-3 pr-2">{{item?.title}}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="blogs?.length > 0">
+  <app-page-title [mode]="'section'" [title]="blogsSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of blogs; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'blog'" class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 before:bg-black before:bg-opacity-20"
+        [routerLink]="[item.path]">
+        <img class="w-full rounded-md object-cover h-full" [src]="item.image">
+        <div class="test__body absolute inset-0 p-4 text-white flex flex-col">
+          <div class="relative">
+            <div class="flex justify-between">
+              <h1 class="test__title text-lg font-bold mb-3 pr-2">{{item?.title}}</h1>
+            </div>
+            <p class="test__author font-sm font-light flex items-center" *ngIf="item?.date">
+              <svg class="w-3 h-3 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+              </svg>
+              {{item?.date | date:'dd MMM yyyy HH:mm a'}}
+            </p>
+          </div>
+          <div class="mt-auto">
+            <span class="test__tag bg-white bg-opacity-60 py-1 px-4 rounded-md text-black text-sm flex items-center w-[200px]">
+              <img *ngIf="item?.created_by_image" class="w-6 h-6 rounded-full object-cover object-top mr-4" [src]="item?.created_by_image">
+              <span>
+                {{ item?.created_by_name }}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="members?.length > 0">
+  <app-page-title [mode]="'section'" [title]="membersSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of members; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'member'" class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 before:bg-black before:bg-opacity-20"
+        [routerLink]="[item.path]">
+        <img class="w-full rounded-md object-cover" [src]="item.image" [alt]="item.title" loading="lazy">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="absolute inset-0 flex items-end p-4">
+            <div class="flex flex-col w-full w-max-full">
+              <p class="text-white text-lg leading-6 pb-2 text-center font-bold">{{ item?.title }}</p>
+              <div class="flex justify-center py-3 text-sm text-white font-semibold flex-wrap">
+                <span>{{ item?.city }}</span>
+              </div>
+              <div class="flex justify-center pb-8 flex-wrap">
+                <div class="types border border-white rounded-xl px-4 py-[3px] mr-2 mb-1" *ngIf="item?.sector">
+                  <div class="text-white text-xs" title="{{item?.sector}}">{{ item?.sector }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>
+<ng-container *ngIf="tutors?.length > 0">
+  <app-page-title [mode]="'section'" [title]="tutorsSectionTitle"></app-page-title>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pt-4 pb-12">
+    <ng-container *ngFor="let item of tutors; let even=even; let i = index;">
+      <div *ngIf="item?.object_type == 'tutor'" class="break-inside-avoid-column hover:cursor-pointer relative before:content-[''] before:rounded-md before:absolute before:inset-0 before:bg-black before:bg-opacity-20"
+        [routerLink]="[item.path]">
+        <img class="w-full rounded-md object-cover" [src]="item.image" [alt]="item.title" loading="lazy">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="absolute inset-0 flex items-end p-4">
+            <div class="flex flex-col w-full w-max-full">
+              <p class="text-white text-lg leading-6 pb-2 text-center font-bold">{{ item?.title }}</p>
+              <app-star-rating [rating]="item?.rating" [align]="'center'"></app-star-rating>
+              <div class="flex justify-center py-3 text-sm text-white font-semibold flex-wrap">
+                <span>{{ item?.city }}</span>
+                <span class="px-2">{{ item?.languages ? '•' : '' }}</span>
+                <span class="capitalize">{{ item?.languages }}</span>
+              </div>
+              <div class="flex justify-center pb-8 flex-wrap">
+                <ng-container *ngFor="let type of item?.types; let i = index;">
+                  <div class="types border border-white rounded-xl px-4 py-[3px] mr-2 mb-1" *ngIf="i < 4">
+                    <div class="text-white text-xs" title="{{type}}">{{ type }}</div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

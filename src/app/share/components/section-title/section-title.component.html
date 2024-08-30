@@ -1,0 +1,7 @@
+<div class="pt-12 sm:pt-12 md:pt-8 lg:pt-8">
+    <h1 *ngIf="title" class="text-2xl mb-2 pb-2"
+        [ngClass]="{
+            'text-center': align == 'center',
+            'border border-b-1 border-t-0 border-l-0 border-r-0': border =='bottom'
+        }">{{ title }}</h1>
+</div>

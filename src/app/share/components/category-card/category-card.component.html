@@ -1,0 +1,12 @@
+<div class="bg-[#BE8F37] w-[364px] h-[100px] pl-5 pr-3 flex rounded-md space-x-6 items-center">
+  <div class="flex items-center w-[64px] h-[67px] overflow-hidden flex-none">
+    <img class="w-full" [src]="cardData.image" />
+  </div>
+  <div class="pb-1 flex flex-col flex-1 max-w-[244px]">
+    <div class="pr-16 text-white mb-1">
+      <div class="font-semibold text-3xl leading-10 whitespace-nowrap truncate max-w-[185px] overflow-hidden">{{ cardData.title }}</div>
+      <div class="text-xs">Pequeña descripción de la especialidad</div>
+    </div>
+    <div class="font-semibold text-xs ml-auto underline text-white">{{ "professionals.gettoknowthespecialties" | translate }}</div>
+  </div>
+</div>

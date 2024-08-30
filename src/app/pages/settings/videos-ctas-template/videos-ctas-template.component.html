@@ -1,0 +1,674 @@
+<app-page-title title="{{ 'settings.template' | translate }}"></app-page-title>
+<div class="container flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+    <div class="mt-3 sm:mt-3 md:mt-0 lg:mt-0 flex">
+        <button 
+            class="ml-4 inline-block h-[40px] text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+            [ngStyle]="{'background-color': buttonColor}"
+            (click)="save()"
+        >
+            {{ 'plan-create.savechanges' | translate }}
+        </button>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-0 sm:gap-0 md:gap-12 lg:gap-12 py-8">
+        <div>
+            <div (click)="expandOption('pageTitle')" 
+            class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+            <div class="font-semibold text-lg">{{'company-settings.pagetitletext' | translate}}</div>
+            <div class="hover:cursor-pointer">
+                <ng-container *ngIf="expandedOption != 'pageTitle'">
+                    <svg
+                        [ngStyle]="{'color': buttonColor}" 
+                        (click)="expandOption('pageTitle')"
+                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                    </svg>
+                </ng-container>
+                <ng-container *ngIf="expandedOption == 'pageTitle'">
+                    <svg
+                        [ngStyle]="{'color': buttonColor}"
+                        (click)="expandOption('general')"
+                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                    </svg>
+                </ng-container>
+            </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'pageTitle'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-5"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-5"
+                                    name="setting-5"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activatePageTitle" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div *ngIf="activatePageTitle" class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="page-title-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'course-details.text' | translate}}
+                            </label>
+                            <quill-editor class="w-full max-w-full content-editor" 
+                                [(ngModel)]="pageTitleText"
+                                [ngModelOptions]="{standalone: true}">
+                            </quill-editor>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="expandOption('banner')" 
+            class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+            <div class="font-semibold text-lg">{{'company-settings.backgroundimage' | translate}}</div>
+            <div class="hover:cursor-pointer">
+                <ng-container *ngIf="expandedOption != 'banner'">
+                    <svg
+                        [ngStyle]="{'color': buttonColor}" 
+                        (click)="expandOption('banner')"
+                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                    </svg>
+                </ng-container>
+                <ng-container *ngIf="expandedOption == 'banner'">
+                    <svg
+                        [ngStyle]="{'color': buttonColor}"
+                        (click)="expandOption('banner')"
+                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                    </svg>
+                </ng-container>
+            </div>
+             </div>
+            <div class="px-4" *ngIf="expandedOption == 'banner'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-1"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-1"
+                                    name="setting-1"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateBanner" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div *ngIf="activateBanner" class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="banner-image" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'plan-details.image' | translate}}
+                            </label>
+                            <div>
+                                <file-pond
+                                    #myPond
+                                    [options]="pondOptions"
+                                    [files]="pondFiles"
+                                    (oninit)="pondHandleInit()"
+                                    (onaddfile)="pondHandleAddFile($event)"
+                                    (onupdatefiles)="podHandleUpdateFiles($event)"
+                                    (onprocessfile)="podHandleProcessFile($event)"
+                                >
+                                </file-pond>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="expandOption('video')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'plan-details.video' | translate}}</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'video'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('video')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'video'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('video')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'video'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-1"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-1"
+                                    name="setting-1"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateVideo" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div *ngIf="activateVideo" class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'courses.embedorurl' | translate}}
+                            </label>
+                            <div class="flex">
+                                <textarea name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4"
+                                    placeholder="{{ 'courses.embedorurl' | translate }}"
+                                    [(ngModel)]="videoEmbed"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="activateVideo" class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="vimeo-id" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Vimeo ID
+                                <div class="text-xs opacity-75">{{'videos-ctas.provideid' | translate}}</div>
+                            </label>
+                            <div class="flex">
+                                <input 
+                                    id="vimeo-id"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="vimeoID" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="Vimeo ID">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="expandOption('description')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'company-settings.description' | translate}}</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'description'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('description')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'description'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('general')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'description'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-5"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-5"
+                                    name="setting-5"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateDescription" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div *ngIf="activateDescription" class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="description-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'course-details.text' | translate}}
+                            </label>
+                            <quill-editor class="w-full max-w-full content-editor" 
+                                [(ngModel)]="descriptionText"
+                                [ngModelOptions]="{standalone: true}">
+                            </quill-editor>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="expandOption('cta')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">CTA</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'cta'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('cta')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'cta'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('cta')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'cta'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-2"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-2"
+                                    name="setting-2"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateCTA" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <ng-container *ngIf="activateCTA">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="cta-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-details.text' | translate}}
+                                </label>
+                                <input 
+                                    id="section1ctatext"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="CTAText" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'services.text' | translate }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="cta-link" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'services.link' | translate}}
+                                </label>
+                                <input 
+                                    id="cta-link"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="CTALink" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'services.link' | translate }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-create.buttoncolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="CTAButtonColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'course-create.buttoncolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="CTAButtonColor" 
+                                        [(colorPicker)]="CTAButtonColor" 
+                                        (colorPickerOpen)="onCTAButtonEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onCTAButtonEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onCTAButtonEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onCTAButtonEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onCTAButtonEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.textcolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="CTATextColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.textcolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="CTATextColor" 
+                                        [(colorPicker)]="CTATextColor" 
+                                        (colorPickerOpen)="onCTATextEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onCTATextEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onCTATextEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onCTATextEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onCTATextEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+             <div (click)="expandOption('questionAnsSection')" 
+             class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+             <div class="font-semibold text-lg">{{'company-settings.questionanssection' | translate}}</div>
+             <div class="hover:cursor-pointer">
+                 <ng-container *ngIf="expandedOption != 'questionAnsSection'">
+                     <svg
+                         [ngStyle]="{'color': buttonColor}" 
+                         (click)="expandOption('questionAnsSection')"
+                         class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                     </svg>
+                 </ng-container>
+                 <ng-container *ngIf="expandedOption == 'questionAnsSection'">
+                     <svg
+                         [ngStyle]="{'color': buttonColor}"
+                         (click)="expandOption('general')"
+                         class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                     </svg>
+                 </ng-container>
+             </div>
+             </div>
+             <div class="px-4" *ngIf="expandedOption == 'questionAnsSection'">
+                 <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                     <div class="flex items-center justify-between relative pt-4">
+                         <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                             {{'guest-landing.activate' | translate}}
+                         </div>
+                         <label
+                             for="setting-5"
+                             class="flex items-center justify-between cursor-pointer"
+                         >
+                             <div class="relative mr-1">
+                                 <input
+                                     id="setting-5"
+                                     name="setting-5"
+                                     type="checkbox"
+                                     class="sr-only"
+                                     [(ngModel)]="activateQuesAnsSection" 
+                                     [ngModelOptions]="{standalone: true}"
+                                 />
+                                 <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                 <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                             </div>
+                         </label>
+                     </div>
+                 </div>
+                 <div *ngIf="activateQuesAnsSection" class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                     <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                         <div class="w-full max-w-full">
+                             <label for="ques-ans-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                 {{'course-details.text' | translate}}
+                             </label>
+                             <quill-editor class="w-full max-w-full content-editor" 
+                                [(ngModel)]="quesAnsText"
+                                [ngModelOptions]="{standalone: true}">
+                            </quill-editor>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div (click)="expandOption('footer')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'company-settings.footer' | translate}}</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'footer'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('footer')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'footer'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('footer')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'footer'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-2"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-2"
+                                    name="setting-2"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateFooter" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <ng-container *ngIf="activateFooter">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="cta-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-details.text' | translate}}
+                                </label>
+                                <input 
+                                    id="activate-footer-text"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="footerText" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'services.text' | translate }}">
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-span-3">
+            <div [class]="bannerImage ? 'min-h-[540px] sm:mx-20' : 'bg-[#f8f4f4] min-h-[540px] sm:mx-20'">
+                <div class="relative">
+                    <ng-container *ngIf="bannerImage">
+                        <img class="absolute inset-0 w-full h-full object-cover" src="{{ bannerImage }}" />
+                    </ng-container>
+                    <div *ngIf="activatePageTitle" [ngStyle]="{
+                        'color': descriptionTextColor
+                    }">
+                        <div class="relative h-full max-h-full"
+                            [ngClass]="{'flex flex-col': !pageTitleText}">
+                            <div class="min-h-[130px] border  border-dashed p-8 flex justify-center items-center"
+                            >
+                                <ng-container *ngIf="pageTitleText">
+                                    <span [innerHtml]="pageTitleText | safeContentHtml: 'html'" class="custom-video-landing-text"></span>
+                                </ng-container>
+                                <ng-container *ngIf="!pageTitleText">
+                                    <span class="font-semibold text-lg">{{ 'company-settings.pagetitletext' | translate }}</span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="activateVideo">
+                        <div class="relative flex justify-center">
+                            <div class="min-h-[240px] flex justify-center items-center font-semibold text-lg">
+                                <ng-container *ngIf="!videoEmbed">{{'create-content.video' | translate}}</ng-container>
+                                <ng-container *ngIf="videoEmbed && getSafeLessonUrl()">
+                                    <div class="w-full max-w-full">
+                                        <iframe 
+                                            class="iframe-ctrl"
+                                            id="{{ 'iframe-1' }}"
+                                            [src]="updatedVideo" 
+                                            width="100%" 
+                                            height="50vh"
+                                            *ngIf="videoEmbed?.indexOf('iframe') < 0"
+                                            allowfullscreen="allowfullscreen" 
+                                            mozallowfullscreen="mozallowfullscreen" 
+                                            msallowfullscreen="msallowfullscreen" 
+                                            oallowfullscreen="oallowfullscreen" 
+                                            webkitallowfullscreen="webkitallowfullscreen"
+                                            allow=autoplay
+                                            [ngStyle]="{
+                                                'height': '240px'
+                                            }"
+                                        >
+                                        </iframe>
+                                    </div>
+                                    <div 
+                                        class="w-full max-w-full" 
+                                       [innerHtml]="updatedCode | safeContentHtml: 'html'" 
+                                        *ngIf="videoEmbed?.indexOf('iframe') >= 0">
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="activateDescription" [ngStyle]="{
+                        'color': descriptionTextColor
+                    }">
+                        <div class="relative h-full max-h-full"
+                            [ngClass]="{'flex flex-col': !descriptionText}">
+                            <div class="min-h-[130px] border  border-dashed p-8"
+                            [ngClass]="{'flex justify-center items-center': !descriptionText, 'flex-col': CTAText}">
+                                <ng-container *ngIf="descriptionText">
+                                    <span [innerHtml]="descriptionText | safeContentHtml: 'html'" class="custom-video-landing-text"></span>
+                                </ng-container>
+                                <ng-container *ngIf="!descriptionText">
+                                    <span class="font-semibold text-lg">{{ 'company-settings.description' | translate }}</span>
+                                </ng-container>
+                                <div *ngIf="activateCTA && CTAText" class="pt-8">
+                                    <div class="text-center mt-2">
+                                        <button type="button" class="rounded-lg h-[40px] px-16 font-semibold"
+                                            [ngStyle]="{'background-color': CTAButtonColor, 'color': CTATextColor}"
+                                            (click)="redirectToCTALink()">
+                                            {{CTAText}}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="activateQuesAnsSection" >
+                        <div class="relative h-full max-h-full"
+                            [ngClass]="{'flex flex-col': !quesAnsText}">
+                            <div class="min-h-[130px] border  border-dashed p-8 flex justify-center items-center"
+                            >
+                                <ng-container *ngIf="quesAnsText">
+                                    <span [innerHtml]="quesAnsText | safeContentHtml: 'html'" class="custom-video-landing-text"></span>
+                                </ng-container>
+                                <ng-container *ngIf="!quesAnsText">
+                                    <span class="font-semibold text-lg">{{ 'company-settings.questionanssection' | translate }}</span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="activateFooter" >
+                        <div class="relative h-full max-h-full"
+                            [ngClass]="{'flex flex-col': !footerText}">
+                            <div class="min-h-[130px] border  border-dashed p-8 flex justify-center items-center bg-[#000000]"
+                        >
+                                <ng-container *ngIf="footerText">
+                                    <p class="text-[#808080]">{{footerText}}</p>
+                                </ng-container>
+                                <ng-container *ngIf="!footerText">
+                                    <span class="font-semibold text-lg">{{ 'company-settings.footer' | translate }}</span>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

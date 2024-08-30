@@ -1,0 +1,111 @@
+<div *ngIf="!isloading && event && user" 
+    class="flex justify-center flex-col m-auto h-screen mx-auto -my-20 max-w-screen-sm flex justify-center items-center align-center">
+    <div class="p-12 bg-[#F8F4F4] w-full max-w-full rounded-lg" 
+        [ngStyle]="{'box-shadow': '0px 40px 54px -45px #00000099'}">
+        <ng-container *ngIf="isValidConfirmAttendance" >
+            <div class="text-center font-bold text-xl pb-6 uppercase">{{completedRating ? ('email.thankyou' | translate) : ('plan-details.confirmattendance' | translate)}}</div>
+            <ng-container>
+                <div class="bg-white mt-3 rounded-lg py-4 px-8">
+                    <div class="mb-10 mt-8" *ngIf="!confirmedAttendance">
+                        <div class="w-full max-w-full">
+                            <label for="activity-code" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'edit-plan.activitycode' | translate}}*
+                            </label>
+                            <input 
+                                #inputActivityCode
+                                id="activity-code"
+                                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': submitted && !activityCode }"
+                                type="text" 
+                                class="text-center text-4xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                [(ngModel)]="activityCode"
+                                [ngModelOptions]="{standalone: true}"
+                                required>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="confirmedAttendance">
+                        <ng-container *ngIf="!completedRating">
+                            <div class="mt-4 pb-8 text-center border border-b-2 border-l-0 border-r-0 border-t-0">
+                                {{'plan-details.confirmedattendance' | translate}}.
+                            </div>
+                            <div class="my-8 text-center">
+                                <div class="mb-4">
+                                    {{'event-survey.rating' | translate}} <span class="font-semibold">{{event?.title}}</span>?
+                                </div>
+                                <star-rating 
+                                    [size]="'large'" 
+                                    [starType]="'svg'" 
+                                    [rating]="0"
+                                    (starClickChange)="onClick($event)"
+                                    (ratingChange)="onRatingChange($event)"
+                                    (hoverRatingChange)="onHoverRatingChange($event)"
+                                ></star-rating>
+                            </div>
+                            <div class="my-4">
+                                <div class="mb-2">
+                                    {{'company-settings.givefeedback' | translate}}
+                                </div>
+                                <textarea 
+                                    name="" id="" cols="30" rows="3"
+                                    class="w-full rounded-lg p-4 text-sm"
+                                    placeholder="{{ 'club-details.addcomment' | translate }} {{ 'club-details.comment' | translate }}"
+                                    [(ngModel)]="activityFeedback"
+                                    [ngModelOptions]="{standalone: true}"
+                                >
+                                </textarea>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="completedRating">
+                            <div class="flex justify-center items-center align-center mt-4 pb-6 text-center border border-b-2 border-l-0 border-r-0 border-t-0">
+                                <span class="text-base">{{'plan-details.youearned' | translate}}</span>
+                                <span class="font-semibold text-4xl mx-2" [ngStyle]="{'color': buttonColor}">{{event?.credits_value}}</span>
+                                <span class="text-base lowercase">{{'course-create.credits' | translate}}.</span>
+                            </div>
+                            <div class="mt-8 pb-4 text-center">
+                                {{'event-survey.subtitle' | translate}}
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+                <div class="flex justify-center pt-4">
+                    <button 
+                        *ngIf="!confirmedAttendance"
+                        (click)="confirmAttendance()"
+                        class="mt-6 w-auto text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-12 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-not-allowed"
+                        [disabled]="!activityCode"
+                        [ngClass]="{'cursor-not-allowed': !activityCode}"
+                        [ngStyle]="{
+                            'background-color': activityCode ? buttonColor : '#c7c7c7'
+                        }"
+                    >
+                        {{ 'plan-details.confirm' | translate }}
+                    </button>
+                    <button 
+                        *ngIf="confirmedAttendance && !completedRating"
+                        (click)="giveRating()"
+                        class="mt-6 w-auto text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-12 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 cursor-not-allowed"
+                        [disabled]="!rating"
+                        [ngClass]="{'cursor-not-allowed': !rating}"
+                        [ngStyle]="{
+                            'background-color': rating ? buttonColor : '#c7c7c7'
+                        }"
+                    >
+                        {{ 'plans.submit' | translate }}
+                    </button>
+                </div>
+            </ng-container>
+        </ng-container>
+        <ng-container *ngIf="!isValidConfirmAttendance">
+            <div class="flex flex-col justify-center items-center">
+                <svg [ngStyle]="{'color': buttonColor}" class="w-16 h-16" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <div class="my-8 w-96 mx-auto text-center text-lg text-gray-700">
+                    {{'plan-details.expiredconfirm' | translate}}
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<div *ngIf="!isloading && (!event || !user)" class="center pt-16">
+    <app-no-access></app-no-access>
+</div>

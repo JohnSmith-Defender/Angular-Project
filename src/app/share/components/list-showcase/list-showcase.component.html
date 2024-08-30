@@ -1,0 +1,26 @@
+<div class="text-center text-2xl">{{ title }}</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-8">
+    <div *ngFor="let item of list" class="my-8">
+        <div class="image-overlay relative h-auto max-w-full rounded-lg hover:cursor-pointer relative overflow-hidden" 
+            [routerLink]="item.path"
+        >
+            <img class="h-auto w-full max-w-full rounded-lg" 
+                [ngSrc]="item.image" [alt]="item.title" width="296" height="286">
+            <div class="absolute top-1 right-4 text-white text-xs mt-2 bg-stone-700 py-1 px-3 rounded-xl opacity-6">
+                {{ item?.date }}
+            </div>
+            <div class="image-overlay-content text-white leading-6 text-base font-semibold">
+                <ng-container *ngIf="item?.private && !item?.private_type">
+                    <svg class="w-5 h-5 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.5 8V4.5a3.5 3.5 0 1 0-7 0V8M8 12v3M2 8h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/>
+                    </svg>
+                </ng-container>
+                <ng-container *ngIf="item?.private && item?.private_type">
+                    <svg class="w-5 h-5 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.5 8V4.5a3.5 3.5 0 1 0-7 0V8M8 12.167v3M2 8h12a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/>
+                    </svg>
+                </ng-container> {{ item?.title }}
+            </div>
+        </div>
+    </div>
+</div>

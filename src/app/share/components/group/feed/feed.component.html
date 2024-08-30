@@ -1,0 +1,54 @@
+<div>
+    <div>
+        <div *ngIf="activeMenu == 'General'">
+            <div class="p-6 bg-[#F8F4F4] relative sm:block md:flex lg:flex sm:flex-col md:flex-row lg:flex-row rounded-[16px]">
+                <img class="mr-6 sm:mb-6 md:mb-0 lg:mb-0 rounded-full object-top object-cover w-[40px] h-[40px]" width="40" height="40"
+                    [ngSrc]="me?.image == 'default-avatar.jpg' || me?.image == 'empty_avatar.png' ? ('./assets/images/default-profile.png') : (apiPath + me?.image)"
+                />
+                <div class="rounded-[6px] p-3 w-full max-w-full text-sm text-sm bg-white" 
+                    (blur)="getNewPost($event)" 
+                    (focusout)="getNewPost($event)"
+                    (focus)="focusNewPost($event)"
+                    contenteditable 
+                    [innerHTML]="newPost"
+                    [ngClass]="{'text-gray-400': isNewPostPlaceholder()}"
+                ></div>
+                <button 
+                    class="w-28 h-[46px] rounded-[10px] justify-evenly sm:ml-0 md:ml-4 lg:ml-4 sm:mt-4 md:mt-0 lg:mt-0"
+                    (click)="handleCreatePost()" 
+                    [ngStyle]="{
+                        'background-color': buttonColor,
+                        'opacity': postHover ? 1.5 : 1,
+                        'filter': postHover ? 'brightness(0.8)' : 'brightness(1)'
+                    }"
+                    (mouseover)="togglePostHover(true)"
+                    (mouseleave)="togglePostHover(false)"
+                >
+                    <span class="text-white text-sm font-medium">{{ 'posts.post' | translate }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-container *ngIf="activeMenu == 'General'">
+    <div class="my-6" *ngFor="let post of posts; let i = index;">
+        <app-group-post 
+            [buttonColor]="buttonColor" 
+            [language]="language" 
+            [post]="post" 
+            [activity]="activityTopics"
+            [motherComponent]="this"
+            [groupId]="groupId"
+            [groupMembers]="groupMembers" 
+            [superAdmin]="superAdmin"
+            [showPin]="groupOwner || superAdmin ? true : false" 
+            [me]="me"
+            [userId]="me?.id"
+            [companyId]="companyId"
+            [groupOwner]="groupOwner"
+            [company]="company"
+            (handleDelete)="deletePost($event)"
+            (handleRefresh)="displayPosts()"
+        ></app-group-post>
+    </div>
+</ng-container>

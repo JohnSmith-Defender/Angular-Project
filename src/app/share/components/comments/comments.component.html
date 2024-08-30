@@ -1,0 +1,133 @@
+<section class="bg-white dark:bg-gray-900 py-8 antialiased">
+    <div class="w-full mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">{{list?.length > 0 ? (list?.length + ' ') : ''}}{{list?.length > 1 ? ('plan-details.comments' | translate) : ('crm.comment' | translate)}}</h2>
+        </div>
+        <form class="mb-6" *ngIf="superAdmin || (private == 1 && joinedMember) || (private != 1)">
+            <div
+                class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                <label for="comment" class="sr-only">Your comment</label>
+                <textarea id="comment" rows="6"
+                    class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                    placeholder="{{ 'plan-details.comment' | translate }}..." 
+                    [(ngModel)]="newComment"
+                    [ngModelOptions]="{standalone: true}" 
+                    required></textarea>
+            </div>
+            <button 
+                (click)="handleComment()"
+                [ngClass]="{'opacity-80': !newComment}"
+                class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-600 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                [disabled]="!newComment"
+            >
+                {{ 'crm.comment' | translate }}
+            </button>
+        </form>
+        <ng-container *ngFor="let item of list; let i = index;">
+            <article class="py-6 text-base bg-white dark:bg-gray-900" [ngClass]="{'border-t border-gray-200': i > 0}">
+                <footer class="flex justify-between items-center mb-2">
+                    <div class="flex items-center">
+                        <p class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                            <img class="mr-2 w-6 h-6 rounded-full object-cover object-top" [src]="item.author_image" [alt]="item.author_date">
+                            {{ item?.author_date }}
+                        </p>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                            <time pubdate>
+                                <span class="capitalize">{{ item?.display_date }}</span>
+                            </time>
+                        </p>
+                    </div>
+                    <div class="flex items-center">
+                        <button type="button" *ngIf="item?.likes > 0 || superAdmin">
+                            <div class="flex items-center mr-4 text-sm">
+                                <ng-container>
+                                    <div (click)="handleReactToComment(item)">
+                                        <svg *ngIf="item?.likes > 0" 
+                                            class="w-4 h-4 mr-1" [ngStyle]="{'color': primaryColor}" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path
+                                                d="m12.75 20.66 6.184-7.098c2.677-2.884 2.559-6.506.754-8.705-.898-1.095-2.206-1.816-3.72-1.855-1.293-.034-2.652.43-3.963 1.442-1.315-1.012-2.678-1.476-3.973-1.442-1.515.04-2.825.76-3.724 1.855-1.806 2.201-1.915 5.823.772 8.706l6.183 7.097c.19.216.46.34.743.34a.985.985 0 0 0 .743-.34Z" />
+                                        </svg>
+                                        <svg *ngIf="!(item?.likes > 0)" class="w-4 h-4 mr-1 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"/>
+                                        </svg>
+                                    </div>
+                                    {{ item?.likes > 0 ? item?.likes : '' }}
+                                </ng-container>
+                                <svg *ngIf="superAdmin" class="w-4 h-4 ml-4 hover:cursor-pointer" (click)="handleDeleteComment(item?.id)" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                                </svg>                                
+                            </div>
+                        </button>
+                    </div>
+                </footer>
+                <p class="text-gray-500 dark:text-gray-400">{{ item?.comment }}</p>
+                <div class="flex items-center mt-4 space-x-4" 
+                    *ngIf="superAdmin || (private == 1 && joinedMember) || (private != 1)">
+                    <button (click)="handleShowReply(item)" type="button"
+                        class="flex items-center text-sm text-gray-500 hover:underline dark:text-gray-400 font-medium">
+                        <svg class="mr-1.5 w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 20 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 5h5M5 8h2m6-3h2m-5 3h6m2-7H2a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3v5l5-5h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1Z" />
+                        </svg>
+                        {{ 'chat.writeareply' | translate }}
+                    </button>
+                </div>
+                <div *ngIf="item?.show_reply" class="mt-2 grid bg-slate-50 rounded-lg gap-4 p-4 md:grid-cols-[auto_1fr_auto] md:grid-flow-row-dense md:p-6 md:gap-x-6" style="height:auto;">
+                    <div class="col-span-2 md:col-start-2">
+                        <div class="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+                            <label for="comment" class="sr-only">{{ 'crm.comment' }}</label>
+                            <textarea id="comment" rows="3"
+                                class="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                                placeholder="{{ 'wall.reply' | translate }}..." 
+                                [(ngModel)]="childComment"
+                                [ngModelOptions]="{standalone: true}" 
+                                required></textarea>
+                        </div>
+                    </div>
+                    <div class="flex shrink-0 col-start-1">
+                        <img class="w-8 h-8 shrink-0 md:w-10 md:h-10 rounded-full" [src]="item.current_user_image" [alt]="item.current_user_name">
+                    </div>
+                    <div class="flex justify-end md:block md:col-start-4">
+                        <button 
+                            [ngClass]="{'opacity-80': !childComment}"
+                            [disabled]="!childComment"
+                            (click)="handleChildComment(item)" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-600 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800" type="submit">
+                            <span>{{ 'wall.reply' | translate }}</span>
+                        </button>
+                    </div>
+                </div>
+            </article>
+            <ng-container *ngIf="item?.replies?.length > 0">
+                <ng-container *ngFor="let row of item?.replies">
+                    <article class="pt-2 pb-8 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
+                        <footer class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <p
+                                    class="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                                    <img class="mr-2 w-6 h-6 rounded-full" [src]="row.image" [alt]="row.author_date">
+                                    <span class="capitalize">{{ row?.author_date }}</span>
+                                </p>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">
+                                    <time pubdate>
+                                        <span class="capitalize">{{ row?.display_date }}</span>
+                                    </time>
+                                </p>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="flex items-center mr-4 text-sm">
+                                    <svg *ngIf="superAdmin" class="w-4 h-4 ml-4 hover:cursor-pointer" (click)="handleDeleteChildComment(item?.id, row?.id)" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </footer>
+                        <p class="text-gray-500 dark:text-gray-400">{{ row?.comment }}</p>
+                    </article>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </div>
+</section>

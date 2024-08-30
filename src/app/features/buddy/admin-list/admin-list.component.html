@@ -1,0 +1,214 @@
+<div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+    <div class="mb-6">
+        <div class="flex items-center w-full max-w-full">
+            <div class="flex-auto">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearch($event)"
+                    (doSearch)="handleSearch($event)"
+                >
+                </app-search>
+            </div>
+        </div>
+    </div>
+    <div class="pt-1.5 mb-6">
+        <button 
+            class="float-right flex items-center py-1.5 p-2.5 rounded-[10px] justify-evenly hover:bg-black"
+            *ngIf="superAdmin" 
+            [ngStyle]="{'background-color': buttonColor}" 
+            (click)="handleCreateRoute()"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+            </svg>
+            <span class="text-white text-sm">{{ 'dashboard.new' | translate }} {{ 'buddy.mentor' | translate }}</span>
+        </button>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list">
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'general-details.name' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="name">
+                    <a  
+                        [ngStyle]="{'color': buttonColor}" 
+                        class="hover:cursor-pointer hover:underline" 
+                        href="javascript:;" (click)="viewItem(row?.user_id)"
+                        [innerHtml]="row?.name">
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="location">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ company?.id == 32 ? ('buddy.campus' | translate) : ('buddy.location' | translate) }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="location">
+                   <span class="capitalize">{{ row?.location }}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="major">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.major' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="major">
+                   <span class="capitalize">{{ row?.major }}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="faculty">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.faculty' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="faculty">
+                   <span class="capitalize">{{ row?.faculty }}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="business_unit">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.businessunit' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="business_unit">
+                   <span class="capitalize">{{ row?.business_unit }}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="segment">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.segment' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="segment">
+                   <span class="capitalize">{{ row?.segment }}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="action">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.action' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="action">
+                    <ng-container *ngIf="status == 'Mentors'">
+                        <svg (click)="viewItem(row?.user_id)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer mr-4 w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M4.998 7.78C6.729 6.345 9.198 5 12 5c2.802 0 5.27 1.345 7.002 2.78a12.713 12.713 0 0 1 2.096 2.183c.253.344.465.682.618.997.14.286.284.658.284 1.04s-.145.754-.284 1.04a6.6 6.6 0 0 1-.618.997 12.712 12.712 0 0 1-2.096 2.183C17.271 17.655 14.802 19 12 19c-2.802 0-5.27-1.345-7.002-2.78a12.712 12.712 0 0 1-2.096-2.183 6.6 6.6 0 0 1-.618-.997C2.144 12.754 2 12.382 2 12s.145-.754.284-1.04c.153-.315.365-.653.618-.997A12.714 12.714 0 0 1 4.998 7.78ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/>
+                        </svg>
+                        <svg (click)="editItem(row?.user_id)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer mr-4 w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                        </svg>
+                        <svg (click)="confirmDeleteItem(row?.id)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                            <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="status == 'MentorRequests'">
+                        <svg
+                            *ngIf="row?.approved != 1 && row?.rejected != 1" 
+                            (click)="approveMentorRequest(row)" 
+                            class="hover:cursor-pointer mr-2 w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                        </svg>
+                        <svg
+                            *ngIf="row?.approved == 1"
+                            [ngStyle]="{'color': '#5cb85c'}" class="mr-2 w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/>
+                        </svg>
+                        <svg 
+                            *ngIf="row?.approved != 1 && row?.rejected != 1"
+                            (click)="rejectMentorRequest(row)" 
+                            class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                        </svg>
+                        <svg 
+                            *ngIf="row?.rejected == 1"
+                            [ngStyle]="{'color': '#d9534f'}" 
+                            class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                        </svg>
+                    </ng-container>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+        </mat-table>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'new-mentor'">
+                    <form class="space-y-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <input 
+                                type="text" 
+                                class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                placeholder="{{ 'crm.searchbyname' | translate }}*"
+                                [(ngModel)]="searchUser"
+                                [ngModelOptions]="{standalone: true}" 
+                                required>
+                            <button 
+                                class="ml-4 w-[100px] text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                                (click)="findUser()"
+                            >
+                                {{ 'guests.search' | translate }}
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between mb-4">
+                            <table class="mb-12 w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-2 py-1">
+                                            {{ 'members.name' | translate }}
+                                        </th>
+                                        <th scope="col" class="px-2 py-1">
+                                            {{ 'members.email' | translate }}
+                                        </th>
+                                        <th scope="col" class="px-2 py-1">
+                                            {{ 'your-admin-area.action' | translate }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let item of results;let x = index;" 
+                                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <td class="text-xs px-2 py-1">
+                                            {{item?.name}}
+                                        </td>
+                                        <td class="text-xs px-2 py-1">
+                                            {{item?.email}}
+                                        </td>
+                                        <td class="text-xs px-2 py-1 flex items-center py-4">
+                                            <button 
+                                                class="text-xs w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                data-modal-hide="item-modal"
+                                                [ngStyle]="{
+                                                    'background-color': buttonColor
+                                                }"
+                                                (click)="addMentor(item.id)"
+                                            >
+                                                {{ 'course-create.add' | translate }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmItemTitle"
+    [description]="confirmItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

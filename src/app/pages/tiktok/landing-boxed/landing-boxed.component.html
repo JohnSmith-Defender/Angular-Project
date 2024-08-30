@@ -1,0 +1,91 @@
+<div [ngClass]="{'max-w-screen-xl py-8': selectedLayout == 'boxed'}"
+    [ngStyle]="{'box-shadow': selectedLayout == 'boxed' ? '0px 40px 54px -45px #00000099' : 'none'}"    
+>
+    <div *ngIf="activateBanner" [ngStyle]="{
+        'background-color': selectedBackgroundColor,
+        'color': selectedTextColor
+    }">
+        <div class="relative flex flex-col">
+            <div class="h-auto sm:h-auto flex justify-center items-center font-semibold text-lg"
+            [ngClass]="{'md:h-80 lg:h-80': selectedLayout == 'boxed',
+            'md:h-96 lg:h-96': selectedLayout == 'fullwidth'}">
+                <ng-container *ngIf="!bannerImage">{{'settings.image_banner' | translate}}</ng-container>
+                <ng-container *ngIf="bannerImage">
+                    <img class="object-contain h-full w-full max-w-full object-cover" src="{{ bannerImage }}" />
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="activateSection1" [ngStyle]="{
+        'background-color': selectedBackgroundColor,
+        'color': selectedTextColor
+    }">
+        <div class="relative h-full max-h-full"
+            [ngClass]="{'flex flex-col': !section1Text}">
+            <div class="p-8"
+            [ngClass]="{'flex justify-center items-center': !section1Text}">
+                <ng-container *ngIf="section1Text">
+                    <span [innerHtml]="section1Text | safeContentHtml: 'html'"></span>
+                </ng-container>
+                <ng-container *ngIf="!section1Text">
+                    <span class="font-semibold text-lg">{{ 'course-lesson.section' | translate }} 1</span>
+                </ng-container>
+                <div *ngIf="activateSection1QuestionCTA && section1QuestionCTAText" class="text-center mt-2">
+                    <button type="button" class="rounded-lg h-auto min-h-[40px] px-16 font-semibold"
+                        [ngStyle]="{'background-color': section1QuestionCTAColor, 'color': section1QuestionCTATextColor}"
+                        (click)="redirectToCTALink('section1')">
+                        {{section1QuestionCTAText}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="activateSection2" [ngStyle]="{
+        'background-color': selectedBackgroundColor,
+        'color': selectedTextColor
+    }">
+        <div class="relative h-full max-h-full"
+            [ngClass]="{'flex flex-col': !section2Text}">
+            <div class="p-8"
+            [ngClass]="{'flex justify-center items-center': !section2Text}">
+                <ng-container *ngIf="section2Text">
+                    <span [innerHtml]="section2Text | safeContentHtml: 'html'"></span>
+                </ng-container>
+                <ng-container *ngIf="!section2Text">
+                    <span class="font-semibold text-lg">{{ 'course-lesson.section' | translate }} 2</span>
+                </ng-container>
+                <div *ngIf="activateSection2QuestionCTA && section2QuestionCTAText" class="text-center mt-2">
+                    <button type="button" class="rounded-lg h-auto min-h-[40px] px-16 font-semibold"
+                        [ngStyle]="{'background-color': section2QuestionCTAColor, 'color': section2QuestionCTATextColor}"
+                        (click)="redirectToCTALink('section2')">
+                        {{section2QuestionCTAText}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="activateSection3" [ngStyle]="{
+        'background-color': selectedBackgroundColor,
+        'color': selectedTextColor
+    }">
+        <div class="relative h-full max-h-full"
+            [ngClass]="{'flex flex-col': !section3Text}">
+            <div class="p-8"
+            [ngClass]="{'flex justify-center items-center': !section3Text}">
+                <ng-container *ngIf="section3Text">
+                    <span [innerHtml]="section3Text | safeContentHtml: 'html'"></span>
+                </ng-container>
+                <ng-container *ngIf="!section3Text">
+                    <span class="font-semibold text-lg">{{ 'course-lesson.section' | translate }} 3</span>
+                </ng-container>
+                <div *ngIf="activateSection3QuestionCTA && section3QuestionCTAText" class="text-center mt-2">
+                    <button type="button" class="rounded-lg h-auto min-h-[40px] px-16 font-semibold"
+                        [ngStyle]="{'background-color': section3QuestionCTAColor, 'color': section3QuestionCTATextColor}"
+                        (click)="redirectToCTALink('section3')">
+                        {{section3QuestionCTAText}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

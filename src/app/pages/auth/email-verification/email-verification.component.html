@@ -1,0 +1,35 @@
+<div class="container flex flex-col items-center justify-center h-full">
+    <div class="w-full max-w-md">
+        <app-company-logo [logoSource]="logoSource" />
+        <div
+            class="flex items-center justify-center pt-7 m-auto left-0 right-0 text-center mt-0 w-9/12 text-xl"
+            [ngStyle]="{
+            color:
+                primaryColor == '#ffffff' || primaryColor == '#fff'
+                ? '#1e1e1e'
+                : '#fff'
+            }"
+        >
+            {{ "email-verification.emailverification" | translate }}
+        </div>
+        <div *ngIf="email && email !='undefined'" class="w-10/12 mx-auto my-12 text-white text-center text-base">
+            {{ ('email-verification.success' | translate).replace('*|email|*', email) }}
+        </div>
+        <div *ngIf="!email || email == 'undefined'" class="my-12 px-3 py-1 text-sm font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
+            {{'job-offers.pleasewait' | translate}}...
+        </div>
+    </div>
+    <div class="flex items-center justify-center mb-10 hover:cursor-pointer">
+      <a
+        class="text-sm hover:cursor-pointer"
+        [routerLink]="['/auth/login']"
+        [ngStyle]="{
+          color:
+            primaryColor == '#ffffff' || primaryColor == '#fff'
+              ? '#1e1e1e'
+              : '#fff'
+        }"
+        >{{ "login.returntologin" | translate }}</a
+      >
+    </div>
+</div>

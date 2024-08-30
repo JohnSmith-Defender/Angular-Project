@@ -1,0 +1,237 @@
+<div class="w-full max-w-full h-full flex flex-col sm:flex-col md:flex-row lg:flex-row md:px-8 lg:md:px-8 relative p-6 md:pt-48 lg:pt-48">
+    <div class="transition duration-700 ease-in-out pt-24 sm:pt-24 md:pt-0 lg:pt-0" 
+        *ngIf="showFilters">
+        <app-astro-ideal-filter-drawer
+            [title]="filtersText"
+            [list]="drawerFilterList"
+            [selectedFilters]="selectedFilters"
+            (onFilterClick)="handleFilterDrawerClick($event)"
+            (onExitClick)="handleFiltersExitClick()">
+        </app-astro-ideal-filter-drawer>
+    </div>
+    <div class="transition duration-700 ease-in-out pt-24 sm:pt-24 md:pt-0 lg:pt-0" 
+        *ngIf="showSort">
+        <app-astro-ideal-sort-drawer
+            [title]="sortText"
+            [list]="drawerSortList"
+            [selectedSort]="selectedSort"
+            (onSortClick)="handleSortDrawerClick($event)"
+            (onExitClick)="handleSortExitClick()">
+        </app-astro-ideal-sort-drawer>
+    </div>
+    <div class="w-full max-w-full" 
+        [ngClass]="{'md:max-w-screen-2xl lg:md:max-w-screen-2xl md:mx-auto lg:mx-auto': !showFilters}">
+        <div class="mt-28 sm:mt-28 md:mt-14 lg:mt-14 mb-0 sm:mb-0 md:mb-14 lg:mb-14" 
+            [ngClass]="{'px-0 sm:px-0 md:px-20 lg:px-20': !showFilters && !showSort}">
+            <div class="flex flex-wrap flex-col sm:flex-col md:flex-row lg:flex-row items-center w-full max-w-full justify-between">
+                <div>
+                    <app-astro-ideal-filter
+                        [isMobile]="isMobile"
+                        [buttonColor]="buttonColor"
+                        [list]="filterList"
+                        [showFilters]="showFilters"
+                        [showChat]="showChat"
+                        [showVoiceCall]="showVoiceCall"
+                        [showVideoCall]="showVideoCall"
+                        [showSort]="showSort"
+                        (onFilterClick)="handleFilterClick($event)">
+                    </app-astro-ideal-filter>
+                </div>
+                <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+                    <app-astro-ideal-search
+                        [searchText]="searchText"
+                        [placeholderText]="placeholderText"
+                        [buttonColor]="buttonColor"
+                        (onEnterPressed)="handleSearchChanged($event)"
+                        (doSearch)="handleSearchChanged($event)">
+                    </app-astro-ideal-search>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="py-2 pb-20">
+                <div class="w-full relative py-6">
+                    <div class="flow-root relative">
+                        <div *ngIf="isLoading" role="status" class="mt-8 absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+                            <svg aria-hidden="true" class="w-8 h-8 mr-2 mt-5 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <div *ngIf="!isLoading">
+                            <ng-container *ngIf="activeProfessionals?.length > 0">
+                                <ul role="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-8"
+                                    [ngClass]="{'px-0 sm:px-0 md:px-20 lg:px-20': !showFilters && !showSort}">
+                                    <li class="relative" *ngFor="let professional of activeProfessionals">
+                                        <app-professional-card
+                                            [id]="professional.user_id"
+                                            [image]="professional.image"
+                                            [path]="professional.path"
+                                            [name]="professional.name"
+                                            [firstName]="professional.first_name"
+                                            [userId]="userId"
+                                            [userName]="professional.user_name"
+                                            [userImage]="professional.user_image"
+                                            [specialties]="professional.specialties"
+                                            [languages]="professional.language"
+                                            [experience]="professional.experience"
+                                            [experiencePeriod]="professional.experience_period"
+                                            [rate]="professional.rate"
+                                            [rateCurrency]="professional.rate_currency"
+                                            [rating]="professional.rating"
+                                            [onlineStatus]="professional.online_status"
+                                            [buttonColor]="buttonColor"
+                                            [hasVoiceCall]="professional.voice_call"
+                                            [hasVideoCall]="professional.video_call"
+                                            [hasChat]="professional.chat"
+                                            [canChat]="canChat"
+                                            [userData]="userData"
+                                            (onDetailClick)="handleDetailClick($event)"
+                                            (onStartCall)="handleStartCall($event)"
+                                            (onStartChat)="handleStartChat($event)"
+                                            (onStartVideoCall)="handleStartVideoCall($event)"
+                                        >
+                                        </app-professional-card>
+                                    </li>
+                                </ul>
+                            </ng-container>
+                            <hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" 
+                                *ngIf="activeProfessionals?.length > 0 && nonActiveProfessionals?.length > 0">
+                            <ng-container *ngIf="nonActiveProfessionals?.length > 0">
+                                <ul role="list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-3 gap-8"
+                                    [ngClass]="{'px-0 sm:px-0 md:px-20 lg:px-20': !showFilters && !showSort}">
+                                    <li class="relative" *ngFor="let professional of nonActiveProfessionals">
+                                        <app-professional-card
+                                            [id]="professional.user_id"
+                                            [image]="professional.image"
+                                            [path]="professional.path"
+                                            [name]="professional.name"
+                                            [firstName]="professional.first_name"
+                                            [userId]="userId"
+                                            [userName]="professional.user_name"
+                                            [userImage]="professional.user_image"
+                                            [languages]="professional.language"
+                                            [experience]="professional.experience"
+                                            [experiencePeriod]="professional.experience_period"
+                                            [rate]="professional.rate"
+                                            [rateCurrency]="professional.rate_currency"
+                                            [rating]="professional.rating"
+                                            [onlineStatus]="professional.online_status"
+                                            [buttonColor]="buttonColor"
+                                            [hasVoiceCall]="hasVoiceCall"
+                                            [hasVideoCall]="hasVideoCall"
+                                            [hasChat]="hasChat"
+                                            [canChat]="canChat"
+                                            [userData]="userData"
+                                            (onDetailClick)="handleDetailClick($event)"
+                                            (onStartCall)="handleStartCall($event)"
+                                            (onStartChat)="handleStartChat($event)"
+                                            (onStartVideoCall)="handleStartVideoCall($event)"
+                                        >
+                                        </app-professional-card>
+                                    </li>
+                                </ul>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="toast-message-cta" 
+            *ngIf="showToast" 
+            class="bg-[#ffffed] fixed top-1/3 md:translate-x-2/4 lg:translate-x-2/4 flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow" 
+            style="left:35%;"
+            role="alert">
+            <div class="flex">
+                <div class="relative inline-block shrink-0">
+                    <img class="w-12 h-12 rounded-full object-cover" [src]="professional.image" [alt]="professional.name"/>
+                </div>
+                <div class="ms-3 text-sm font-normal">
+                    <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ professional.name }}</div>
+                    <div class="text-sm font-normal">{{ toastMessage }}</div> 
+                    <div>{{ display }}</div>
+                    <a href="javascript:;" (click)="cancelCall()" class="mt-2 inline-flex px-2.5 py-1.5 text-xs font-medium text-center text-white bg-red-600 rounded-lg hover:bg-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">{{ 'wall.cancel' | translate }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showRequiredMinimumBalanceModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="toastTitle"
+    [description]="toastDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>
+<button #modalbutton2 data-modal-target="item-modal2" data-modal-toggle="item-modal2" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal2" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton2 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal2">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'plan-details.confirm' | translate }}
+                </h3>
+                <div>
+                    <label 
+                        for="phonenumber" 
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'category.phone' | translate }}
+                    </label>
+                    <input 
+                        type="text" 
+                        name="phonenumber" 
+                        id="phonenumber" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" 
+                        [ngClass]="{'bg-red-50 border border-red-500': !userPhone || !validatePhoneForE164() }"
+                        placeholder="{{ 'category.phone' | translate }}*" 
+                        [(ngModel)]="userPhone" 
+                        [ngModelOptions]="{standalone: true}"
+                        required>
+                </div>
+                <ng-container *ngIf="!validatePhoneForE164()">
+                    <div class="text-[#c24130] text-xs mt-1 font-medium text-center">{{ 'professionals.enteravalidphone' | translate }}</div>
+                </ng-container>
+                <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                    <button 
+                        class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        [ngStyle]="{'background-color': !validatePhoneForE164() ? '#c7c7c7' : buttonColor}"
+                        [disabled]="!validatePhoneForE164()"
+                        (click)="proceedToCall()"
+                    >
+                        {{ 'customer-onboarding.proceed' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-chat-drawer 
+    [canChat]="canChat" 
+    [buttonColor]="buttonColor"
+    [companyId]="companyId"
+    [id]="id"
+    [image]="image"
+    [firstName]="firstName"
+    [userId]="userId"
+    [userName]="userName"
+    [userImage]="userImage"
+    [userData]="userData"
+    [senderBalance]="senderBalance"
+    [reloadData]="reloadData"
+    [currentUserImage]="currentUserImage"
+    [chatRole]="chatRole"
+    [chatTimer]="chatTimer"
+    [chatEnded]="chatEnded"
+    [insufficientBalanceTitle]="insufficientBalanceTitle"
+    [insufficientBalanceDescription]="insufficientBalanceDescription">
+</app-chat-drawer>

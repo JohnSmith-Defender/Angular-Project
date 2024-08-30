@@ -1,0 +1,155 @@
+<app-page-title title="{{ 'company-settings.reports' | translate }}"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-screen-xl w-full px-4 md:px-0 lg:px-0 mx-auto py-3 border border-b-2 border-l-0 border-r-0 border-t-0">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+    <div class="mt-3 sm:mt-3 md:mt-0 lg:mt-0">
+        <button 
+            *ngIf="companyId == 32"
+            class="mr-4 inline-block h-[40px] ml-4 text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+            (click)="openTeamsSettingsModal()" 
+            [ngStyle]="{'background-color': buttonColor}"
+        >
+            Teams (MS Graph)
+        </button>
+        <button 
+            class="inline-block h-[40px] bg-black text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+            (click)="downloadCSV()"
+        >
+            {{ 'company-reports.downloadCSV' | translate }}
+        </button>
+    </div>
+</div>
+<div class="py-6 pb-36">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="relative mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    <mat-form-field class="datetime-picker-field">
+                        <mat-label>{{ 'plan-details.selectdate' | translate }}</mat-label>
+                        <mat-date-range-input [rangePicker]="picker" [formGroup]="dateRange">
+                          <input (dateChange)="handleDateChange('start', $event)" matStartDate formControlName="start" placeholder="{{ 'company-reports.startdate' | translate }}">
+                          <input (dateChange)="handleDateChange('end', $event)" matEndDate formControlName="end" placeholder="{{ 'plan-create.enddate' | translate }}">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="relative pt-1.5 mb-6">
+            <app-button-group class="relative flex justify-end"
+                [buttonColor]="buttonColor"
+                [buttonList]="buttonList"
+                [subcategoryList]="subButtonList"
+                [subsubcategoryList]="subSubButtonList"
+                (onButtonClick)="selectReport($event)"
+                (onSubButtonClick)="selectSubReport($event)"
+                (onSubSubButtonClick)="selectSubSubReport($event)"
+            >
+            </app-button-group>
+        </div>
+    </div>
+    <ng-container *ngIf="isLoadingReport">
+        <div class="flex justify-center items-center"><img width="50%" src="./assets/images/new-design/generating-report.gif" /></div>
+    </ng-container>
+    <ng-container *ngIf="!isLoadingReport && reportData && reportData?.series?.length > 0">
+        <line-chart
+            [mode]="reportType.type"
+            [sub]="subReportType.type"
+            [title]="reportTitle"
+            [reportData]="reportData"
+            [notifier]="childNotifier"
+            [primaryColor]="primaryColor"
+            [buttonColor]="buttonColor"
+            [text]="text"
+        ></line-chart>
+    </ng-container>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    Teams (MS Graph) {{ 'registration-fields.settings' | translate }}
+                </h3>
+                <form class="space-y-6">
+                    <div class="mb-2 relative">
+                        <label for="clientid" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Application (client) ID*</label>
+                        <input 
+                            id="clientid"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !clientId }"
+                            class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            type="text" 
+                            placeholder="Application (client) ID*"
+                            [(ngModel)]="clientId"
+                            [ngModelOptions]="{standalone: true}"
+                            [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                            }"
+                            required
+                        >
+                    </div>
+                    <div class="mb-2 relative">
+                        <label for="clientsecret" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Client Secret*</label>
+                        <input 
+                            id="clientsecret"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !clientSecret }"
+                            class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            type="text" 
+                            placeholder="Client Secret*"
+                            [(ngModel)]="clientSecret"
+                            [ngModelOptions]="{standalone: true}"
+                            [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                            }"
+                            required
+                        >
+                    </div>
+                    <div class="mb-2 relative">
+                        <label for="tenantid" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Directory (tenant) ID*</label>
+                        <input 
+                            id="tenantid"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !tenantId }"
+                            class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            type="text" 
+                            placeholder="Directory (tenant) ID*"
+                            [(ngModel)]="tenantId"
+                            [ngModelOptions]="{standalone: true}"
+                            [ngStyle]="{'border-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#c1c1c1' : 'transparent', 
+                                'border-width': primaryColor == '#ffffff' || primaryColor == '#fff' ? '1px' : '0', 
+                                'border-style': primaryColor == '#ffffff' || primaryColor == '#fff' ? 'solid' : 'none'
+                            }"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        data-modal-hide="item-modal" 
+                        (click)="saveTeamsSettings()"
+                        [ngStyle]="{
+                            'background-color': buttonColor
+                        }"
+                    >
+                        {{ 'company-settings.save' | translate }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

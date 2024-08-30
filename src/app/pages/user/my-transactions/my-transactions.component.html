@@ -1,0 +1,65 @@
+<app-page-title title="{{ 'professionals.mytransactions' | translate }}"></app-page-title>
+<div class="pt-10">
+    <div class="md:flex">
+        <ul class="mt-4 flex-column md:w-80 space-y text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
+            <li *ngFor="let tab of leftTabs; let i = index;" 
+                class="border border-gray-200"
+                [ngClass]="{'border-b-0': i < (leftTabs?.length - 1)}">
+                <a (click)="handleSwitchView(tab.mode)" href="javascript:;" 
+                    class="inline-flex items-center px-4 py-3 hover:text-gray-900 hover:bg-gray-100 w-full" 
+                    [ngClass]="{'font-bold': viewMode == tab.mode}"
+                    aria-current="page">
+                    {{ tab.text }}
+                </a>
+            </li>
+        </ul>
+        <div class="p-6 border border-gray-300 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full md:w-9/12">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">{{ viewTitle }}</h3>
+            <div *ngIf="!isLoading" class="w-full min-w-full">
+                <div class="mat-table-responsive py-6 relative" [ngClass]="{'-z-10': showConfirmationModal}">
+                    <mat-table [dataSource]="dataSource" matSort>
+                        <ng-container matColumnDef="description">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'database.description' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let row" data-label="credit_package_name"> {{ row.description }} </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="transaction_amount">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header><span>{{ 'pricing.amount' | translate }}</span></mat-header-cell>
+                            <mat-cell *matCellDef="let row" data-label="transaction_amount"> 
+                                <span [ngStyle]="{'color': row?.type == 'deduct' ? '#c24130' : '#4BB543'}">
+                                    {{ row?.transaction_amount }}
+                                </span> 
+                            </mat-cell>
+                        </ng-container>
+                        <ng-container matColumnDef="date">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header><span class="capitalize">{{ 'landing.date' | translate }}</span></mat-header-cell>
+                            <mat-cell *matCellDef="let row" data-label="date"> <span>{{ row?.created_at | date:'dd MMM yyyy hh:mm a' }}</span> </mat-cell>
+                        </ng-container>
+                        <!-- <ng-container matColumnDef="actions">
+                            <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'your-admin-area.action' | translate }} </mat-header-cell>
+                            <mat-cell *matCellDef="let row" data-label="actions">
+                                <svg (click)="confirmDeleteItem(row?.id)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                </svg>
+                            </mat-cell>
+                        </ng-container> -->
+                        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                        <div>
+                            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        </div>
+                    </mat-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

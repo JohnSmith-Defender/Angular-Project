@@ -1,0 +1,7 @@
+<owl-carousel-o [options]="customOptions">
+  <ng-container *ngFor="let item of items; let i = index">
+    <ng-template carouselSlide [id]="'carousel_index' + i" class="mr-8">
+      <app-rituale-card [cardData]="{title: this.titleTranslator(item), description: this.descriptionTranslator(item), image: item.image, currency: item.currency, amount: item.amount}" />
+    </ng-template>
+  </ng-container>
+</owl-carousel-o>

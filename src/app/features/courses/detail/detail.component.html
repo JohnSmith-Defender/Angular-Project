@@ -1,0 +1,69 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="pt-10">
+    <div class="w-full max-w-full sm:w-full sm:max-w-full md:w-6/12 md:max-w-6/12 lg:w-6/12 lg:max-w-6/12">
+        <div class="text-4xl font-semibold pt-24 sm:pt-24 md:pt-4 lg:pt-4">{{ courseTitle }}</div>
+        <div class="text-sm opacity-60 my-4" [innerHtml]="courseDescription"></div>
+        <!-- <div *ngIf="superAdmin || canCreate" class="flex mt-3 sm:mt-3 md:mt-0 lg:mt-0">
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4 mr-4"
+                (click)="handleEditRoute()" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': editHover ? 1.5 : 1,
+                    'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (mouseover)="toggleEditHover(true)"
+                (mouseleave)="toggleEditHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                </svg>
+                <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+            </button>
+            <button 
+                class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                (click)="handleDelete()" 
+                [ngStyle]="{
+                    'border-color': deleteHover ? 'transparent' : buttonColor,
+                    'background-color': deleteHover ? buttonColor : '#fff',
+                }"
+                (mouseover)="toggleDeleteHover(true)"
+                (mouseleave)="toggleDeleteHover(false)"
+            >
+                <svg [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="w-2 h-2 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                </svg>
+                <span [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="text-md font-semibold uppercase">{{ 'plan-details.delete' | translate }}</span>
+            </button>
+        </div> -->
+        <div class="text-lg font-semibold my-8">{{'course-details.coursecontent' | translate}}</div>
+    </div>
+</div>
+<div>
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-8 pb-20">
+        <ng-container *ngFor="let unit of courseUnits | paginate: {itemsPerPage: 6, currentPage: p}">
+            <app-course-unit-card
+                [id]="unit?.id"
+                [path]="unit?.path"
+                [title]="unit?.title"
+                [description]="unit?.description"
+                [image]="unit?.image"
+                [progress]="unit?.progress"
+                [buttonColor]="buttonColor"
+            >
+            </app-course-unit-card>
+        </ng-container>
+    </div>
+    <div *ngIf="course?.course_units?.length > 0" class="text-center">
+        <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>

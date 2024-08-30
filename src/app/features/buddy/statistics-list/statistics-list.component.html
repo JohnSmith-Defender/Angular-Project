@@ -1,0 +1,153 @@
+<div class="grid gap-6 grid-cols-1">
+    <div class="mb-6">
+        <div class="flex items-center w-full max-w-full">
+            <div class="flex-auto">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearch($event)"
+                    (doSearch)="handleSearch($event)"
+                >
+                </app-search>
+            </div>
+            <div class="mx-8">
+                <button 
+                    class="h-[40px] flex items-center py-1.5 p-2.5 px-4 rounded-[10px] justify-evenly hover:bg-black"
+                    [ngStyle]="{'background-color': '#1e1e1e'}" 
+                    (click)="downloadExcel()"
+                >
+                    <svg class="w-3 h-3 text-white mr-2 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 1v4a1 1 0 0 1-1 1H1m8-2h3M9 7h3m-4 3v6m-4-3h8m3-11v16a.969.969 0 0 1-.932 1H1.934A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.829 1h8.239A.969.969 0 0 1 15 2ZM4 10h8v6H4v-6Z"/>
+                    </svg>
+                    <span class="text-white text-sm">{{ 'your-admin-area.downloadtoexcel' | translate }}</span>
+                </button>
+            </div>
+            <div>
+                <app-button-group
+                    [buttonList]="buttonList"
+                    [buttonColor]="buttonColor"
+                    (onButtonClick)="handleChangeViewClick($event)"
+                >
+                </app-button-group>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="w-full min-w-full py-8">
+    <mat-paginator
+    #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" class="mb-5"
+    *ngIf="pageSize == 200" class="mb-5"
+    (page)="getPageDetails($event)"
+    [showFirstLastButtons]="true"
+></mat-paginator>
+    <div class="mat-table-responsive">
+        <mat-table [dataSource]="dataSource" matSort class="manage-list">
+            <ng-container matColumnDef="mentor_name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.mentor' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="mentor_name">
+                    <a [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer hover:underline" href="javascript:;" (click)="viewItem(row?.id)">
+                        {{ row?.mentor_name }}
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="mentees">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'buddy.mentees' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="mentees">
+                    <div class="flex flex-col w-full max-w-full" *ngIf="row?.mentees?.length > 0">
+                        <div class="w-full max-w-full rounded-[10px] flex flex-row py-2 px-3 mb-[7px]">
+                            <div class="font-bold w-4/12">
+                                {{row?.mentees?.length}} {{'buddy.mentees' | translate}}
+                            </div>
+                            <div class="hover:cursor-pointer">
+                                <ng-container *ngIf="expandedMentorId != row.id">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}" 
+                                        (click)="expandMentees(row)"
+                                        [ngStyle]="{'color': buttonColor}"
+                                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                                    </svg>
+                                </ng-container>
+                                <ng-container *ngIf="expandedMentorId == row.id">
+                                    <svg
+                                        [ngStyle]="{'color': buttonColor}"
+                                        (click)="expandMentees(row)"
+                                        class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                                    </svg>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="expandedMentorId == row.id">
+                            <div class="w-full max-w-full">
+                                <table *ngIf="row?.mentees?.length > 0" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'your-admin-area.name' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'your-admin-area.email' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'general-details.no_of_interaction' | translate }}
+                                            </th>
+                                            <th scope="col" class="px-2 py-1">
+                                                {{ 'general-details.no_of_session' | translate }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let mentee of row?.mentees; let i = index;" 
+                                            class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                            <th scope="row" class="text-xs px-2 py-1 max-w-[80px] font-medium text-gray-900 dark:text-white">
+                                                {{mentee?.name}}
+                                            </th>
+                                            <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                {{mentee?.email}}
+                                            </td>
+                                            <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                {{mentee?.no_of_interactions}}
+                                            </td>
+                                            <td class="text-xs px-2 py-1 max-w-[80px]">
+                                                {{mentee?.no_of_schedules}}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </ng-container>
+                    </div>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="requests">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'notification-popup.requests' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="requests">
+                    {{ row?.requests }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="accepted">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'notification-popup.accepted' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="accepted">
+                    {{ row?.accepted }}
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="declined">
+                <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'notification-popup.declined' | translate }} </mat-header-cell>
+                <mat-cell *matCellDef="let row" data-label="declined">
+                    {{ row?.declined }}
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+            </mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator
+        #paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" 
+        *ngIf="pageSize < 200"
+        (page)="getPageDetails($event)"
+        [showFirstLastButtons]="true"
+    ></mat-paginator>
+</div>

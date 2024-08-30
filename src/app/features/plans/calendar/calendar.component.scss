@@ -1,0 +1,246 @@
+.calendar-container {
+    padding: 5px;
+
+    .calendar {
+        .col-md-12 {
+            padding: 0px !important;
+        }
+
+        .col-1 {
+            -webkit-box-flex: 0;
+            -webkit-flex: 0 0 8.33333%;
+            -ms-flex: 0 0 8.33333%;
+            flex: 0 0 14.285714285714286%;
+            width: 14.285714285714286%;
+            max-width: 14.285714285714286%;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .selectedDay {
+            background: #006999;
+            color: white;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .weekdays {
+            color: #a7a7a7;
+            font-size: 10px;
+            padding: 5px 10px;
+        }
+        
+        .calendar-body {
+            position: relative;
+            padding-top: 10px;
+        }
+        
+        .grid {
+            display: block;
+            flex: 1;
+        }
+        
+        .calendar-month {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .calendar-month div {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .calendar-month div.arrow-back {
+            text-align: left;
+            width: 15%;
+        
+            i {
+                color: #006999;
+                margin-left: 5px;
+                font-size: 14px;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        
+        .calendar-month div.arrow-forward {
+            text-align: right;
+            width: 15%;
+        
+            i {
+                color: #006999;
+                margin-right: 5px;
+                font-size: 14px;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        
+        .calendar-month div.current-month {
+            color: #004c6e;
+            font-size: 11px;
+        }
+        
+        .calendar-weekday, .calendar-date {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .calendar-weekday {
+            margin-left: -6px !important;
+        }
+
+        .calendar-date {
+            margin-left: 6px;
+            margin-right: -6px;
+        }
+        
+        .currentDate {
+            float: left;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .dateOuter {
+            position: relative;
+            float: left;
+            width: 100%;
+            font-size: 10px;
+        }
+        
+        .dotOuter {
+            position: absolute;
+            bottom: -6px;
+            margin-left: 14px;
+            transform: translateX(-50%);
+            width: 100%;
+        }
+        
+        .dayRep {
+            &:hover {
+                cursor: pointer;
+            }
+        }
+        
+        .event-bullet {
+            height: 5px;
+            width: 5px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: -5px;
+        }
+        
+        .event-bullet-colored.color-yellow {
+            background-color: #f9b122;
+        }
+        
+        .event-bullet-colored.color-green {
+            background-color: #759904;
+        }
+        
+        .event-bullet-colored.color-blue {
+            background-color: #006999;
+        }
+        
+        .event-bullet-white {
+            background-color: white;
+        }
+        
+        .brHeight {
+            line-height: 2px;
+            display: block;
+            margin: -7px 0;
+            content: " ";
+        }
+        
+        .selected-event-bullet {
+            height: 5px;
+            width: 5px;
+            background-color: #006999;
+            border-radius: 50%;
+            display: inline-block;
+        }
+    }
+
+    .options {
+        display: flex;
+        padding: 8px 0 20px 15px;
+        margin-top: 95px !important;
+        padding-left: 35px !important;
+        padding-bottom: 0px !important;
+        margin-bottom: 0px !important;
+    
+        .plan {
+            width: 100%;
+            text-align: center;
+    
+            &.company {
+                text-align: left;
+            }
+    
+            &.joined {
+                text-align: left;
+                margin-right: 15px;
+            }
+    
+            span {
+                margin-left: 10px;
+            }
+        }
+   
+        mat-checkbox {
+            font-size: 9px;
+        }
+
+        &.clubplanonly {
+            display: initial;
+    
+            mat-checkbox {
+                margin-right: 20px;
+            }
+        }
+    }
+}
+
+.activeDate, .selectedDay {
+    width: 30px;
+    height: 30px;
+    padding-top: 5px;
+    border-radius: 50%;
+    margin: auto;
+    color: #fff !important;
+}
+
+:host ::ng-deep {
+    .mat-checkbox-layout .mat-checkbox-label {
+        line-height: 24px;
+        margin-left: 5px;
+    }
+
+    .custom-frame {
+        & .mat-checkbox-background, .mat-checkbox-frame {
+          border-radius: 70% !important;
+        }
+    }
+}
+
+@media (max-width: 767px) { 
+    .options {
+        display: initial;
+  
+        mat-checkbox {
+            margin-right: 10px;
+        }
+    }
+}

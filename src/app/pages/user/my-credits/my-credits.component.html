@@ -1,0 +1,81 @@
+<app-page-title [title]="pageTitle"></app-page-title>
+<div class="pt-10">
+    <div class="text-xl font-semibold opacity-60">
+        {{ mode == 'activities' ? ("credit-package.creditamount" | translate) : ("credit-package.availablecredits" | translate) }}
+    </div>
+    <ng-container *ngIf="(!separateCourseCredits || mode == 'activities') && !isLoading">
+        <div class="text-3xl pt-2.5 font-semibold flex items-center">
+            {{ mode == 'activities' ? userTotalCredits : (user?.remaining_course_credits ? user.remaining_course_credits : 0) }} 
+            <img *ngIf="mode != 'activities'" src="../../../../assets/images/icons/credits.png" class="ml-2 h-5" />
+            <svg *ngIf="mode == 'activities'" [ngStyle]="{'color': buttonColor}" class="ml-2 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6.072 10.072 2 2 6-4m3.586 4.314.9-.9a2 2 0 0 0 0-2.828l-.9-.9a2 2 0 0 1-.586-1.414V5.072a2 2 0 0 0-2-2H13.8a2 2 0 0 1-1.414-.586l-.9-.9a2 2 0 0 0-2.828 0l-.9.9a2 2 0 0 1-1.414.586H5.072a2 2 0 0 0-2 2v1.272a2 2 0 0 1-.586 1.414l-.9.9a2 2 0 0 0 0 2.828l.9.9a2 2 0 0 1 .586 1.414v1.272a2 2 0 0 0 2 2h1.272a2 2 0 0 1 1.414.586l.9.9a2 2 0 0 0 2.828 0l.9-.9a2 2 0 0 1 1.414-.586h1.272a2 2 0 0 0 2-2V13.8a2 2 0 0 1 .586-1.414Z"/>
+            </svg>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="separateCourseCredits && !isLoading">
+        <div class="flex mt-4 mb-8">
+            <ng-container *ngFor="let credit of userCourseCredits">
+                <div class="border py-2.5 px-6 text-center mr-3 rounded-[10px]"
+                    [ngStyle]="{'border-color': buttonColor}"
+                >
+                    <div class="text-sm mb-2 uppercase font-bold">{{getCourseTitleByCredit(credit)}}</div>
+                    <div class="text-lg font-bold flex items-cente justify-center">
+                        <div class="mr-1">{{credit?.remaining_credits}}/{{credit?.credits}}</div>
+                        <img src="./assets/images/icons/credits.png" class="w-[30px] h-[24px] object-contain"/>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>
+<div class="pt-10">
+    <div class="text-xl font-semibold opacity-60">
+        {{ mode == 'activities' ? ("ranking.history" | translate) : ("credit-package.purchasehistory" | translate) }}
+    </div>
+    <div *ngIf="!isLoading" class="w-full min-w-full">
+        <div class="mat-table-responsive my-credits-table py-6">
+            <mat-table [dataSource]="packagesDataSource" matSort>
+                <ng-container matColumnDef="credit_package_name" *ngIf="mode == 'tutors'">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-details.name' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="credit_package_name"> {{ row.credit_package_name }} </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="title" *ngIf="mode == 'activities'">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header><span class="capitalize">{{ 'plan-create.title' | translate }}</span></mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="title"> <span>{{ row?.title }}</span> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="type" *ngIf="mode == 'activities'">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header><span class="capitalize">{{ 'company-settings.type' | translate }}</span></mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="type"> <span class="capitalize">{{ row?.type }}</span> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="credits">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'credit-package.credits' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="credits"> <span style="text-transform:lowercase;">{{ row.credits }}</span> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="course" *ngIf="mode == 'tutors'">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'course-create.course' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="course"> <span>{{ getCourseTitleById(row?.credit_package_id) }}</span> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="price" *ngIf="mode != 'activities'">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'plan-details.price' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="price"> <span style="text-transform:lowercase;">{{ row.price }} €</span> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="created_at">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'tutors.time' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="created_at"> <span>{{ row.created_at | date:'dd/MM/YYYY hh:mm a' }}</span> </mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'customer.status' | translate }} </mat-header-cell>
+                    <mat-cell *matCellDef="let row" data-label="status"> <span class="capitalize">{{row.charge_id ? ('members.paid' | translate ) : (row?.status == 'added' ? ('audit-trail.added' | translate) : ('credit-package.failed' | translate)) }}</span> </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="userCreditsDisplayedColumns; sticky: true"></mat-header-row>
+                <div>
+                    <mat-row *matRowDef="let row; columns: userCreditsDisplayedColumns;"></mat-row>
+                </div>
+            </mat-table>
+            <div *ngIf="!userCredits || (userCredits?.length == 0)" 
+                class="pt-8 text-center opacity-60">
+                {{ 'categories.noresultsfound' | translate }}
+            </div>
+        </div>
+    </div>
+</div>

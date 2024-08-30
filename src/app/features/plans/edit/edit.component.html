@@ -1,0 +1,1500 @@
+<ng-container *ngIf="!isLoading && (superAdmin || canCreatePlan)">
+    <app-page-title [title]="pageTitle"></app-page-title>
+    <div class="flex items-center" *ngIf="id > 0">
+        <label for="toggleAdmin" class="flex items-center cursor-pointer">
+            <div class="relative">
+                <input
+                    id="toggleAdmin"
+                    type="checkbox"
+                    class="sr-only"
+                    [(ngModel)]="status"
+                    [ngModelOptions]="{standalone: true}"
+                />
+                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+            </div>
+        </label>
+    </div>
+    <div class="pt-6">
+        <ng-container *ngIf="languages?.length > 1">
+            <div class="pt-1.5 mb-6">
+                <app-button-group class="flex justify-center"
+                    [buttonColor]="buttonColor"
+                    [buttonList]="buttonList"
+                    (onButtonClick)="handleChangeLanguageFilter($event)"
+                >
+                </app-button-group>
+            </div>
+            <div class="p-1 bg-white text-xs text-center flex rounded-lg justify-center align-center items-center w-screen-md max-w-screen-md mx-auto" 
+                *ngIf="showLanguageNote" (click)="closeLanguageNote()">
+                {{ 'dialog.changelanguagetitledesc' | translate }}
+                <svg class="ml-4 font-bold w-2 h-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+            </div>
+        </ng-container>
+    </div>
+    <div class="pt-6">
+        <form [formGroup]="planForm" (ngSubmit)="savePlan()">
+            <ng-container *ngIf="!isUESchoolOfLife">
+                <div class="flex items-center justify-center mb-8 relative">
+                    <div>
+                        <input 
+                            required 
+                            type="file"
+                            id="photo" 
+                            style="display:none;"
+                            (change)="fileChangeEvent($event)"
+                        />
+                        <div 
+                            class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                            [ngClass]="{'p-6': !imgSrc}"
+                        >
+                            <div
+                                class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                                [ngClass]="{'w-28 h-28': !imgSrc, 'w-60 h-60': imgSrc}"
+                            >
+                                <img *ngIf="!imgSrc" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                <img *ngIf="imgSrc" class="rounded-xl object-contain" src="{{ imgSrc }}" />
+                            </div>
+                        </div>
+                        <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                            <label
+                                for="photo"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                class="btn text-white"
+                            >
+                                {{ 'club-create.uploadimage' | translate }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="isUESchoolOfLife">
+                <div class="md:flex mb-8 max-w-screen-md mx-auto">
+                    <ul class="flex-column space-y space-y-4 text-sm font-medium text-gray-500 dark:text-gray-400 md:me-4 mb-4 md:mb-0">
+                        <li>
+                            <a (click)="selectPlanCover('photo')" href="javascript:;" 
+                                class="inline-flex items-center px-4 py-3 rounded-lg w-full" aria-current="page"
+                                [ngClass]="{'active text-white': isDefaultPhoto}"
+                                [ngStyle]="{'background-color': isDefaultPhoto ? buttonColor : '#F9FAFB'}">
+                                <svg class="w-4 h-4 me-2"
+                                    [ngClass]="{'text-white': isDefaultPhoto}"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M13 10a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H14a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                                    <path fill-rule="evenodd" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12c0 .556-.227 1.06-.593 1.422A.999.999 0 0 1 20.5 20H4a2.002 2.002 0 0 1-2-2V6Zm6.892 12 3.833-5.356-3.99-4.322a1 1 0 0 0-1.549.097L4 12.879V6h16v9.95l-3.257-3.619a1 1 0 0 0-1.557.088L11.2 18H8.892Z" clip-rule="evenodd"/>
+                                </svg>
+                                {{ 'plan-create.image' | translate }}
+                            </a>
+                        </li>
+                        <li>
+                            <a (click)="selectPlanCover('video')" href="javascript:;" 
+                                class="inline-flex items-center px-4 py-3 rounded-lg w-full"
+                                [ngClass]="{'active text-white': isDefaultVideo}"
+                                [ngStyle]="{'background-color': isDefaultVideo ? buttonColor : '#F9FAFB'}">
+                                <svg class="w-4 h-4 me-2" 
+                                    [ngClass]="{'text-white': isDefaultVideo}"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd" d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 9.387 4.684 1.562A1 1 0 0 0 22 17V7a1 1 0 0 0-1.316-.949L16 7.613v8.774Z" clip-rule="evenodd"/>
+                                </svg>
+                                {{ 'plan-details.video' | translate }}
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="p-6 bg-gray-50 text-medium text-gray-500 dark:text-gray-400 dark:bg-gray-800 rounded-lg w-full">
+                        <ng-container *ngIf="isDefaultPhoto">
+                            <h3 class="text-center text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                {{ 'plan-create.image' | translate }}
+                            </h3>
+                            <div class="flex items-center justify-center mt-4 mb-8 relative">
+                                <div>
+                                    <input 
+                                        required 
+                                        type="file"
+                                        id="photo" 
+                                        style="display:none;"
+                                        (change)="fileChangeEvent($event)"
+                                    />
+                                    <div 
+                                        class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                        [ngClass]="{'p-6': !imgSrc}"
+                                    >
+                                        <div
+                                            class="grid mb-8 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 place-items-center"
+                                            [ngClass]="{'w-28 h-28': !imgSrc, 'w-60 h-60': imgSrc}"
+                                        >
+                                            <img *ngIf="!imgSrc" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                            <img *ngIf="imgSrc" class="rounded-xl object-contain" src="{{ imgSrc }}" />
+                                        </div>
+                                    </div>
+                                    <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                        <label
+                                            for="photo"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            class="btn text-white"
+                                        >
+                                            {{ 'club-create.uploadimage' | translate }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-center max-w-xs mx-auto">
+                                <div class="flex items-center justify-center w-full relative">
+                                    <label
+                                        for="default-photo"
+                                        class="flex items-center justify-between cursor-pointer"
+                                    >
+                                        <div class="ml-3 text-black text-sm mr-6">
+                                            {{ "categories.setasdefault" | translate }}
+                                        </div>
+                                        <div class="relative mr-1">
+                                            <input
+                                                id="default-photo"
+                                                type="checkbox"
+                                                class="sr-only"
+                                                [(ngModel)]="setDefaultPhoto"
+                                                [ngModelOptions]="{standalone: true}"
+                                                (change)="editCoverStatus($event, 'photo')"
+                                            />
+                                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="isDefaultVideo">
+                            <div class="flex items-center"
+                                [ngClass]="{
+                                    'justify-between mb-4': existingVideoURL,
+                                    'justify-center': !existingVideoURL
+                                }">
+                                <h3 class="text-center text-lg font-bold text-gray-900 dark:text-white mb-2">
+                                    {{ 'plan-details.video' | translate }}
+                                </h3>
+                                <div *ngIf="existingVideoURL" 
+                                    class="p-2 px-4 rounded-lg flex items-center justify-center hover:cursor-pointer" 
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                    (click)="clearVideo()">
+                                    <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24"
+                                        [ngStyle]="{'color': '#c24130'}">
+                                        <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="text-white text-xs ml-1">{{ 'profile-fields.remove' | translate }}</span>
+                                </div>
+                            </div>
+                            <div *ngIf="!existingVideoURL"
+                                class="flex flex-col items-center justify-center plan-video-preview h-64 max-w-full w-full border-2 border-gray-300 border-dashed rounded-lg bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <file-pond
+                                    class="w-full max-w-full"
+                                    #eventPondVideo
+                                    [options]="eventPondVideoOptions"
+                                    [files]="eventPondVideoFiles"
+                                    (oninit)="eventPondHandleVideoInit()"
+                                    (onaddfile)="eventPondHandleAddVideoFile($event)"
+                                    (onactivatefile)="eventPondHandleActivateVideoFile($event)"
+                                    (onprocessfiles)="eventPondHandleProcessFiles()"
+                                >
+                                </file-pond>
+                            </div>
+                            <div *ngIf="existingVideoURL" class="relative">             
+                                <video *ngIf="existingVideoURL" controls width="100%" height="200px" class="h-64">
+                                    <source src="{{ existingVideoURL }}" type="video/mp4" />
+                                </video>
+                            </div>
+                            <div class="flex items-center justify-center max-w-xs mx-auto my-8" [ngClass]="{'mt-16 mb-0': eventVideoCoverUploaded}">
+                                <div class="flex items-center justify-center w-full relative">
+                                    <label
+                                        for="default-video"
+                                        class="flex items-center justify-between cursor-pointer"
+                                    >
+                                        <div class="ml-3 text-black text-sm mr-6">
+                                            {{ "categories.setasdefault" | translate }}
+                                        </div>
+                                        <div class="relative mr-1">
+                                            <input
+                                                id="default-video"
+                                                type="checkbox"
+                                                class="sr-only"
+                                                [(ngModel)]="setDefaultVideo"
+                                                [ngModelOptions]="{standalone: true}"
+                                                (change)="editCoverStatus($event, 'video')"
+                                            />
+                                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </ng-container>
+            <div class="flex items-center justify-center mb-4 relative">
+                <input 
+                    *ngIf="selectedLanguage == 'es'"
+                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': planForm.get('title_es')?.errors }"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_es" 
+                    placeholder="{{ 'plan-create.titleofevent' | translate }}*" 
+                    required>
+                <input 
+                    *ngIf="selectedLanguage == 'en'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_en" 
+                    placeholder="{{ 'plan-create.titleofevent' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'fr'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_fr" 
+                    placeholder="{{ 'plan-create.titleofevent' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'eu'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_eu" 
+                    placeholder="{{ 'plan-create.titleofevent' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'ca'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_ca" 
+                    placeholder="{{ 'plan-create.titleofevent' | translate }}">
+                <input 
+                    *ngIf="selectedLanguage == 'de'"
+                    type="text" 
+                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                    formControlName="title_de" 
+                    placeholder="{{ 'plan-create.titleofevent' | translate }}">
+            </div>
+            <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                <div class="flex items-center justify-between relative plan-date">
+                    <mat-form-field class="w-full">
+                        <mat-label>{{ 'plan-create.eventstartdate' | translate }}</mat-label>
+                        <input matInput [matDatepicker]="picker" placeholder="{{ 'plan-create.eventstartdate' | translate }}" formControlName="plan_date">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker>
+                            <mat-datepicker-actions>
+                                <button mat-button matDatepickerCancel class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'settings.cancel' | translate }}</button>
+                                <button mat-raised-button color="primary" matDatepickerApply class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'company-settings.apply' | translate }}</button>
+                            </mat-datepicker-actions>
+                        </mat-datepicker>
+                    </mat-form-field>
+                    <div class="ml-4">
+                        <input aria-label="HH:mm" [ngxTimepicker]="timepicker" [format]="24" 
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="HH:mm" 
+                            formControlName="plan_date_hh">
+                        <ngx-material-timepicker #timepicker></ngx-material-timepicker>
+                   </div>
+                </div>
+                <div *ngIf="isPlanDurationActive" class="flex items-center justify-between relative plan-date">
+                    <mat-form-field class="w-full">
+                        <mat-label>{{ 'plan-create.eventenddate' | translate }}</mat-label>
+                        <input matInput [matDatepicker]="endpicker" placeholder="{{ 'plan-create.enddate' | translate }}" formControlName="end_date">
+                        <mat-datepicker-toggle matIconSuffix [for]="endpicker"></mat-datepicker-toggle>
+                        <mat-datepicker #endpicker>
+                            <mat-datepicker-actions>
+                                <button mat-button matDatepickerCancel class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'settings.cancel' | translate }}</button>
+                                <button mat-raised-button color="primary" matDatepickerApply class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'company-settings.apply' | translate }}</button>
+                            </mat-datepicker-actions>
+                        </mat-datepicker>
+                    </mat-form-field>
+                    <div class="ml-4">
+                        <input aria-label="HH:mm" [ngxTimepicker]="endtimepicker" [format]="24"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="HH:mm" 
+                            formControlName="end_date_hh">
+                        <ngx-material-timepicker #endtimepicker></ngx-material-timepicker>
+                   </div>
+                </div>
+                <ng-container *ngIf="types?.length > 0">
+                    <div class="flex items-center justify-center relative">
+                        <select
+                            id="event-type"
+                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': formSubmitted && !eventType }"
+                            [(ngModel)]="eventType"
+                            [ngModelOptions]="{standalone: true}"
+                            (change)="changeEventType($event)"
+                        >
+                            <option value="" disabled selected>{{ 'plan-create.selecteventtype' | translate }}</option>
+                            <option
+                                *ngFor="let type of types"
+                                [value]="type.id"
+                            >
+                                {{ language == 'en' ? type.type_en : type.type_es }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <ng-multiselect-dropdown
+                            placeholder="{{ 'plan-create.selecteventcategory' | translate }}"
+                            [settings]="eventCategoryDropdownSettings"
+                            [data]="categories"
+                            [(ngModel)]="eventCategory"
+                            [ngModelOptions]="{standalone: true}"
+                            (onSelect)="changeEventCategory($event)"
+                        >
+                        </ng-multiselect-dropdown>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <ng-multiselect-dropdown
+                            placeholder="{{ 'plan-create.selecteventsubcategory' | translate }}"
+                            [settings]="eventSubcategoryDropdownSettings"
+                            [data]="subcats"
+                            [(ngModel)]="eventSubcategory"
+                            [ngModelOptions]="{standalone: true}"
+                            (onSelect)="changeEventSubcategory($event)"
+                        >
+                        </ng-multiselect-dropdown>
+                    </div>
+                </ng-container>   
+                <div class="flex items-center justify-center relative" *ngIf="hasTypeOfActivity">
+                    <select
+                        id="type-of-activity"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="typeOfActivity"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changeTypeOfActivity($event)"
+                    >
+                        <option value="" disabled selected>{{ 'plan-create.typeofactivity' | translate }} {{ pageName }}</option>
+                        <option
+                            *ngFor="let type of typeOfActivities"
+                            [value]="type.id"
+                        >
+                            {{ language == 'en' ? type.name_en : type.name_es }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="showProlongedActivitySection">
+                    <input
+                        type="number"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        placeholder="{{ 'plan-create.numberofdays' | translate }}"
+                        [(ngModel)]="prolongedDaysNumber"
+                        [ngModelOptions]="{standalone: true}"
+                        min="2"
+                        max="99"
+                        (input)="onProlongedDaysNumberChange($event)"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="prolongedDaysNumber && prolongedActivities?.length > 0">
+                    <div *ngFor="let activity of prolongedActivities;let i = index;">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.address' | translate }} {{ 'plan-create.day' | translate }} {{ activity?.number }}"
+                            [(ngModel)]="activity.location"
+                            [ngModelOptions]="{standalone: true}"
+                            (input)="onProlongedDaysNumberChange($event)"
+                        />
+                    </div>
+                </div>
+                <div class="flex items-center justify-center relative" 
+                    *ngIf="showAddressMeetingPoint() && (companyId != 32 || (!cities || (cities && cities.length == 0)))">
+                    <input
+                        type="text"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        placeholder="{{ 'plan-create.address' | translate }}"
+                        formControlName="address"
+                        min="2"
+                        max="99"
+                        (input)="onProlongedDaysNumberChange($event)"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="companyId == 32 && cities?.length > 0">
+                    <select
+                        *ngIf="!canAssignMultipleCities"
+                        id="blog-cities"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedCity"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'club-create.selectcity' | translate }}</option>
+                        <option
+                            *ngFor="let city of cities"
+                            [value]="city.city"
+                        >
+                            {{ city?.city }}
+                        </option>
+                    </select>
+                    <ng-multiselect-dropdown
+                        *ngIf="canAssignMultipleCities"
+                        placeholder="{{ 'club-create.selectcity' | translate }}*"
+                        [settings]="cityDropdownSettings"
+                        [data]="cities"
+                        [(ngModel)]="selectedCity"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="showAddressMeetingPoint()">
+                    <input
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': planForm.get('meeting_point')?.errors }"
+                        type="text"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        placeholder="{{ companyId == 32 ? ('plan-create.uemeetingpoint' | translate) : ('plan-create.meetingpoint' | translate)}}"
+                        formControlName="meeting_point"
+                        maxlength="200"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="id > 0">
+                    <label class="mr-4">{{companyUrl}}</label>
+                    <input
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': planForm.get('slug')?.errors }"
+                        type="text"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        placeholder="{{ 'plan-details.invitationlink' | translate }}"
+                        formControlName="slug"
+                        maxlength="200"
+                        (keypress)="removeSpecialCharacters($event)"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="(!types || (types && types?.length == 0))">
+                    <select
+                        id="plan-type"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="planType"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changePlanType($event)"
+                    >
+                        <option value="" disabled selected>{{ 'plan-create.plantype' | translate }} {{pageName}}*</option>
+                        <option value=0>{{ 'club-create.public' | translate }}</option>
+                        <option value=1 *ngIf="createdBy != 5">{{ 'club-create.private' | translate }}</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="planType == 1">
+                    <select
+                        id="private-type"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="privateType"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changePrivateType($event)"
+                    >
+                        <option value="" disabled selected>{{ 'your-admin-area.selecttype' | translate }}*</option>
+                        <option value=0>{{ 'plan-create.closed' | translate }}</option>
+                        <option value=1>{{ 'plan-create.open' | translate }}</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="!types || (types && types?.length == 0) || companyId != 32">
+                    <select
+                        id="created-by"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="createdBy"
+                        [ngModelOptions]="{standalone: true}"
+                        (change)="changePlanTypeId($event)"
+                    >
+                        <option value=1>{{ 'plan-create.you' | translate }}</option>
+                        <option value=4 *ngIf="clubTitle && !isUESchoolOfLife">{{ clubTitle }}</option>
+                        <option *ngIf="superAdmin && companyId != 32" value="5">{{ 'plan-create.company' | translate }}</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="createdBy == 4 && clubTitle">
+                    <select
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': formSubmitted && !selectedClub }"
+                        id="plan-club"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        (change)="handleClubChange($event)"
+                        [(ngModel)]="selectedClub"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'plan-create.selectclub' | translate }} {{ clubTitle }}</option>
+                        <option
+                            *ngFor="let club of clubList"
+                            [value]="club.id"
+                        >
+                            {{ club.title }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="hasSubgroups && subgroups?.length > 0">
+                    <select
+                        id="plan-subgroup"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedSubgroup"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" selected>{{ 'plan-create.selectsubgroup' | translate }}</option>
+                        <option
+                            *ngFor="let subgroup of subgroups"
+                            [value]="subgroup.id"
+                        >
+                            {{ subgroup.title }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative"
+                    *ngIf="(!types || (types && types?.length == 0)) && showCategorySelect">
+                    <ng-multiselect-dropdown
+                        placeholder="{{ 'dialog.pick3categories' | translate }}"
+                        [settings]="dropdownSettings"
+                        [data]="CompanySupercategories"
+                        [(ngModel)]="category_id"
+                        [ngModelOptions]="{standalone: true}"
+                        (onSelect)="handleChangeCategory($event)"
+                        (onDeSelect)="onDeSelectCategory($event)"
+                        [disabled]="isClubPresident"
+                    >
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="flex items-center justify-center relative"
+                    *ngIf="(!types || (types && types?.length == 0)) && showCategorySelect" >
+                    <ng-multiselect-dropdown
+                        placeholder="{{ companyId == 32 ? ('plan-create.selectmodality' | translate) : ('dialog.picksubcategory' | translate) }}"
+                        [settings]="subcategoryDropdownSettings"
+                        [data]="subcategories"
+                        [(ngModel)]="selectedSubcategory"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="ageGroupFilterActive">
+                    <select
+                        id="age-group"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedAgeGroup"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'plan-create.selectagegroup' | translate }}</option>
+                        <option
+                            *ngFor="let item of ageGroupsList"
+                            [value]="item.id"
+                        >
+                            {{ item.age_group }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-center relative">
+                    <input
+                        type="number"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        placeholder="{{ companyId == 32 ? ('plan-create.indicatemaxseats' | translate) : ('plan-create.seats' | translate) }}"
+                        formControlName="seats"
+                        (input)="calculateLimit('seats')"
+                    />
+                    <ng-container *ngIf="guestMemberSeatActive">
+                        <input
+                            type="number"
+                            class="ml-2 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.limitmemberseats' | translate }}"
+                            formControlName="member_seats"
+                            [ngClass]="{'rounded-lg full bg-red-50 border border-red-500 text-red-900 placeholder-red-700': membersLimitGreaterThanSeats }"
+                            (input)="calculateLimit('members')"
+                        />
+                        <input
+                            type="number"
+                            class="ml-2 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.limitguestseats' | translate }}"
+                            [ngClass]="{'rounded-lg full bg-red-50 border border-red-500 text-red-900 placeholder-red-700': guestsLimitGreaterThanSeats }"
+                            formControlName="guest_seats"
+                            (input)="calculateLimit('guests')"
+                        />
+                    </ng-container>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="companyId != 32">
+                    <input
+                        type="number"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        placeholder="{{ 'plan-create.price' | translate }}"
+                        formControlName="price"
+                        (input)="onPriceChange($event)"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="users?.length > 0">
+                    <select
+                        id="created-by-user"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': formSubmitted && !createdByUser }"
+                        [(ngModel)]="createdByUser"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'plan-create.selectincharge' | translate }}</option>
+                        <option
+                            *ngFor="let user of users"
+                            [value]="user.id"
+                        >
+                            {{ user.user_name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="activityFeeEnabled && withFee">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="stripepayment" 
+                                type="checkbox"
+                                [(ngModel)]="isStripePayment" 
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isStripePayment ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="stripepayment" class="-mt-1 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.paymentviastripe' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="activityFeeEnabled && withFee && isStripePayment">
+                    <select
+                        id="payment-type"
+                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        [(ngModel)]="selectedPaymentType"
+                        [ngModelOptions]="{standalone: true}"
+                    >
+                        <option value="" disabled selected>{{ 'plan-create.selectpaymenttype' | translate }}</option>
+                        <option
+                            *ngFor="let type of paymentTypes"
+                            [value]="type.id"
+                        >
+                            {{ language == 'en' ? type.type_en : (language == 'fr' ? type.type_fr : type.type_es) }}
+                        </option>
+                    </select>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="isBizumActive && activityFeeEnabled && withFee">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="bizumpayment" 
+                                type="checkbox"
+                                [(ngModel)]="isBizumPayment" 
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isBizumPayment ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="bizumpayment" class="-mt-1 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.bizumpayment' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <ng-container *ngIf="showZoomLink && showMeetingLinks">
+                    <div class="flex items-center justify-center relative">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.linktozoomurl' | translate }}"
+                            formControlName="zoom_link"
+                        />
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.linktozoomtext' | translate }}"
+                            formControlName="zoom_link_text"
+                        />
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="showTeamsLink && showMeetingLinks">
+                    <div class="flex items-center justify-center relative">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.linktoteamsurl' | translate }}"
+                            formControlName="teams_link"
+                        />
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.linktoteamstext' | translate }}"
+                            formControlName="teams_link_text"
+                        />
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="showYouTubeLink">
+                    <div class="flex items-center justify-center relative">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.linktoyoutubeurl' | translate }}"
+                            formControlName="youtube_link"
+                        />
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <input
+                            type="text"
+                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                            placeholder="{{ 'plan-create.linktoyoutubetext' | translate }}"
+                            formControlName="youtube_link_text"
+                        />
+                    </div>
+                </ng-container>
+                <div class="flex items-center justify-center relative" *ngIf="hasSpeaker">
+                    <ng-multiselect-dropdown
+                        placeholder="{{ 'plan-create.speaker' | translate }}"
+                        [settings]="membersSettings"
+                        [data]="members"
+                        [(ngModel)]="selectedSpeaker"
+                        [ngModelOptions]="{standalone: true}"
+                        (onSelect)="onSpeakerSelect($event)"
+                    >
+                    </ng-multiselect-dropdown>
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="hasGuestSpeaker">
+                    <input
+                        id="plan-type"
+                        type="text"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        [(ngModel)]="guestSpeaker"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="{{ 'plan-create.guestspeaker' | translate }}"
+                        maxlength="200"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="hasActivityCodeActivated">
+                    <input
+                        *ngIf="companyId != 32 || (companyId == 32 && isUESchoolOfLife)"
+                        id="activity-code"
+                        type="text"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        [(ngModel)]="activityCode"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="{{ 'edit-plan.activitycode' | translate }}"
+                        maxlength="200"
+                    />
+                    <input
+                        *ngIf="companyId == 32 && isUESchoolOfLife"
+                        id="activity-code-sigeca"
+                        type="text"
+                        class="ml-4 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        [(ngModel)]="activityCodeSigeca"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="{{ 'credits.activitycodesigeca' | translate }}"
+                        maxlength="200"
+                    />
+                </div>
+                <div class="flex items-center justify-center relative" *ngIf="credits">
+                    <input
+                        id="credits"
+                        type="number"
+                        class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                        [(ngModel)]="creditsValue"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholder="{{ 'edit-plan.numberofcredits' | translate }}"
+                        maxlength="200"
+                    />
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="companyId == 32 || hasCredits">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="credits" 
+                                type="checkbox"
+                                [(ngModel)]="credits"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="handleCreditsChange($event)"
+                                [ngStyle]="{'color': credits ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="credits" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ companyId == 32 ? ('edit-plan.credits' | translate) : ('course-create.credits' | translate) }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="hasFeatured && companyId != 32">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="featured" 
+                                type="checkbox"
+                                [(ngModel)]="featured"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': featured ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="featured" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ getFeaturedTitle() }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="allowExternalRegistration">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="external-registration" 
+                                type="checkbox"
+                                [(ngModel)]="isExternalRegistration"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isExternalRegistration ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="external-registration" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.externalregistration' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="hasRequestDNI">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="request-dni" 
+                                type="checkbox"
+                                [(ngModel)]="requestDNI"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': requestDNI ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="request-dni" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.requestdni' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="guestMemberSeatActive && showSeats">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="guest-member-seats" 
+                                type="checkbox"
+                                [(ngModel)]="showGuestMemberSeat"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': showGuestMemberSeat ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="guest-member-seats" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.showguestmemberseats' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="invitationLinkActive">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="invitation-link" 
+                                type="checkbox"
+                                [(ngModel)]="showInvitationLink"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': showInvitationLink ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="invitation-link" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.showinvitationlink' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="waitingListActive">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="waiting-list" 
+                                type="checkbox"
+                                [(ngModel)]="waitingListEnabled"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': waitingListEnabled ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="waiting-list" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.activatewaitinglist' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="showCanaryTime">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="canary" 
+                                type="checkbox"
+                                [(ngModel)]="displayCanaryTime"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': displayCanaryTime ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="canary" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.showcanarytime' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="companyId == 12">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="netcultura" 
+                                type="checkbox"
+                                [(ngModel)]="netcultura"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': netcultura ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="netcultura" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.publishtonetcultura' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="show_price_field">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="showprice" 
+                                type="checkbox"
+                                [(ngModel)]="isShowPrice"
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isShowPrice ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="showprice" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.show_price' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="show_attendee_field">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="showattendee" 
+                                type="checkbox"
+                                [(ngModel)]="isShowAttendee" 
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isShowAttendee ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="showattendee" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.show_attendee' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="show_comments_field">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="showcomments" 
+                                type="checkbox"
+                                [(ngModel)]="isShowComments" 
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isShowComments ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="showcomments" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.show_comments' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="show_description_field">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="showdescription" 
+                                type="checkbox"
+                                [(ngModel)]="isShowDescription" 
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isShowDescription ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="showdescription" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'edit-plan.show_description' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <div class="flex items-center mt-4 w-full mx-auto" *ngIf="companyId == 32">
+                    <label class="checkbox-container">
+                        <div class="flex mb-4">
+                            <input 
+                                id="showpastevent" 
+                                type="checkbox"
+                                [(ngModel)]="isShowPastEvent" 
+                                [ngModelOptions]="{standalone: true}"
+                                [ngStyle]="{'color': isShowPastEvent ? 'text-blue-500' : 'text-gray-900'}"
+                                class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="showpastevent" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                <span>
+                                    {{ 'plan-create.showpastevent' | translate }}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+                <ng-container *ngIf="isUESchoolOfLife">
+                    <div class="flex items-center mt-4 w-full mx-auto" *ngIf="allowExternalRegistration">
+                        <label class="checkbox-container">
+                            <div class="flex mb-4">
+                                <input 
+                                    id="assign-teacher" 
+                                    type="checkbox"
+                                    [(ngModel)]="assignTeacher"
+                                    [ngModelOptions]="{standalone: true}"
+                                    [ngStyle]="{'color': assignTeacher ? 'text-blue-500' : 'text-gray-900'}"
+                                    class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <label for="assign-teacher" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    <span>
+                                        {{ 'edit-plan.assignteacher' | translate }}
+                                    </span>
+                                </label>
+                            </div>
+                        </label>
+                        <div class="ml-4 flex items-center justify-center mb-2 w-full sm:w-full md:w-2/12 lg:w-2/12" *ngIf="assignTeacher">
+                            <button
+                                type="button"
+                                class="-mt-2 w-full inline-block text-xs px-2 py-2 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="setupAssignedTeachers()"
+                            >
+                                {{ 'members.setup' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <ng-container *ngIf="companyId === 32">
+                <div class="flex items-center justify-center relative">
+                    <div class="w-full max-w-full">
+                        <label for="setting-3" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{ 'courses.allowadditionalpropertiesaccess' | translate }}
+                        </label>
+                        <div class="flex items-center w-full max-w-full">
+                            <div class="flex items-center justify-between relative mr-4">
+                                <label
+                                    for="setting-8"
+                                    class="flex items-center w-full justify-between cursor-pointer"
+                                >
+                                    <div class="relative mr-1">
+                                        <input
+                                            id="setting-8"
+                                            name="setting-8"
+                                            type="checkbox"
+                                            class="sr-only"
+                                            [(ngModel)]="allowCourseAccess" 
+                                            [ngModelOptions]="{standalone: true}"
+                                        />
+                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="allowCourseAccess">
+                <div class="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'courses.selectcampus' | translate }}
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'courses.selectcampus' | translate }}"
+                                [settings]="additionalPropertiesDropdownSettings"
+                                [data]="campusList"
+                                [(ngModel)]="selectedCampus"
+                                class="mb-6"
+                                [ngModelOptions]="{standalone: true}"
+                                >   
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'courses.selectfaculty' | translate }}
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'courses.selectfaculty' | translate }}"
+                                [settings]="additionalPropertiesDropdownSettings"
+                                [data]="facultyList"
+                                [(ngModel)]="selectedFaculty"
+                                class="mb-6"
+                                [ngModelOptions]="{standalone: true}"
+                                >
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'courses.selectbusinessunit' | translate }}
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'courses.selectbusinessunit' | translate }}"
+                                [settings]="additionalPropertiesDropdownSettings"
+                                [data]="businessUnitList"
+                                [(ngModel)]="selectedBusinessUnit"
+                                class="mb-6"
+                                [ngModelOptions]="{standalone: true}"
+                                >
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'courses.selecttype' | translate }}
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'courses.selecttype' | translate }}"
+                                [settings]="additionalPropertiesDropdownSettings"
+                                [data]="typeList"
+                                [(ngModel)]="selectedType"
+                                class="mb-6"
+                                [ngModelOptions]="{standalone: true}"
+                                >
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'courses.selectsegment' | translate }}
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'courses.selectsegment' | translate }}"
+                                [settings]="additionalPropertiesDropdownSettings"
+                                [data]="segmentList"
+                                [(ngModel)]="selectedSegment"
+                                class="mb-6"
+                                [ngModelOptions]="{standalone: true}"
+                                >
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{ 'courses.selectbranding' | translate }}
+                            </label>
+                            <ng-multiselect-dropdown
+                                placeholder="{{ 'courses.selectbranding' | translate }}"
+                                [settings]="additionalPropertiesDropdownSettings"
+                                [data]="brandingList"
+                                [(ngModel)]="selectedBranding"
+                                class="mb-6"
+                                [ngModelOptions]="{standalone: true}"
+                                >
+                            </ng-multiselect-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="isImageCenterButton">
+                <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 my-8">
+                    <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/id-card-alt.png" />
+                    <div class="font-light text-xl">{{ 'edit-plan.eventregistrationimage' | translate }}</div>
+                </div>
+                <div class="flex items-center justify-center mb-4 relative">
+                    <div class="w-full max-w-full">
+                        <file-pond
+                            #myPond
+                            [options]="pondOptions"
+                            [files]="pondFiles"
+                            (oninit)="pondHandleInit()"
+                            (onaddfile)="pondHandleAddFile($event)"
+                        >
+                        </file-pond>
+                    </div>
+                </div>
+            </ng-container>
+            <div class="flex items-center border border-b-2 border-l-0 border-r-0 border-t-0 mt-8">
+                <img class="w-6 object-contain mr-4" src="./assets/images/new-design/icons/Write.png" />
+                <div class="font-light text-xl">{{ 'job-offers.description' | translate }}</div>
+            </div>
+            <div class="flex items-center justify-center mb-2 w-full sm:w-full md:w-2/12 lg:w-2/12">
+                <button
+                    type="button"
+                    class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-4 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                    [ngStyle]="{'background-color': buttonColor}"
+                    (click)="insertVideo()"
+                >
+                    {{ 'edit-plan.insertvideo' | translate }}
+                </button>
+            </div>
+            <div class="flex items-center justify-center mb-4 relative" *ngIf="showVideoSection">
+                <div class="w-full max-w-full">
+                    <file-pond
+                        #myPondVideo
+                        [options]="pondVideoOptions"
+                        [files]="pondVideoFiles"
+                        (oninit)="pondHandleVideoInit()"
+                        (onaddfile)="pondHandleAddVideoFile($event)"
+                        (onactivatefile)="pondHandleActivateVideoFile($event)"
+                        (onprocessfiles)="pondHandleProcessFiles()"
+                    >
+                    </file-pond>
+                </div>
+            </div>
+            <div class="flex items-center justify-center mb-4 relative w-full max-w-full">
+                <quill-editor #editor [modules]="modules" *ngIf="selectedLanguage == 'es'" class="w-full max-w-full content-editor" formControlName="descriptionEs"></quill-editor>
+                <quill-editor #editor [modules]="modules" *ngIf="selectedLanguage == 'en'" class="w-full max-w-full content-editor" formControlName="descriptionEn"></quill-editor>
+                <quill-editor #editor [modules]="modules" *ngIf="selectedLanguage == 'fr'" class="w-full max-w-full content-editor" formControlName="descriptionFr"></quill-editor>
+                <quill-editor #editor [modules]="modules" *ngIf="selectedLanguage == 'eu'" class="w-full max-w-full content-editor" formControlName="descriptionEu"></quill-editor>
+                <quill-editor #editor [modules]="modules" *ngIf="selectedLanguage == 'ca'" class="w-full max-w-full content-editor" formControlName="descriptionCa"></quill-editor>
+                <quill-editor #editor [modules]="modules" *ngIf="selectedLanguage == 'de'" class="w-full max-w-full content-editor" formControlName="descriptionDe"></quill-editor>
+            </div>
+            <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                <button
+                    type="submit"
+                    class="w-full inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                    [ngStyle]="{'background-color': buttonColor}"
+                    [ngClass]="{'disabled:opacity-75': issaving}"
+                    [disabled]="issaving"
+                >
+                    {{ !issaving ? ('plan-create.savechanges' | translate) : ('plan-create.pleasewait' | translate) }}
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-container>
+<ng-container *ngIf="!isLoading && !(superAdmin || canCreatePlan)">
+    <app-no-access></app-no-access>  
+</ng-container>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full"
+        [ngClass]="{'max-w-md': dialogMode == 'photo', 'max-w-2xl': dialogMode == 'assign-teacher'}">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ dialogTitle }}
+                </h3>
+                <ng-container *ngIf="dialogMode == 'photo'">
+                    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                        <div class="flex items-center relative">
+                            <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                            <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                        </div>
+                        <div class="flex items-center relative">
+                            <a href="javascript:;" (click)="imageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                                {{ 'image-cropper.save' | translate }}
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <image-cropper 
+                            [canvasRotation]="canvasRotation"
+                            [transform]="transform"
+                            [imageChangedEvent]="imageChangedEvent" 
+                            [maintainAspectRatio]="true"
+                            [cropperMinWidth]="360" 
+                            [cropperMinHeight]="320" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="imageCropped($event)" 
+                            (imageLoaded)="imageLoaded()" 
+                            (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="dialogMode == 'assign-teacher'">
+                    <div class="mt-4 mb-8">
+                        <div class="flex mb-8 items-center align-center">
+                            <button 
+                                class="h-[40px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out mr-8"
+                                *ngIf="assignTeacherItemMode != 'add' && assignTeacherItemMode != 'edit'"
+                                [ngStyle]="{ 'background-color': buttonColor}"
+                                (click)="addAssignTeacherItem()"
+                            >
+                                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                                </svg>
+                                <span class="text-white text-md font-semibold uppercase">{{ 'member-type-registration.addnew' | translate }}</span>
+                            </button>
+                            <button 
+                                class="h-[40px] flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                                *ngIf="assignTeacherItemMode == 'add' || assignTeacherItemMode == 'edit'"
+                                (click)="cancelAssignTeacherItem()" 
+                                [ngStyle]="{
+                                    'border-color': buttonColor,
+                                    'background-color': '#fff',
+                                }"
+                            >
+                                <svg [ngStyle]="{'color': buttonColor}" class="w-4 h-4 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/>
+                                </svg>
+                                <span [ngStyle]="{'color': buttonColor}" class="text-md font-semibold uppercase">{{ 'image-cropper.cancel' | translate }}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="showAssignTeacherItemDetails">
+                        <div class="flex items-center justify-center relative w-full max-w-full">
+                            <div class="mb-2 relative w-full max-w-full">
+                                <label for="teacher-first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'email.shfirstname' | translate }}</label>
+                                <input 
+                                    id="teacher-first-name"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="assignedTeacherFirstName"
+                                    [ngModelOptions]="{standalone: true}"
+                                    [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !assignedTeacherFirstName }"
+                                    placeholder="{{ 'email.shfirstname' | translate }}">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative w-full max-w-full">
+                            <div class="mb-2 relative w-full max-w-full">
+                                <label for="teacher-last-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'email.shlastname' | translate }}</label>
+                                <input 
+                                    id="teacher-last-name"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="assignedTeacherLastName"
+                                    [ngModelOptions]="{standalone: true}"
+                                    [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !assignedTeacherLastName }"
+                                    placeholder="{{ 'email.shlastname' | translate }}">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center relative w-full max-w-full">
+                            <div class="mb-2 relative w-full max-w-full">
+                                <label for="teacher-last-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'general-details.email' | translate }} {{'edit-plan.separatebycomma' | translate}} <i>a@mail.com,b@mail.com</i></label>
+                                <input 
+                                    id="teacher-last-name"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="assignedTeacherEmail"
+                                    [ngModelOptions]="{standalone: true}"
+                                    [ngClass]="{'rounded-lg bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !assignedTeacherEmail }"
+                                    placeholder="{{ 'general-details.email' | translate }}">
+                            </div>
+                        </div>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                (click)="saveAssignedTeacher()"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                            >
+                                {{ 'company-settings.save' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    <table class="my-8 w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-2 py-1">
+                                    {{ 'email.shfirstname' | translate }}
+                                </th>
+                                <th scope="col" class="px-2 py-1">
+                                    {{ 'email.shlastname' | translate }}
+                                </th>
+                                <th scope="col" class="px-2 py-1">
+                                    {{ 'general-details.email' | translate }}
+                                </th>
+                                <th scope="col" class="px-2 py-1">
+                                    {{ 'your-admin-area.action' | translate }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let teacher of assignedTeachers; let i = index;" 
+                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                                <td class="text-xs px-2 py-1">
+                                    {{teacher?.first_name}}
+                                </td>
+                                <td class="text-xs px-2 py-1">
+                                    {{teacher?.last_name}}
+                                </td>
+                                <td class="text-xs px-2 py-1">
+                                    {{teacher?.email}}
+                                </td>
+                                <td class="text-xs px-2 py-1 flex items-center max-w-[80px] py-4">
+                                    <svg (click)="handleEditAssignedTeacher(teacher)" class="w-6 h-6 dark:text-white mr-4 hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+                                        <path d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566.713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z"/>
+                                        <path d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z"/>
+                                    </svg>
+                                    <svg (click)="handleDeleteAssignedTeacher(teacher)" class="w-6 h-6 dark:text-white hover:cursor-pointer" [ngStyle]="{'color': buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                        <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                    </svg>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
+<button #popupbutton data-modal-target="popup-modal" data-modal-toggle="popup-modal" class="hidden block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="popup-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button #closepopupbutton type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="popup-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-4 md:p-5 text-center">
+                <svg [ngStyle]="{'color': buttonColor}" class="mx-auto mb-4 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M3.6 6.4 12 13l8.7-6.6L13 2.3a2 2 0 0 0-2 0l-7.4 4Z"/>
+                    <path d="m22 8-8.8 6.7a2 2 0 0 1-2.4 0L2 7.7v11.2A3 3 0 0 0 5 22h14a3 3 0 0 0 3-3V8Z"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">{{'edit-plan.plandetailschanged' | translate}}</h3>
+                <button (click)="closePopupButton('yes')" type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                    {{'edit-plan.yes' | translate}}
+                </button>
+                <button (click)="closePopupButton('no')" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                    {{'edit-plan.no' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [done]="true"
+    [confirm]="false"
+    [title]="confirmDoneItemTitle"
+    [description]="confirmDoneItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

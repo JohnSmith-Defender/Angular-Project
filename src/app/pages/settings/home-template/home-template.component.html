@@ -1,0 +1,436 @@
+<div class="container flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="pt-6">
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+        <div class="relative mb-6">
+            <div class="flex items-center w-full max-w-full">
+                <div class="flex-auto">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="py-6">
+    <div class="w-full min-w-full">
+        <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+            <div>
+                <div>{{ 'plans.allowdifferentcontent' | translate }}</div>
+            </div>
+            <div class="flex">
+                <div class="flex items-center justify-between relative ml-4">
+                    <label
+                        for="different-content"
+                        class="flex items-center w-full justify-between cursor-pointer"
+                    >
+                        <div class="relative mr-1">
+                            <input
+                                id="different-content"
+                                type="checkbox"
+                                class="sr-only"
+                                [(ngModel)]="hasProfileHomeContent"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="toggleHomeContentStatus($event, profileHomeContentSettingOptionId)"
+                            />
+                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+            <div>
+                <div>{{ 'plans.show' | translate }} {{ 'plan-create.title' | translate }}</div>
+            </div>
+            <div class="flex">
+                <div class="flex">
+                    <button
+                        *ngIf="showTitle"
+                        class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="updateVideoSettings('title')"
+                        [ngStyle]="{'background-color': buttonColor }"
+                    >
+                        {{ 'guest-landing.update' | translate }}
+                    </button>
+                </div>
+                <div class="flex items-center justify-between relative ml-4">
+                    <label
+                        for="show-title"
+                        class="flex items-center w-full justify-between cursor-pointer"
+                    >
+                        <div class="relative mr-1">
+                            <input
+                                id="show-title"
+                                type="checkbox"
+                                class="sr-only"
+                                [(ngModel)]="showTitle"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="toggleModuleStatus($event, 'title')"
+                            />
+                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+            <div>
+                <div>{{ 'plans.show' | translate }} {{ 'plan-details.video' | translate }}</div>
+            </div>
+            <div class="flex">
+                <div class="flex">
+                    <button
+                        *ngIf="showVideo"
+                        class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="updateVideoSettings('video')"
+                        [ngStyle]="{'background-color': buttonColor }"
+                    >
+                        {{ 'guest-landing.update' | translate }}
+                    </button>
+                </div>
+                <div class="flex items-center justify-between relative ml-4">
+                    <label
+                        for="show-video"
+                        class="flex items-center w-full justify-between cursor-pointer"
+                    >
+                        <div class="relative mr-1">
+                            <input
+                                id="show-video"
+                                type="checkbox"
+                                class="sr-only"
+                                [(ngModel)]="showVideo"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="toggleModuleStatus($event, 'video')"
+                            />
+                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4" *ngIf="isCourseEnabled">
+            <div>
+                <div>{{ 'plans.show' | translate }} {{ courseTitle }}</div>
+            </div>
+            <div class="flex">
+                <div class="flex">
+                    <button
+                        *ngIf="showCourses && hasProfileHomeContent"
+                        class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="updateCourseSettings('course')"
+                        [ngStyle]="{'background-color': buttonColor }"
+                    >
+                        {{ 'guest-landing.update' | translate }}
+                    </button>
+                </div>
+                <div class="flex items-center justify-between relative ml-4">
+                    <label
+                        for="show-courses"
+                        class="flex items-center w-full justify-between cursor-pointer"
+                    >
+                        <div class="relative mr-1">
+                            <input
+                                id="show-courses"
+                                type="checkbox"
+                                class="sr-only"
+                                [(ngModel)]="showCourses"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="toggleModuleStatus($event, 'courses')"
+                            />
+                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4" *ngIf="isPlanEnabled">
+            <div>
+                <div>{{ 'plans.show' | translate }} {{ planTitle }}</div>
+            </div>
+            <div class="flex">
+                <div class="flex">
+                    <button
+                        *ngIf="showEvents && hasProfileHomeContent"
+                        class="mr-4 w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        (click)="updateEventSettings('plans')"
+                        [ngStyle]="{'background-color': buttonColor }"
+                    >
+                        {{ 'guest-landing.update' | translate }}
+                    </button>
+                </div>
+                <div class="flex items-center justify-between relative ml-4">
+                    <label
+                        for="show-events"
+                        class="flex items-center w-full justify-between cursor-pointer"
+                    >
+                        <div class="relative mr-1">
+                            <input
+                                id="show-events"
+                                type="checkbox"
+                                class="sr-only"
+                                [(ngModel)]="showEvents"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="toggleModuleStatus($event, 'plans')"
+                            />
+                            <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                            <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-2xl">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <ng-container *ngIf="settingsMode == 'title' || settingsMode == 'video'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'create-content.video' | translate }}
+                    </h3>
+                    <form class="my-4 px-1">
+                        <div class="mb-2 relative" *ngIf="settingsMode == 'title' && hasProfileHomeContent">
+                            <label for="member-types" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.membertype' | translate }}</label>
+                            <select
+                                id="member-types"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                [(ngModel)]="selectedProfile"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="handleProfileContent($event)"
+                            >
+                                <option value="" disabled selected>{{ 'settings.selectprofile' | translate }}</option>
+                                <option
+                                    *ngFor="let type of profileHomeContent"
+                                    [value]="type.id"
+                                >
+                                    {{ type.type }}
+                                </option>
+                            </select>
+                        </div>
+                        <ng-container *ngFor="let type of profileHomeContent">
+                            <ng-container *ngIf="settingsMode == 'title' && type.id == selectedProfile && selectedProfile != ''">
+                                <div class="mb-2 relative">
+                                    <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'plan-create.title' | translate }}</label>
+                                    <input
+                                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="type.video_title"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'plan-create.title' | translate }}">
+                                </div>
+                                <div class="mb-2 relative">
+                                    <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'course-create.description' | translate }}</label>
+                                    <textarea name="" id="" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'course-create.description' | translate }}"
+                                        [(ngModel)]="type.video_description"
+                                        [ngModelOptions]="{standalone: true}">
+                                    </textarea>
+                                </div>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="!hasProfileHomeContent">
+                            <ng-container *ngIf="settingsMode == 'title'">
+                                <div class="mb-2 relative">
+                                    <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'plan-create.title' | translate }}</label>
+                                    <input
+                                        class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="videoTitle"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'plan-create.title' | translate }}">
+                                </div>
+                                <div class="mb-2 relative">
+                                    <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'course-create.description' | translate }}</label>
+                                    <textarea name="" id="" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4"
+                                        placeholder="{{ 'course-create.description' | translate }}"
+                                        [(ngModel)]="videoDescription"
+                                        [ngModelOptions]="{standalone: true}">
+                                    </textarea>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="settingsMode == 'video'">
+                                <ng-container *ngIf="selectedVideoOption != 'Self-hosted'">
+                                    <div class="mb-2 relative">
+                                        <label for="video-options" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'course-create.chooseoption' | translate }}</label>
+                                        <select
+                                            id="video-options"
+                                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            [(ngModel)]="selectedVideoOption"
+                                            [ngModelOptions]="{standalone: true}"
+                                        >
+                                            <option value="" disabled selected>{{ 'course-create.chooseoption' | translate }}</option>
+                                            <option
+                                                *ngFor="let option of videoOptions"
+                                                [value]="option"
+                                            >
+                                                {{ option == 'External' ? ('company-settings.others' | translate) : option }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2 relative">
+                                        <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'plan-create.title' | translate }}</label>
+                                        <input
+                                            class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            [(ngModel)]="externalLink"
+                                            [ngModelOptions]="{standalone: true}"
+                                            placeholder="{{ selectedVideoOption == 'YouTube' || selectedVideoOption == 'Vimeo' ? 'Embed code o URL' : 'URL' }}">
+                                    </div>
+                                </ng-container>
+                                <ng-container *ngIf="selectedVideoOption == 'Self-hosted'">
+                                    <div class="mb-2 relative">
+                                        <div class="w-full max-w-full">
+                                            <file-pond
+                                                #myPond
+                                                [options]="pondOptions"
+                                                [files]="pondFiles"
+                                                (oninit)="pondHandleInit()"
+                                                (onaddfile)="pondHandleAddFile($event)"
+                                            >
+                                            </file-pond>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                        <ng-container *ngIf="hasProfileHomeContent">
+                            <ng-container *ngFor="let type of profileHomeContent">
+                                <ng-container *ngIf="settingsMode == 'video' && type.id == selectedProfile">
+                                    <div class="mb-2 relative">
+                                        <label for="member-types" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'company-settings.membertype' | translate }}</label>
+                                        <select
+                                            id="member-types"
+                                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            [(ngModel)]="selectedProfile"
+                                            [ngModelOptions]="{standalone: true}"
+                                            (change)="handleProfileContent($event)"
+                                        >
+                                            <option value="" disabled selected>{{ 'settings.selectprofile' | translate }}</option>
+                                            <option
+                                                *ngFor="let type of profileHomeContent"
+                                                [value]="type.id"
+                                            >
+                                                {{ type.type }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <ng-container *ngIf="selectedProfile != ''">
+                                        <div class="mb-2 relative">
+                                            <label for="video-options" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'course-create.chooseoption' | translate }}</label>
+                                            <select
+                                                id="video-options"
+                                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                [(ngModel)]="type.selected_video_option"
+                                                [ngModelOptions]="{standalone: true}"
+                                            >
+                                                <option value="" disabled selected>{{ 'course-create.chooseoption' | translate }}</option>
+                                                <option
+                                                    *ngFor="let option of videoOptions"
+                                                    [value]="option"
+                                                >
+                                                    {{ option == 'External' ? 'External (Embed code o URL)' : option }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <ng-container *ngIf="type.selected_video_option != 'Self-hosted' && type.selected_video_option">
+                                            <div class="mb-2 relative">
+                                                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ 'plan-create.title' | translate }}</label>
+                                                <input
+                                                    class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                    [(ngModel)]="type.video_file"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    placeholder="{{ type.selected_video_option == 'YouTube' || type.selected_video_option == 'Vimeo' ? 'Embed code o URL' : 'URL' }}">
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="type.selected_video_option == 'Self-hosted'">
+                                            <div class="mb-2 relative">
+                                                <div class="w-full max-w-full">
+                                                    <file-pond
+                                                        #myPond
+                                                        [options]="pondOptions"
+                                                        [files]="pondFiles"
+                                                        (oninit)="pondHandleInit()"
+                                                        (onaddfile)="pondHandleAddFile($event)"
+                                                    >
+                                                    </file-pond>
+                                                </div>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </ng-container>
+                        <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                            <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                (click)="saveVideoSettings()"
+                                data-modal-hide="item-modal"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                            >
+                                {{ 'company-settings.save' | translate }}
+                            </button>
+                        </div>
+                    </form>
+                </ng-container>
+                <ng-container *ngIf="settingsMode == 'course'">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'plans.show' | translate }} {{ courseTitle }}
+                    </h3>
+                    <div class="w-full min-w-full">
+                        <ng-container *ngFor="let type of profileHomeContent">
+                            <div class="flex justify-between border border-b-1 border-l-0 border-r-0 border-t-0 pb-2 mb-4">
+                                <div>
+                                    <div>{{ type.type }}</div>
+                                </div>
+                                <div class="flex">
+                                    <div class="flex items-center justify-between relative ml-4">
+                                        <label
+                                            for="different-content"
+                                            class="flex items-center w-full justify-between cursor-pointer"
+                                        >
+                                            <div class="relative mr-1">
+                                                <input
+                                                    id="setting-status-{{type.id}}"
+                                                    name="setting-status"
+                                                    type="checkbox"
+                                                    class="sr-only"
+                                                    [(ngModel)]="type.has_courses"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    (change)="toggleModuleStatus($event, 'courses', type.id)"
+                                                />
+                                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

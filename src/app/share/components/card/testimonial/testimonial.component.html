@@ -1,0 +1,33 @@
+<div class="hover:cursor-pointer h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px] lg:max-h-[267px] flex flex-col items-center bg-white rounded-lg shadow md:flex-row"
+    [routerLink]="[path]"
+>
+    <div *ngIf="isCoverImage">
+        <img 
+            *ngIf="image"
+            class="border object-cover rounded-t-lg h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px] w-full md:rounded-none md:rounded-l-lg"
+            width="192" height="256"
+            [ngSrc]="image"
+            [ngStyle]="{'border-color': '#F8F4F4', 'max-width': '338px'}"
+            loading="lazy"
+        />
+    </div>
+    <div *ngIf="!isCoverImage">
+        <video [src]="video"
+        class="border object-cover rounded-t-lg h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px] w-[200px] md:rounded-none md:rounded-l-lg"
+            [ngStyle]="{'border-color': '#F8F4F4', 'max-width': '338px'}"
+        ></video>
+    </div>
+
+    <div class="w-full flex flex-col px-8 py-4 leading-normal h-auto max-h-auto sm:h-auto sm:max-h-auto md:h-[267px] md:max-h-[267px] lg:h-[267px]"
+        [ngStyle]="{'background-color': '#F8F4F4'}"
+    >
+        <div class="flex flex py-1.5 rounded-[10px] mb-4 w-[135px] justify-center bg-[#F7AF41] items-center">
+            <div class="text-xs mr-2 text-white uppercase">{{ date }}</div>
+            <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 6v4l3.276 3.276M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+            </svg>
+        </div>
+        <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-4">{{ author || ('plans.student' | translate) }}</h5>
+        <div class="opacity-60 leading-5 text-[0.8rem]" [innerHtml]="shortdescription"></div>
+    </div>
+</div>

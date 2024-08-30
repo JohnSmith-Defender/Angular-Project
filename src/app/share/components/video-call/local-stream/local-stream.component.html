@@ -1,0 +1,22 @@
+<div id="local-video-container" 
+    class="h-[calc(100vh_-_300px)] sm:h-[calc(100vh_-_300px)] md:h-screen lg:h-screen relative flex items-center justify-center">
+    <div #localVideo id="local-video"
+        class="h-full sm:h-full md:h-4/6 lg:h-4/6 w-full sm:w-full md:w-5/6 lg:w-5/6 mx-auto -mt-8 bg-black">
+    </div>
+    <div *ngIf="currentUserInfo"
+        class="absolute left-1/2 transform -translate-x-1/2 top-5 sm:top-5 md:top-12 lg:top-12 rounded-[35px] bg-gray-600 p-2 px-4">
+        <div class="flex items-center">
+            <div *ngIf="currentUserInfo?.image" class="mr-4">
+                <img class="object-cover rounded-full w-12 h-12" [src]="currentUserInfo?.image" [alt]="currentUserInfo?.name">
+            </div>
+            <div class="text-white text-sm font-semibold">
+                <span class="capitalize">({{ 'wall.you' | translate }})</span> {{ currentUserInfo?.name }}
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="z-50 w-screen h-[6em] p-4 absolute bottom-0 bg-[#29323b]">
+    <div class="flex justify-center items-center">
+        <app-media-controls [mode]="mode" [existingVideoCallLog]="existingVideoCallLog"></app-media-controls>
+    </div>
+</footer>

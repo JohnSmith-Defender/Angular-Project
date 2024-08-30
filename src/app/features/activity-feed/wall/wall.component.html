@@ -1,0 +1,109 @@
+<app-page-title [title]="pageName"></app-page-title>
+<ng-container *ngIf="isAccessChecked && hasAccess">
+    <div class="flex items-center py-10 justify-evenly">
+        <div class="flex items-center hover:cursor-pointer flex items-center hover:cursor-pointer pb-2"
+            [ngClass]="{'border border-b-4 border-t-0 border-l-0 border-r-0': activeMenu == 'General'}"
+            [ngStyle]="{'border-color': activeMenu == 'General' ? buttonColor : 'transparent'}"
+            (click)="setActiveMenu('General')">
+            <img class="w-6 object-contain mr-4" 
+                [src]="activeMenu == 'General' ? './assets/community-icons/general-active.png' : './assets/community-icons/general.png'" />
+            <div class="capitalize" [ngClass]="{'font-semibold': activeMenu == 'General'}"
+                [ngStyle]="{'color': activeMenu == 'General' ? buttonColor : '#1e1e1e'}">
+                {{ tabTitleText?.length > 0 ? tabTitleText[0]?.toLowerCase() : 'General' }}
+            </div>
+        </div>
+        <div class="flex items-center hover:cursor-pointer pb-2"
+            [ngClass]="{'border border-b-4 border-t-0 border-l-0 border-r-0': activeMenu == 'Q & A'}"
+            [ngStyle]="{'border-color': activeMenu == 'Q & A' ? buttonColor : 'transparent'}"
+            (click)="setActiveMenu('Q & A')">
+            <img class="w-6 object-contain mr-4" 
+                [src]="activeMenu == 'Q & A' ? './assets/community-icons/tutor-active.png' : './assets/community-icons/tutor.png'" />
+            <div class="capitalize" [ngClass]="{'font-semibold': activeMenu == 'Q & A'}"
+                [ngStyle]="{'color': activeMenu == 'Q & A' ? buttonColor : '#1e1e1e'}">
+                {{ tabTitleText?.length > 0 ? tabTitleText[1]?.toLowerCase() : 'Q & A' }}
+            </div>
+        </div>
+        <div class="flex items-center hover:cursor-pointer pb-2"
+            [ngClass]="{'border border-b-4 border-t-0 border-l-0 border-r-0': activeMenu == 'Resources'}"
+            [ngStyle]="{'border-color': activeMenu == 'Resources' ? buttonColor : 'transparent'}"
+            (click)="setActiveMenu('Resources')">
+            <img class="w-6 object-contain mr-4" 
+                [src]="activeMenu == 'Resources' ? './assets/community-icons/recursos-active.png' : './assets/community-icons/recursos.png'" />
+            <div class="capitalize" [ngClass]="{'font-semibold': activeMenu == 'Resources'}"
+                [ngStyle]="{'color': activeMenu == 'Resources' ? buttonColor : '#1e1e1e'}">
+                {{ tabTitleText?.length > 0 ? tabTitleText[2]?.toLowerCase() : 'Resources' }}
+            </div>
+        </div>
+    </div>
+    <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid:cols-3 mb-10">
+        <div class="col-span-2">
+            <app-wall-feed
+                [language]="language"
+                [buttonColor]="buttonColor"
+                [primaryColor]="primaryColor" 
+                [companyId]="companyId"
+                [motherComponent]="this"
+                [groupId]="group?.id"
+                [courseId]="courseId"
+                [groupMembers]="groupMembers"
+                [activeMenu]="activeMenu"
+                [courseTutors]="courseTutors"
+                [courseWallSettings]="courseWallSettings"
+                [hasCheckedCourseWallSettings]="hasCheckedCourseWallSettings"
+                [isTutor]="isTutor"
+                [superAdmin]="superAdmin"
+                [me]="user"
+                [userId]="userId"
+                [isGroupMember]="isGroupMember"
+                [notifier]="childNotifier"
+                (handleMenuChange)="handleMenuChanged($event)" 
+                [questionText]="questionText"
+                [tabTitleText]="tabTitleText"
+                [company]="company"
+                (handleDelete)="deletePost($event)"
+            ></app-wall-feed>
+        </div>
+        <div>
+            <div *ngIf="courseTutors?.length > 0">
+                <app-wall-tutors
+                    [superAdmin]="superAdmin"
+                    [tutorSectionVisible]="tutorSectionVisible"
+                    [courseTutors]="courseTutors"
+                    [userId]="userId"
+                    [companyId]="companyId"
+                    [groupId]="group?.id"
+                ></app-wall-tutors>
+            </div>
+            <div>
+                <app-wall-recent-members
+                    [buttonColor]="buttonColor" 
+                    [primaryColor]="primaryColor" 
+                    [title]="memberTitle" 
+                    [members]="members"
+                    [groupId]="group?.id"
+                    [userId]="userId"
+                    [courseTutors]="courseTutors"
+                    [courseWallSettings]="courseWallSettings"
+                    [superAdmin]="superAdmin"
+                    [companyId]="companyId"
+                    [allCourseTutors]="allCourseTutors"
+                    [user]="user"
+                ></app-wall-recent-members>
+            </div>
+        </div>
+    </div>
+</ng-container>
+<ng-container *ngIf="isAccessChecked && !hasAccess">
+    <app-no-access></app-no-access>  
+</ng-container>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

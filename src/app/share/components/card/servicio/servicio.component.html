@@ -1,0 +1,13 @@
+<div class="p-7 h-full max-h-full w-full max-w-full rounded-[10px] dark:bg-gray-800 dark:border-gray-700 hover:cursor-pointer" 
+    *ngIf="id > 0" [routerLink]="[path]"
+    [ngStyle]="{'background-color': '#F8F4F4', 'box-shadow': '0px 40px 54px -45px #00000099'}"
+>
+    <div>
+        <img width="460" height="325" 
+            class="rounded-[10px] object-top object-cover w-full max-w-full h-full min-h-full max-h-full sm:min-h-full sm:max-h-full md:min-h-[325px] md:max-h-[325px] lg:min-h-[325px] lg:max-h-[325px]"
+            [ngSrc]="image" alt="" />
+    </div>
+    <div class="mt-6 mb-8">
+        <div class="text-xl font-bold tracking-tight dark:text-white">{{name}}</div>
+    </div>
+</div>

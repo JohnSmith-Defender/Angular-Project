@@ -1,0 +1,36 @@
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="pt-10">
+    <div class="flex flex-wrap items-center w-full max-w-full">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-8 py-2 pb-20">
+        <ng-container *ngFor="let startup of startups | paginate: {itemsPerPage: 16, currentPage: p}">
+            <app-startup-card
+                [id]="startup?.id"
+                [path]="startup?.path"
+                [name]="startup?.name"
+                [image]="startup?.image"
+                [city]="startup?.city"
+                [projectStartYear]="startup?.project_start_year"
+                [sectors]="startup?.sectors"
+                [buttonColor]="buttonColor"
+                [page]="'list'"
+            >
+            </app-startup-card>
+        </ng-container>
+    </div>
+    <div *ngIf="startups?.length > 0" class="text-center">
+        <pagination-controls previousLabel="" nextLabel="" (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>

@@ -1,0 +1,180 @@
+<div class="container flex flex-col items-center justify-center h-full">
+  <div class="w-full max-w-lg">
+    <app-company-logo [logoSource]="logoSource" />
+    <div *ngIf="alreadyLoggedIn" class="mb-8 px-3 py-1 text-sm font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">
+      {{'landing.loggingyouin' | translate}}...
+    </div>
+    <ng-container *ngIf="!alreadyLoggedIn">
+      <ng-container *ngIf="showSSOLogin">
+        <ng-container *ngIf="!loginAsAdmin && !ueLoginMode">
+          <div
+            class="pt-6 flex items-center justify-center text-base mb-6 text-white"
+          >
+            {{ "login.loginviasso" | translate }}
+          </div>
+          <div
+            class="flex grid-container gap-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-center justify-center h-full mb-10"
+          >
+            <button
+              class="inline-block h-[40px] text-sm px-6 py-2 border-2 border-white text-white rounded-[10px] focus:ring-4 focus:ring-offset-black focus:outline-none"
+              (click)="loginUEStudent()"
+              [ngStyle]="{ 'background-color': buttonColor }"
+            >
+              {{ "login.students" | translate }}
+            </button>
+            <button
+              class="inline-block h-[40px] text-sm px-6 py-2 border-2 border-white text-white rounded-[10px] focus:ring-4 focus:ring-offset-black focus:outline-none"
+              (click)="loginUEEmployee()"
+              [ngStyle]="{ 'background-color': buttonColor }"
+            >
+              {{ "login.employees" | translate }}
+            </button>
+          </div>
+        </ng-container>
+        <div
+          class="flex items-center justify-center w-full mb-12 absolute h-32 m-auto left-0 right-0 top-0 bottom-0"
+        >
+          <label
+            for="toggleAdmin"
+            class="flex items-center cursor-pointer"
+          >
+            <div class="relative">
+              <input
+                id="toggleAdmin"
+                type="checkbox"
+                class="sr-only"
+                (change)="toggleAdminLogin($event)"
+                [(ngModel)]="loginAsAdmin"
+              />
+              <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+              <div
+                class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"
+              ></div>
+            </div>
+            <div class="ml-3 text-white font-medium">
+              {{ "login.adminlogin" | translate }}
+            </div>
+          </label>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="(loginAsAdmin || ueLoginMode || !showSSOLogin)">
+        <div
+          class="flex items-center justify-center pt-7 m-auto left-0 right-0 text-center mt-0 pt-8 mb-8 border border-t-1 border-l-0 border-r-0 border-b-0 border-white w-9/12"
+          [ngClass]="{'border-white': menuColor != '#000000',
+            'border-black': menuColor == '#000000'
+          }"
+          [ngStyle]="{
+            color:
+              primaryColor == '#ffffff' || primaryColor == '#fff' || menuColor == '#000000'
+                ? '#1e1e1e'
+                : '#fff'
+          }"
+        >
+          {{ "login.entercredentials" | translate }}
+        </div>
+        <div>
+          <form
+            [formGroup]="loginForm"
+            (ngSubmit)="login()"
+          >
+            <div class="mb-6">
+              <input
+                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                id="username"
+                type="text"
+                placeholder="{{ ueLoginMode ? ('login.username' | translate) : ('login.emailaddress' | translate) }}"
+                formControlName="email"
+                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': loginForm.get('email')?.errors && formSubmitted}"
+                (input)="onInputChange()"
+              />
+            </div>
+            <div class="mb-8 relative">
+              <input
+                class="text-sm shadow appearance-none border rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none"
+                id="password"
+                [type]="fieldTextType ? 'text' : 'password'"
+                placeholder="{{ 'login.password' | translate }}"
+                formControlName="password"
+                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': loginForm.get('email')?.errors && formSubmitted}"
+              />
+              <fa-icon
+                class="fa absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+                [icon]="!fieldTextType ? eyeSlashIcon : eyeIcon"
+                (click)="toggleFieldTextType()"
+              ></fa-icon>
+            </div>
+            <div class="flex items-center justify-center mb-10">
+              <button
+                type="submit"
+                class="inline-block h-[40px] text-sm px-6 py-2 font-semibold bg-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                [ngStyle]="{
+                  color: buttonColor,
+                  'border-color':
+                    primaryColor == '#ffffff' || primaryColor == '#fff'
+                      ? buttonColor
+                      : 'transparent',
+                  'border-width':
+                    primaryColor == '#ffffff' || primaryColor == '#fff'
+                      ? '1px'
+                      : '0',
+                  'border-style':
+                    primaryColor == '#ffffff' || primaryColor == '#fff'
+                      ? 'solid'
+                      : 'none'
+                }"
+              >
+                {{ "login.login" | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </ng-container>
+      <div
+        *ngIf="canRegister"
+        class="flex items-center justify-center mb-10 hover:cursor-pointer"
+      >
+        <a
+          class="text-sm"
+          href="javascript:;"
+          (click)="redirecToSignup()"
+          [ngStyle]="{
+            color:
+              primaryColor == '#ffffff' || primaryColor == '#fff' || menuColor == '#000000'
+                ? '#1e1e1e'
+                : '#fff'
+          }"
+          >{{ "login.noaccount" | translate }}</a
+        >
+      </div>
+      <div
+        class="flex items-center justify-center mb-10 hover:cursor-pointer"
+        *ngIf="!showSSOLogin"
+      >
+        <a
+          class="text-sm hover:cursor-pointer"
+          [routerLink]="['/auth/forgot-password']"
+          [ngStyle]="{
+            color:
+              primaryColor == '#ffffff' || primaryColor == '#fff' || menuColor == '#000000'
+                ? '#1e1e1e'
+                : '#fff'
+          }"
+          >{{ "login.forgotpassword" | translate }}</a
+        >
+      </div>
+      <div>
+        <div
+          *ngIf="showLoginMessage && loginMessage"
+          [ngStyle]="{
+            color:
+              primaryColor == '#ffffff' || primaryColor == '#fff' || menuColor == '#000000'
+                ? '#1e1e1e'
+                : '#fff'
+          }"
+        >
+          {{ loginMessage }}
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

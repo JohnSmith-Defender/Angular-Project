@@ -1,0 +1,19 @@
+<div class="relative" (click)="handleDetailsRoute(id)">
+    <div class="plan-bg relative hover:cursor-pointer">
+        <div 
+            class="image-holder overflow-hidden h-[330px] sm:h-[330px] md:h-[255px] lg:h-[255px] rounded-lg"
+            [ngStyle]="{'background': 'url(' + image + ') no-repeat center, linear-gradient(0deg, rgba(0, 0, 0, 0.7) 21.36%, rgba(0, 0, 0, 0.1) 45.67%, rgba(0, 0, 0, 0) 50%)',
+                'background-size': '100% 100%',
+                'background-blend-mode': 'multiply'}"
+        >
+        </div>
+        <div class="sub-date text-sm capitalize" *ngIf="date">
+            {{ date }}
+        </div>
+        <div class="sub-text text-base text-white font-semibold absolute bottom-[12px] left-[12px] right-[12px]">
+            <div class="plan-title">
+                {{ title }}
+            </div>
+        </div>
+    </div>
+</div>

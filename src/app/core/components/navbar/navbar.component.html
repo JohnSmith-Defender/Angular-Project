@@ -1,0 +1,306 @@
+<header class="backdrop-blur" [ngStyle]="{'background-color': primaryColor}">
+  <div class="container flex items-center justify-between center w-screen-xl w-full max-w-screen-xl px-4 md:px-0 lg:px-0 mx-auto py-6">
+    <app-logo [logoSrc]="logoSrc"></app-logo>
+    <div class="flex items-center space-x-0 md:space-x-1 lg:space-x-1">
+      <a class="text-2xl sm:text-2xl md:text-3xl lg:text-3xl" routerLink="/settings" *ngIf="username && isAdmin" [ngStyle]="{'color': menuColor || (primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff')}"
+      >
+          <fa-icon class="fa flex items-center px-2 md:px-4 lg:px-4" [icon]="gearIcon"></fa-icon>
+      </a>
+      <a class="text-2xl sm:text-2xl md:text-3xl lg:text-3xl" routerLink="/search" [ngStyle]="{'color': menuColor || (primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff')}">
+        <fa-icon class="fa flex items-center px-2 md:px-4 lg:px-4" [icon]="searchIcon"></fa-icon>
+      </a>
+      <div>
+        <a 
+          [ngStyle]="{'color': menuColor || (primaryColor == '#ffffff' || primaryColor == '#fff' ? '#1e1e1e' : '#fff')}"
+          *ngIf="languages && languages?.length > 1"
+          href="javascript:;"
+          class="text-2xl sm:text-2xl md:text-3xl lg:text-3xl"
+          data-popover-target="popover-bottom" 
+          data-popover-placement="bottom"
+        >
+          <fa-icon class="fa flex items-center px-2 md:px-4 lg:px-4" [icon]="globeIcon" data-popover-target="popover-bottom" data-popover-placement="bottom"></fa-icon>
+        </a>
+        <div data-popover id="popover-bottom" role="tooltip" class="absolute z-10 invisible inline-block w-44 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+          <div class="language-container">
+            <ng-container *ngFor="let lang of languages;let i = index;">
+              <div
+                  class="px-3 py-3 bg-white rounded-t-lg dark:border-gray-300 dark:bg-gray-400"
+                  (click)="useLanguage(lang.code)"
+                  [ngClass]="{
+                    'border-b': i < languages?.length - 1,
+                    'border-gray-200': i == languages?.length - 1
+                  }"
+              >
+                <div 
+                  class="text-center hover:cursor-pointer" 
+                  [ngStyle]="{
+                    'color': language == lang.code ? buttonColor : '#1E1E1E', 
+                    'font-weight': language == lang.code ? 'bold' : 'normal'
+                  }"
+                >
+                  {{ getLanguageTitle(lang) }}
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <div class="px-3 py-1"></div>
+          <div data-popper-arrow></div>
+        </div>
+      </div>
+      <div 
+        class="flex start h-12 bg-white border border-white rounded-[10px] item-center p-1.5" 
+        *ngIf="username" 
+        [ngStyle]="{'background-color': primaryColor == '#ffffff' || primaryColor == '#fff' ? buttonColor : '#fff'}">
+        <div>
+          <img 
+            class="w-9 h-9 object-cover rounded-full mr-1.5 hover:cursor-pointer" 
+            *ngIf="imageSrc" 
+            [src]="imageSrc" 
+            [alt]="username" 
+            data-popover-target="popover-user-profile" 
+            data-popover-placement="bottom" 
+          />
+          <div data-popover id="popover-user-profile" 
+            role="tooltip"
+            class="mt-6 absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white rounded-lg shadow-sm opacity-0 w-80 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
+            <div class="p-6 rounded-t-lg" [ngStyle]="{'background-color': buttonColor}">
+              <div class="flex justify-between align-center items-center">
+                <div>
+                    <p class="mb-1 text-base font-semibold leading-none text-white dark:text-white">
+                      <a href="javascript:;" class="hover:underline">{{ username }}</a>
+                    </p>
+                    <p class="mb-1 text-sm font-normal text-white" *ngIf="companyName">
+                      {{companyName}}
+                    </p>
+                    <div class="flex">
+                        <button 
+                          *ngIf="showProfileButton" 
+                          type="button" 
+                          [routerLink]="['/users/profile/', userid]"
+                          [ngStyle]="{'color': buttonColor}"
+                          class="inline-flex items-center bg-white justify-center w-full px-5 py-2 mr-2 text-sm font-medium text-gray-900 border border-white rounded-lg focus:outline-none focus:z-10"
+                        >
+                          {{ 'landing.myprofile' | translate }}
+                        </button>
+                    </div>
+                    <div id="dropdown-menu" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                      <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-button">
+                        <li *ngIf="hasTutors">
+                          <a [routerLink]="['/tutors/my-lessons']" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ 'tutors.mylessons' | translate }}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('courses') && canCreateCourse && !isAdmin">
+                          <a [routerLink]="['/settings/courses-management']" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ coursesTitle }}
+                          </a>
+                        </li>
+                        <ng-container *ngIf="courseWallButton">
+                          <ng-container *ngFor="let item of getCourseWallMenus(menus)">
+                            <li>
+                              <a href="javascript:;" (click)="goToCourseWall(item)" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                                {{ getCourseWallName(item) }}
+                              </a>
+                            </li>
+                          </ng-container>
+                        </ng-container> 
+                        <li *ngIf="hasCreditSetting && hasCreditPackageSetting">
+                          <a [routerLink]="['/user-settings/my-credits']" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ "credit-package.mycredits" | translate }}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('plans') && myActivitiesTitle">
+                          <a [routerLink]="['/dashboard/1']" class="capitalize block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ myActivitiesTitle }}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('clubs') && myClubsTitle">
+                          <a [routerLink]="['/dashboard/5']" class="capitalize block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ myClubsTitle }}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('plans') && (company?.id == 12|| hasInvitations)">
+                          <a [routerLink]="['/user-settings/my-activities']" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ 'company-settings.myactivities' | translate }}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('plans') && (company?.id == 12 || hasCRMFeature)">
+                          <a [routerLink]="['/user-settings/crm']" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            CRM
+                          </a>
+                        </li>
+                        <li *ngIf="hasActivityFeed">
+                          <a routerLink="/activity-feed/wall/0" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ 'sidebar.activityfeed' | translate }}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('plans') && (canManageEvents || isAdmin)">
+                          <a routerLink="/users/admin-lists" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ 'company-settings.managelanding' | translate}}
+                          </a>
+                        </li>
+                        <li *ngIf="hasAccess('plans') && !hasEventCalendar">
+                          <a routerLink="/user-settings/calendar" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ 'calendar.calendar' | translate }}
+                          </a>
+                        </li>
+                        <li *ngIf="currentUser?.customer_id && currentUser?.subscription_id">
+                          <a [routerLink]="['/new-user-settings/payment-methods']" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
+                            {{ 'signup.paymentmethod' | translate }}
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                </div>
+                <div class="mr-3 shrink-0">
+                  <button id="dropdown-button" data-dropdown-toggle="dropdown-menu" data-dropdown-placement="right" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg shrink-0 focus:outline-none hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button"> 
+                    <svg class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                        <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+                    </svg>
+                </button>
+                </div>
+              </div>
+            </div>
+            <div class="px-3 text-white">
+              <div (click)="logout()" class="flex justify-center hover:cursor-pointer text-center py-4" 
+                [ngStyle]="{'color': buttonColor}">
+                <svg
+                    class
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    aria-hidden="true"
+                    role="img"
+                    class="iconify iconify--material-symbols"
+                    width="22"
+                    height="22"
+                    preserveAspectRatio="xMidYMid meet"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        fill="currentColor"
+                        d="M15.325 16.275q-.275-.325-.275-.738q0-.412.275-.687l1.85-1.85H10q-.425 0-.712-.288Q9 12.425 9 12t.288-.713Q9.575 11 10 11h7.175l-1.85-1.85q-.3-.3-.3-.712q0-.413.3-.713q.275-.3.688-.3q.412 0 .687.275l3.6 3.6q.15.15.213.325q.062.175.062.375t-.062.375q-.063.175-.213.325l-3.6 3.6q-.325.325-.712.287q-.388-.037-.663-.312ZM5 21q-.825 0-1.413-.587Q3 19.825 3 19V5q0-.825.587-1.413Q4.175 3 5 3h6q.425 0 .713.287Q12 3.575 12 4t-.287.712Q11.425 5 11 5H5v14h6q.425 0 .713.288q.287.287.287.712t-.287.712Q11.425 21 11 21Z"
+                    ></path>
+                </svg>
+                <span class="ml-2">{{ 'sidebar.logout' | translate }}</span>
+              </div>
+            </div>
+            <div data-popper-arrow [ngStyle]="{'background-color': buttonColor}"></div>
+          </div>
+        </div>
+        <div>
+          <a [routerLink]="['/users/notifications/', userid]" class="text-2xl">
+            <fa-icon class="fa flex items-center px-1 py-1" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#fff' : '#1e1e1e'}" [icon]="bellIcon"></fa-icon>
+          </a>
+        </div>
+        <div class="px-2 py-1" [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#fff' : '#1e1e1e'}">
+          {{ notifications?.length > 0 ? notifications?.length : '' }}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<div class="bg-white menu">
+    <div class="container flex items-center justify-between sm:justify-center center w-screen-xl w-full max-w-screen-xl sm:max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+      <nav class="bg-white border-gray-200 dark:bg-gray-900">
+        <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
+          <span class="sr-only">Open main menu</span>
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+          </svg>
+        </button>
+        <div class="px-0 flex flex-row flex-wrap items-center justify-center gap-8 center w-full hidden md:flex md:w-auto ld:w-full" id="navbar-default">
+          <ng-container *ngFor="let menu of menus$ | async">
+            <div
+              *ngIf="menu?.course_wall != 11"
+              [ngClass]="{'current': selectedTab == menu.path || menu?.new_button == 1 || (menu?.course_wall == 11 && selectedTab >=200) }"
+              [ngStyle]="{'background-color': selectedTab == menu.path || menu?.new_button == 1 || selectedTab == (menu.path?.replace('activity-feed-', '').replace('/', '')) || (menu?.course_wall == 11 && selectedTab >=200) ? buttonColor : 'transparent'}"
+              class="border border-white rounded-[10px] py-2 px-4 w-full max-w-full sm:w-full sm:max-w-full md:w-auto md:max-w-auto lg:w-auto lg:max-w-auto"
+            >
+                <ng-container *ngIf="menu?.new_button == 1">
+                    <a
+                        class="flex items-center justify-center text-sm"
+                        [href]="menu?.path"
+                        (click)="changeSelectedTab(menu.path)"
+                        style="color:#fff"
+                        target="_blank"
+                        [ngStyle]="{'background-color': buttonColor}"
+                    >
+                        {{ getMenuTitle(menu) }}
+                    </a>
+                </ng-container>
+                <ng-container *ngIf="menu?.course_wall == 1">
+                    <a
+                        class="flex items-center justify-center text-sm"
+                        href="javascript:;"
+                        (click)="goToCourseWall(menu)"
+                        style="color:#fff"
+                        [ngStyle]="{'color': selectedTab == (menu.path?.replace('activity-feed-', '').replace('/', '')) ? '#fff' : '#1E1E1E'}"
+                    >
+                        <fa-icon 
+                            class="fa flex items-center px-2 text-sm" 
+                            [icon]="graduationCapIcon"
+                            [ngStyle]="{'color': buttonColor}"
+                            [ngStyle]="{'color': selectedTab == (menu.path?.replace('activity-feed-', '').replace('/', '')) ? '#fff' : buttonColor}"
+                        >
+                        </fa-icon>
+                        {{ getMenuTitle(menu) }}
+                    </a>
+                </ng-container>
+                <ng-container *ngIf="!menu?.new_button && !menu?.course_wall">
+                <a
+                    class="flex items-center justify-center text-sm"
+                    [routerLink]="['/', (menu?.path == 'home' ? '/' : menu?.path)]"
+                    (click)="changeSelectedTab(menu.path)"
+                    [ngStyle]="{'color': selectedTab == menu.path ? '#fff' : '#1E1E1E'}"
+                >
+                    <fa-icon 
+                        *ngIf="getMenuFaIcon(menu)"
+                        class="fa flex items-center px-2 text-sm" 
+                        [icon]="getMenuFaIcon(menu)"
+                        [ngStyle]="{'color': selectedTab == menu.path ? '#fff' : buttonColor}"
+                    >
+                    </fa-icon>
+                    {{ getMenuTitle(menu) }}
+                </a>
+                </ng-container>
+            </div>
+          </ng-container>
+          <div *ngIf="hasCourseWallDropdown">
+            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" data-dropdown-trigger="hover" type="button"
+              class="focus:outline-none text-sm px-5 py-2.5 text-center inline-flex items-center border border-white rounded-[10px]" 
+              [ngStyle]="{
+                'background-color': wallSelected || selectedTab >=200 ? buttonColor : 'transparent',
+                'color': wallSelected || selectedTab >=200 ? '#fff' : buttonColor
+              }"
+            >
+              <fa-icon 
+                class="fa flex items-center px-2 text-sm" 
+                [icon]="graduationCapIcon"
+                [ngStyle]="{
+                  'color': wallSelected || selectedTab >= 200 ? '#fff' : buttonColor
+                }"
+              >
+              </fa-icon>
+              {{ courseWallPrefix == 1 ? (getCourseWallPrefix() || ('sidebar.communitysupport' | translate)) : ('sidebar.communitysupport' | translate) }} 
+              <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+            </svg></button>
+            <div id="dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg w-auto dark:bg-gray-700 top-3">
+                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                  <li *ngFor="let submenu of courseWallDropdownMenu?.subs">
+                    <a 
+                      href="javascript:;"
+                      (click)="goToCourseWall(submenu)" 
+                      class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                      [ngClass]="{'font-bold': currentWallId == (submenu.path?.replace('activity-feed-', ''))}"
+                    >
+                      {{ getMenuTitle(submenu) }}
+                    </a>
+                  </li>
+                </ul>
+            </div>
+          </div>
+        </div>
+      </nav>  
+    </div>
+</div>

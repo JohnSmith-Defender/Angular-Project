@@ -1,0 +1,31 @@
+<div class="sm:max-w-full md:max-w-screen-2xl lg:max-w-screen-2xl mx-auto">
+    <div class="hidden sm:hidden md:block lg:block p-6 md:pt-48 lg:pt-48">
+        <app-breadcrumb 
+            [level1Title]="level1Title"
+            [level2Title]="level2Title"
+            [level3Title]="level3Title"
+            [level4Title]="level4Title"
+            [buttonColor]="buttonColor"
+            (goBack)="handleGoBack()"
+        />
+    </div>
+    <div class="w-full max-w-full">
+        <div class="w-full sm:w-full md:w-96 lg:w-96 mt-6">
+            <div>
+                <app-page-title [title]="pageTitle"></app-page-title>
+                <hr class="h-px mt-2 mb-8 bg-gray-200 border-0">
+            </div>
+            <app-astro-ideal-panel-menu
+                [companyId]="companyId"
+                [userId]="userId"
+                [buttonColor]="buttonColor"
+                [primaryColor]="primaryColor"
+                [list]="menuItems"
+                (onMenuClick)="handleMenuClick($event)">
+            </app-astro-ideal-panel-menu>
+        </div>
+        <div class="w-full max-w-full">
+
+        </div>
+    </div>
+</div>

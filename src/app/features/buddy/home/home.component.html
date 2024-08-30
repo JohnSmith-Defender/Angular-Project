@@ -1,0 +1,75 @@
+<div class="flex items-center justify-center min-h-[calc(100vh_-_100px)] max-w-xl flex-col mx-auto"
+    *ngIf="!isLoading && hasAccess">
+    <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-center text-gray-900 md:text-5xl lg:text-6xl dark:text-white">{{ pageName }}</h1>
+    <p class="my-16 mt-0 text-lg font-normal text-gray-500 text-center dark:text-gray-400">{{ pageDescription }}</p>
+    <ul class="grid w-full gap-6 md:grid-cols-2">
+        <li>
+            <input [(ngModel)]="buddyRole" type="radio" id="buddy-mentor" name="role" value="mentor" class="hidden peer" required />
+            <label for="buddy-mentor" 
+                class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white 
+                border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 
+                peer-checked:border-red-600 peer-checked:text-red-600 dark:peer-checked:text-red-600 
+                hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
+                <div class="flex flex-col items-center justify-center">
+                    <img width="56" height="56" 
+                        class="w-24 h-24 object-cover"
+                        src="./src/assets/images/mentor.png" alt="" />
+                    <div class="w-full text-lg font-semibold text-center">{{ 'buddy.mentor' | translate }}</div>
+                    <div class="w-full text-sm text-center">{{ 'buddy.mentordesc' | translate }}</div>
+                </div>
+            </label>
+        </li>
+        <li>
+            <input [(ngModel)]="buddyRole" type="radio" id="buddy-mentee" name="role" value="mentee" class="hidden peer">
+            <label for="buddy-mentee" 
+                class="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white 
+                border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 
+                peer-checked:border-red-600 peer-checked:text-red-600 dark:peer-checked:text-red-600 
+                hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+                <div class="flex flex-col items-center justify-center">
+                    <img width="56" height="56" 
+                        class="w-28 h-24 object-cover"
+                        src="./src/assets/images/mentee.png" alt="" />
+                    <div class="w-full text-lg font-semibold text-center">{{ 'buddy.mentee' | translate }}</div>
+                    <div class="w-full text-sm text-center">{{ 'buddy.menteedesc' | translate }}</div>
+                </div>
+            </label>
+        </li>
+    </ul>
+    <div>
+        <button 
+            *ngIf="buddyRole == 'mentor' && !isMentor"
+            [disabled]="!buddyRole" 
+            class="mt-16 mr-4 inline-flex bg-[#1e1e1e] items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+            [ngStyle]="{
+                'opacity': mentorHover ? 1.5 : 1,
+                'filter': mentorHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (click)="requestToBeMentor()"
+            (mouseover)="toggleMentorHover(true)"
+            (mouseleave)="toggleMentorHover(false)">
+            {{ 'buddy.wanttobementor' | translate }}
+            <svg class="w-5 h-5 ms-2 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+            </svg>
+        </button>
+        <button *ngIf="(buddyRole == 'mentor' && isMentor) || (buddyRole && buddyRole != 'mentor')" [disabled]="!buddyRole" 
+            class="mt-16 inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
+            [ngStyle]="{
+                'background-color': buddyRole ? buttonColor : '#c7c7c7',
+                'opacity': proceedHover ? 1.5 : 1,
+                'filter': proceedHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (click)="continue()"
+            (mouseover)="toggleProceedHover(true)"
+            (mouseleave)="toggleProceedHover(false)">
+            {{ 'customer-onboarding.proceed' | translate }}
+            <svg class="w-3.5 h-3.5 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+            </svg>
+        </button>
+    </div>
+</div>
+<div class="flex h-screen justify-center items-center" *ngIf="!isLoading && !hasAccess">
+    <app-no-access></app-no-access>  
+</div>

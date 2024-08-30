@@ -1,0 +1,10 @@
+<div class="bg-[#d3c1e8] rounded-lg p-8">
+    <ng-container *ngFor="let item of list;let i = index; let last = last;">
+        <div [ngClass]="{'pb-3.5': !last}">
+            <a class="text-medium text-base" href="javascript:;" 
+                (click)="handleMenuClick(item.action)">
+                {{ item?.text }}
+            </a>
+        </div>
+    </ng-container>
+</div>

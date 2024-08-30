@@ -1,0 +1,65 @@
+<div [ngClass]="{'flex-col flex': subcategoryList?.length > 0}">
+    <div class="inline-flex rounded-md shadow-sm flex-wrap pb-4 justify-end sm:justify-end md:justify-end lg:justify-end pb-4 sm:pb-4 md:pb-0 lg:pb-0" 
+        [ngClass]="{'hidden': hiddenMainList}"
+        role="group" *ngIf="buttonList?.length > 0">
+        <ng-container *ngFor="let button of buttonList; let i = index;">
+            <button 
+                type="button" 
+                class="px-4 py-2 text-sm font-medium border border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10"
+                [ngClass]="{
+                    'rounded-l-lg': i == 0,
+                    'rounded-r-md': i == buttonList?.length - 1
+                }"
+                [ngStyle]="{
+                    'background-color': button?.selected ? buttonColor : '#fff',
+                    'color': button?.selected ? '#fff' : buttonColor
+                }"
+                (click)="handleActionClick(button)"
+            >
+                {{button?.text}}
+            </button>
+        </ng-container>
+    </div> 
+    <div class="flex justify-end">
+        <div class="inline-flex rounded-md shadow-sm mt-2" role="group" *ngIf="subcategoryList?.length > 0">
+            <ng-container *ngFor="let button of subcategoryList; let i = index;">
+                <button 
+                    type="button" 
+                    class="px-3 py-2 text-xs font-medium border border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10"
+                    [ngClass]="{
+                        'rounded-l-lg': i == 0,
+                        'rounded-r-md': i == subcategoryList?.length - 1
+                    }"
+                    [ngStyle]="{
+                        'background-color': button?.selected ? buttonColor : '#fff',
+                        'color': button?.selected ? '#fff' : buttonColor
+                    }"
+                    (click)="handleSubActionClick(button)"
+                >
+                    {{button?.text}}
+                </button>
+            </ng-container>
+        </div>  
+    </div>
+    <div class="flex justify-end">
+        <div class="inline-flex rounded-md shadow-sm mt-2" role="group" *ngIf="subsubcategoryList?.length > 0">
+            <ng-container *ngFor="let button of subsubcategoryList; let i = index;">
+                <button 
+                    type="button" 
+                    class="px-3 py-2 text-xs font-medium border border-gray-200 hover:bg-gray-100 hover:text-black focus:z-10"
+                    [ngClass]="{
+                        'rounded-l-lg': i == 0,
+                        'rounded-r-md': i == subsubcategoryList?.length - 1
+                    }"
+                    [ngStyle]="{
+                        'background-color': button?.selected ? buttonColor : '#fff',
+                        'color': button?.selected ? '#fff' : buttonColor
+                    }"
+                    (click)="handleSubSubActionClick(button)"
+                >
+                    {{button?.text}}
+                </button>
+            </ng-container>
+        </div>  
+    </div>
+</div>

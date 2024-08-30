@@ -1,0 +1,52 @@
+[
+    {  
+        "id": 15,
+        "url": "asociacionstartups.vistingo.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 20,
+        "url": "mindglobalspace.org",
+        "guest_access": 1
+    },
+    {  
+        "id": 25,
+        "url": "vcp.vistingo.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 32,
+        "url": "vidauniversitaria.universidadeuropea.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 32,
+        "url": "uestaging.vistingo.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 32,
+        "url": "schooloflife.universidadeuropea.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 32,
+        "url": "schooloflife.vistingo.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 35,
+        "url": "red.asociacionpachamama.org",
+        "guest_access": 1
+    },
+    {  
+        "id": 52,
+        "url": "cursogenius.vistingo.com",
+        "guest_access": 1
+    },
+    {  
+        "id": 67,
+        "url": "astroideal.com",
+        "guest_access": 1
+    }
+]

@@ -1,0 +1,73 @@
+<app-page-title title="{{ 'company-settings.automaticemails' | translate }}"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [level5Title]="level5Title"
+        [level6Title]="level6Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+    <div class="mt-3 sm:mt-3 md:mt-0 lg:mt-0 flex">
+        <button 
+            class="ml-4 inline-block h-[40px] text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+            [ngStyle]="{'background-color': buttonColor}"
+            (click)="save()"
+        >
+            {{ 'email.update' | translate }}
+        </button>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+        <div class="w-full max-w-full">
+            <label for="author" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                {{'landing.subject' | translate}}
+            </label>
+            <input 
+                id="author"
+                type="text" 
+                class="text-2xl shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                [(ngModel)]="subject" 
+                [ngModelOptions]="{standalone: true}" 
+                [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !subject }"
+                placeholder="{{ 'landing.subject' | translate }}">
+        </div>
+    </div>
+    <div class="text-xs mb-4">***{{ 'email.datadesc' | translate }}</div>
+    <table *ngIf="shortcodes?.length > 0" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-2 py-1">
+                    {{ 'email.shorthand' | translate }}
+                </th>
+                <th scope="col" class="px-2 py-1">
+                    {{ 'email.description' | translate }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let shortcode of shortcodes | paginate: { itemsPerPage: 5, currentPage: p }" 
+                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="text-xs px-2 py-1 font-medium text-gray-900 dark:text-white">
+                    {{ shortcode.code }}
+                </th>
+                <td class="text-xs px-2 py-1">
+                    {{ shortcode.description }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="text-center text-xs mt-4" *ngIf="shortcodes?.length > 0">
+        <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    </div>
+</div>
+<div class="pt-6">
+    <quill-editor *ngIf="editorToUse == 'tinymce'"
+        class="w-full max-w-full content-editor" 
+        [(ngModel)]="body"
+        [ngModelOptions]="{standalone: true}">
+    </quill-editor>
+</div>

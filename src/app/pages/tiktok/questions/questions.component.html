@@ -1,0 +1,78 @@
+<ng-container *ngIf="!isloading && questionnaire?.id > 0">
+    <div class="mt-8">
+        <h1 class="text-2xl font-semibold text-center uppercase mb-3">{{ questionnaire?.title }}</h1>
+        <h2 class="text-md font-md text-center mb-8 px-6 leading-6 w-full sm:w-full md:w-4/5 lg:w-4/5 mx-auto">{{ questionnaire?.description }}</h2>
+    </div>
+    <div 
+        class="border border-t-4 border-l-0 border-r-0 border-b-0 w-full sm:w-full md:w-9/12 lg:w-9/12 mx-auto" 
+        [ngStyle]="{'border-top-color': primaryColor}"
+    >
+        <div class="bg-white shadow-xl px-6 py-14">
+            <ng-container *ngIf="!formSubmitted">
+                <div *ngFor="let item of questionItems; let i = index;">
+                    <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="{{'item' + item?.id}}" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{item?.title}}
+                            </label>
+                            <div *ngIf="item?.question_type_id == 1" class="mb-1">
+                                <fieldset>
+                                    <div *ngFor="let choice of item?.question_multiple_choice_options; let n = index;">
+                                        <div class="flex items-center mb-4 text-sm">
+                                            <input id="{{'question' + choice.id }}" 
+                                                type="radio" 
+                                                name="{{'question' + item.id }}" 
+                                                [value]="choice.id" 
+                                                [(ngModel)]="item.answer" 
+                                                class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                                            <label for="{{'question' + choice.id }}" class="block ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                {{ choice.choice }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div *ngIf="item?.question_type_id == 2" class="mb-2">
+                                <textarea
+                                    rows="4" 
+                                    [(ngModel)]="item.answer"
+                                    class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                >
+                                </textarea>
+                            </div>
+                            <div *ngIf="item?.question_type_id == 3" class="mb-2">
+                                <input 
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="item.answer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center mb-6">
+                    <button
+                        type="button"
+                        class="inline-block h-[40px] text-sm px-6 py-2 mt-6 font-semibold rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                        [ngStyle]="{
+                            'background-color': questionnaire?.button_color || buttonColor,
+                            'color': questionnaire?.button_text_color || '#ffffff'
+                        }"
+                        (click)="submit()"
+                        [ngClass]="{'disabled:opacity-75': !isValidForm(questionItems)}"
+                        [disabled]="!isValidForm(questionItems)"
+                    >
+                        {{ questionnaire?.button_text || ("inquiry.submit" | translate) }}
+                    </button>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="formSubmitted">
+                <div class="py-16 text-center">
+                    {{ 'event-survey.thankyou' | translate }}
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+<div *ngIf="!isloading && !(questionnaire?.id > 0)" class="center pt-16">
+    <app-no-access></app-no-access>
+</div>

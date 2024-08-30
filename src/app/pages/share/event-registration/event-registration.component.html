@@ -1,0 +1,480 @@
+<div *ngIf="!isLoading && event" class="mx-auto my-auto max-w-full flex justify-center items-center align-center pb-8"
+    [ngClass]="{'pt-20': companyId != 20}">
+    <div [ngClass]="{'flex flex-col sm:flex-col md:flex-row lg:flex-row mb-8': companyId != 20 && !isImageCenterButton}">
+        <div *ngIf="companyId != 20" class="relative" 
+            [ngClass]="{'mr-0 sm:mr-0 md:mr-[58px] lg:mr-[58px]': !isImageCenterButton, 'flex justify-center': isImageCenterButton}">
+            <ng-container *ngIf="isImageCenterButton">
+                <img 
+                    *ngIf="eventImage"
+                    class="rounded-[30px] object-cover object-top w-full max-w-full h-auto"
+                    [ngClass]="{'max-h-[700px]': event?.orig_image, 
+                        'sm:w-full sm:max-w-full md:w-[540px] md:max-w-[540px] lg:w-[540px] lg:max-w-[540px] max-h-[540px]': !event?.orig_image}"
+                    [src]="eventImage" 
+                    [alt]="getEventTitle(event)"
+                >
+            </ng-container>
+            <ng-container *ngIf="!isImageCenterButton">
+                <img 
+                    *ngIf="event?.image"
+                    class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[540px] md:max-w-[540px] lg:w-[540px] lg:max-w-[540px] sm:h-auto md:h-[510px] lg:h-[510px] max-h-auto md:max-h-[510px] lg:max-h-[510px]"
+                    [ngSrc]="eventImage" 
+                    [alt]="getEventTitle(event)" 
+                    width="540" 
+                    height="510"
+                >
+            </ng-container>
+            <ng-container *ngIf="isImageCenterButton">
+                <ng-container *ngIf="isImageCenterButton && hasPaymentButtonForm && !hasRegistrationButtonForm && !limitReached && !pastEvent">
+                    <button
+                        class="absolute m-auto left-0 right-0  btn h-[52px] text-white text-base uppercase font-semibold"
+                        [ngClass]="{'w-full max-w-full': companyId != 20, 'w-[250px] max-w-[250px]': companyId == 20}"
+                        [ngStyle]="{'background-color': buttonColor}"
+                        (click)="pay()"
+                    >
+                        {{ companyId == 35 ? ('service.reserve' | translate) : ('signup.pay' | translate) }}
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="hasRegistrationButtonForm && !registerAsGuest && !hasPaymentButtonForm && !limitReached && !pastEvent">
+                    <button
+                        class="absolute m-auto left-0 right-0 top-1/2 btn h-[52px] text-white text-base uppercase font-semibold w-[250px] max-w-[250px]"
+                        [ngStyle]="{
+                            'background-color': buttonColor
+                        }"
+                        (click)="registerGuest()"
+                    >
+                        {{ 'invite.register' | translate }}
+                    </button>
+                </ng-container>
+            </ng-container>
+        </div>
+        <ng-container *ngIf="isImageCenterButton">
+            <div *ngIf="hasRegistrationButtonForm && !hasPaymentButtonForm && !limitReached && !pastEvent"
+                class="mt-8 mx-8 flex justify-between flex-gap-row flex-col sm:flex-col md:flex-row lg:flex-row">
+                <form [formGroup]="registerForm" (ngSubmit)="register()" class="w-full max-w-full">
+                    <div class="w-full max-w-full" *ngIf="registerAsGuest">
+                        <div class="w-full max-w-full" *ngIf="!registerComplete">
+                            <ng-container *ngIf="hasGuestRegistration">
+                                <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4"
+                                    [ngClass]="{'w-full max-w-full': companyId != 20, 'w-8/12 mx-auto': companyId == 20}">
+                                    <ng-container *ngFor="let filter of filteredProfileFields">
+                                        <div class="flex items-center justify-center relative">
+                                            <ng-container *ngIf="filter?.field_type != 'select' && filter?.field != 'sector'">
+                                                <input 
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': filter.required && registerForm.get(filter.field).errors }"
+                                                    [type]="filter.field_type"
+                                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                    [formControlName]="filter.field" 
+                                                    [placeholder]="(language == 'en' ? filter.field_display_en : filter.field_display_es) + (filter.required ? '*' : '')"
+                                                    [required]="filter?.required == 1 ? true : false">
+                                            </ng-container>
+                                            <ng-container *ngIf="filter?.field_type == 'select'">
+                                                <select
+                                                    class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !registerForm.get(filter.field).errors }"
+                                                    [formControlName]="filter.field"
+                                                >
+                                                    <option value="" selected>{{ (language == 'en' ? filter.field_display_en : filter.field_display_es) + (filter.required ? ' (' + fieldrequired + ')': '') }}</option>
+                                                    <option
+                                                        *ngFor="let opt of selectOptions"
+                                                        [value]="opt.name"
+                                                    >
+                                                        {{ opt.name }}
+                                                    </option>
+                                                </select>
+                                            </ng-container>
+                                            <ng-container *ngIf="filter?.field == 'sector'">
+                                                <select
+                                                    class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': filter?.required == 1 && !selectedSector }"
+                                                    [formControlName]="filter.field"
+                                                >
+                                                    <option value="" selected>{{  (language == 'en' ? filter.field_display_en : filter.field_display_es) + (filter.required ? '*' : '') }}</option>
+                                                    <option
+                                                        *ngFor="let sector of sectors"
+                                                        [value]="sector.name"
+                                                    >
+                                                        {{ sector.name }}
+                                                    </option>
+                                                </select>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </ng-container>
+                            <ng-container *ngIf="!hasGuestRegistration">
+                                <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4"
+                                    [ngClass]="{'w-full max-w-full': companyId != 20, 'w-8/12 mx-auto': companyId == 20}">
+                                    <div class="flex items-center justify-center relative">
+                                        <input 
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('name')?.errors }"
+                                            type="text"
+                                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="name"
+                                            placeholder="{{ 'register.name' | translate }}"
+                                            required>
+                                    </div>
+                                    <div class="flex items-center justify-center relative">
+                                        <input 
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('email')?.errors }"
+                                            type="text"
+                                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="email"
+                                            placeholder="{{ 'register.email' | translate }}"
+                                            required>
+                                    </div>
+                                    <div class="flex items-center justify-center relative">
+                                        <input 
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('phone')?.errors }"
+                                            type="text"
+                                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="phone"
+                                            placeholder="{{ 'register.phone' | translate }}"
+                                            required>
+                                    </div>
+                                    <div class="flex items-center justify-center relative">
+                                        <input 
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('zip_code')?.errors }"
+                                            type="text"
+                                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            formControlName="zip_code"
+                                            placeholder="{{ 'register.zipcode' | translate }}"
+                                            required>
+                                    </div>
+                                    <div class="flex items-center justify-center relative">
+                                        <select
+                                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedSector }"
+                                            [(ngModel)]="selectedSector"
+                                            [ngModelOptions]="{standalone: true}"
+                                        >
+                                            <option value="" selected>{{ 'register.selectsector' | translate }}</option>
+                                            <option
+                                                *ngFor="let sector of sectors"
+                                                [value]="sector.name"
+                                            >
+                                                {{ sector.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                </div>
+                            </ng-container>
+                            <div [ngClass]="{'w-8/12 mx-auto': companyId == 20}">
+                                <label class="checkbox-container">
+                                    <div class="flex mb-4 items-center">
+                                        <input 
+                                            id="terms-conditions" 
+                                            type="checkbox"
+                                            [(ngModel)]="agreeTerms" 
+                                            [ngModelOptions]="{standalone: true}"
+                                            [ngStyle]="{'color': agreeTerms ? 'text-blue-500' : 'text-gray-900'}"
+                                            class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        >
+                                        <label for="terms-conditions" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                            {{ 'signup.ihavereadandaccepted' | translate }} 
+                                            <button type="button" (click)="openTermsDialog()">
+                                                <span class="font-bold text-blue-500">
+                                                {{ 'sidebar.termsandconditions' | translate }}
+                                                </span>
+                                            </button> {{ 'signup.and' | translate }} <button type="button" (click)="openPrivacyDialog()">
+                                                <span class="font-bold text-blue-500">
+                                                {{ 'signup.privacypolicy' | translate }}
+                                                </span>
+                                            </button>
+                                        </label>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                                <button
+                                    type="submit"
+                                    class="w-full inline-block h-[52px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                    [ngClass]="{'disabled:opacity-75': !agreeTerms}"
+                                    [disabled]="!agreeTerms"
+                                >
+                                    {{ 'register.register' | translate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div *ngIf="pastEvent" class="text-red-500" [ngClass]="{'text-center': companyId == 20}">
+                {{ 'invite.pastevent' | translate }}
+            </div>
+            <div *ngIf="limitReached" class="text-red-500" [ngClass]="{'text-center': companyId == 20}">
+                {{ limitReachedMessage }}
+            </div>
+            <div *ngIf="registerComplete" [ngClass]="{'text-center': companyId == 20}">
+                {{ 'invite.registercomplete' | translate }}
+            </div>
+        </ng-container>
+        <ng-container *ngIf="!isImageCenterButton">
+            <div [ngClass]="{'w-full mr-0 sm:mr-0 md:mr-[80px] lg:mr-[80px]': companyId != 20}">
+                <div class="w-full max-w-full">
+                    <div [innerHtml]="html" *ngIf="companyId == 20"></div>
+                    <ng-container *ngIf="companyId != 20">
+                        <div class="text-3xl font-semibold">{{ getEventTitle(event) }}</div>
+                        <div class="flex flex-col">
+                            <div [innerHtml]="planTruncatedDescription | safeContentHtml: 'html'"></div>
+                            <ng-container *ngIf="planDescription?.length > truncate">
+                                <div class="mt-2 uppercase text-xs underline cursor-pointer" *ngIf="planExpandedDescription" [ngStyle]="{'color': buttonColor}" (click)="showLess()">{{ 'club-details.seeless' | translate }}</div>
+                                <div class="mt-2 uppercase text-xs underline cursor-pointer" *ngIf="!planExpandedDescription" [ngStyle]="{'color': buttonColor}" (click)="readMore()">{{ 'club-details.readmore' | translate }}</div>
+                            </ng-container>
+                        </div>
+                        <div class="flex flex-row justify-between my-12">
+                            <div class="flex">
+                                <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v3m5-3v3m5-3v3M1 7h18M5 11h10M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/>
+                                </svg>
+                                <div class="capitalize font-semibold">{{ planDay }}</div>
+                            </div>
+                            <div class="flex">
+                                <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 6v4l3.276 3.276M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                </svg>
+                                <div class="capitalize font-semibold">{{ planTime }}</div>
+                            </div>
+                            <div class="flex max-w-full sm:max-w-full md:max-w-[250px] lg:max-w-[250px]" *ngIf="plan?.meeting_point">
+                                <svg class="w-6 h-6 md:max-w-[80px] lg:w-[80px] mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 21">
+                                    <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                    <path d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                                    <path d="M13.8 12.938h-.01a7 7 0 1 0-11.465.144h-.016l.141.17c.1.128.2.252.3.372L8 20l5.13-6.248c.193-.209.373-.429.54-.66l.13-.154Z"/>
+                                    </g>
+                                </svg>
+                                <div class="capitalize font-semibold">{{ plan?.meeting_point }}</div>
+                            </div>
+                        </div>
+                        <div class="flex" *ngIf="getAddress(event)">
+                            <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 21">
+                                <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                <path d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                                <path d="M13.8 12.938h-.01a7 7 0 1 0-11.465.144h-.016l.141.17c.1.128.2.252.3.372L8 20l5.13-6.248c.193-.209.373-.429.54-.66l.13-.154Z"/>
+                                </g>
+                            </svg>
+                            <div class="capitalize font-semibold">{{ getAddress(event) }}</div>
+                        </div>
+                        <div class="my-12 flex items-center" *ngIf="((createdBy && createdBy != 'null') || (planCreator?.name || (planCreator?.first_name + ' ' + planCreator?.last_name)))">
+                            <div class="opacity-60 mr-4">{{ 'plan-details.createdby' | translate }}:</div>
+                            <div class="font-semibold">{{ createdBy || planCreator?.name || (planCreator?.first_name + ' ' + planCreator?.last_name) }}</div>
+                        </div>
+                    </ng-container>
+                    <div *ngIf="pastEvent" class="text-red-500" [ngClass]="{'text-center': companyId == 20}">
+                        {{ 'invite.pastevent' | translate }}
+                    </div>
+                    <div *ngIf="limitReached" class="text-red-500" [ngClass]="{'text-center': companyId == 20}">
+                        {{ limitReachedMessage }}
+                    </div>
+                    <div *ngIf="registerComplete" [ngClass]="{'text-center': companyId == 20}">
+                        {{ 'invite.registercomplete' | translate }}
+                    </div>
+                    <div *ngIf="hasPaymentButtonForm && !hasRegistrationButtonForm && !limitReached && !pastEvent"
+                        class="flex justify-between flex-gap-row flex-col sm:flex-col md:flex-row lg:flex-row">
+                        <div class="w-full max-w-full flex items-center flex-gap-col"
+                            [ngClass]="{'justify-between': companyId != 20, 'justify-center': companyId == 20}">
+                            <button
+                                class="btn h-[52px] text-white text-base uppercase font-semibold"
+                                [ngClass]="{'w-full max-w-full': companyId != 20, 'w-[250px] max-w-[250px]': companyId == 20}"
+                                [ngStyle]="{'background-color': buttonColor}"
+                                (click)="pay()"
+                            >
+                                {{ companyId == 35 ? ('service.reserve' | translate) : ('signup.pay' | translate) }}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="hasRegistrationButtonForm && !hasPaymentButtonForm && !limitReached && !pastEvent"
+                        [ngClass]="{'flex justify-between flex-gap-row flex-col sm:flex-col md:flex-row lg:flex-row': companyId != 20, 'w-full max-w-full': companyId == 20}">
+                        <div *ngIf="!registerAsGuest" 
+                            class="w-full max-w-full flex items-center flex-gap-col"
+                            [ngClass]="{'justify-between': companyId != 20, 'justify-center': companyId == 20}">
+                            <button
+                                class="btn h-[52px] text-white text-base uppercase font-semibold"
+                                [ngClass]="{'w-full max-w-full': companyId != 20, 'w-[250px] max-w-[250px]': companyId == 20}"
+                                [ngStyle]="{
+                                    'background-color': buttonColor
+                                }"
+                                (click)="registerGuest()"
+                            >
+                                {{ 'invite.register' | translate }}
+                            </button>
+                        </div>
+                        <form [formGroup]="registerForm" (ngSubmit)="register()" class="w-full max-w-full">
+                            <div class="w-full max-w-full" *ngIf="registerAsGuest">
+                                <div class="w-full max-w-full" *ngIf="!registerComplete">
+                                    <ng-container *ngIf="hasGuestRegistration">
+                                        <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4"
+                                            [ngClass]="{'w-full max-w-full': companyId != 20, 'w-8/12 mx-auto': companyId == 20}">
+                                            <ng-container *ngFor="let filter of filteredProfileFields">
+                                                <div class="flex items-center justify-center relative">
+                                                    <ng-container *ngIf="filter?.field_type != 'select' && filter?.field != 'sector'">
+                                                        <input 
+                                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': filter.required && registerForm.get(filter.field).errors }"
+                                                            [type]="filter.field_type"
+                                                            class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                            [formControlName]="filter.field" 
+                                                            [placeholder]="(language == 'en' ? filter.field_display_en : filter.field_display_es) + (filter.required ? '*' : '')"
+                                                            [required]="filter?.required == 1 ? true : false">
+                                                    </ng-container>
+                                                    <ng-container *ngIf="filter?.field_type == 'select'">
+                                                        <select
+                                                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !registerForm.get(filter.field).errors }"
+                                                            [formControlName]="filter.field"
+                                                        >
+                                                            <option value="" selected>{{ (language == 'en' ? filter.field_display_en : filter.field_display_es) + (filter.required ? ' (' + fieldrequired + ')': '') }}</option>
+                                                            <option
+                                                                *ngFor="let opt of selectOptions"
+                                                                [value]="opt.name"
+                                                            >
+                                                                {{ opt.name }}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="filter?.field == 'sector'">
+                                                        <select
+                                                            class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': filter?.required == 1 && !selectedSector }"
+                                                            [formControlName]="filter.field"
+                                                        >
+                                                            <option value="" selected>{{  (language == 'en' ? filter.field_display_en : filter.field_display_es) + (filter.required ? '*' : '') }}</option>
+                                                            <option
+                                                                *ngFor="let sector of sectors"
+                                                                [value]="sector.name"
+                                                            >
+                                                                {{ sector.name }}
+                                                            </option>
+                                                        </select>
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="!hasGuestRegistration">
+                                        <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4"
+                                            [ngClass]="{'w-full max-w-full': companyId != 20, 'w-8/12 mx-auto': companyId == 20}">
+                                            <div class="flex items-center justify-center relative">
+                                                <input 
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('name')?.errors }"
+                                                    type="text"
+                                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                    formControlName="name"
+                                                    placeholder="{{ 'register.name' | translate }}"
+                                                    required>
+                                            </div>
+                                            <div class="flex items-center justify-center relative">
+                                                <input 
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('email')?.errors }"
+                                                    type="text"
+                                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                    formControlName="email"
+                                                    placeholder="{{ 'register.email' | translate }}"
+                                                    required>
+                                            </div>
+                                            <div class="flex items-center justify-center relative">
+                                                <input 
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('phone')?.errors }"
+                                                    type="text"
+                                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                    formControlName="phone"
+                                                    placeholder="{{ 'register.phone' | translate }}"
+                                                    required>
+                                            </div>
+                                            <div class="flex items-center justify-center relative">
+                                                <input 
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': registerForm?.get('zip_code')?.errors }"
+                                                    type="text"
+                                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                    formControlName="zip_code"
+                                                    placeholder="{{ 'register.zipcode' | translate }}"
+                                                    required>
+                                            </div>
+                                            <div class="flex items-center justify-center relative">
+                                                <select
+                                                    class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !selectedSector }"
+                                                    [(ngModel)]="selectedSector"
+                                                    [ngModelOptions]="{standalone: true}"
+                                                >
+                                                    <option value="" selected>{{ 'register.selectsector' | translate }}</option>
+                                                    <option
+                                                        *ngFor="let sector of sectors"
+                                                        [value]="sector.name"
+                                                    >
+                                                        {{ sector.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            
+                                        </div>
+                                    </ng-container>
+                                    <div [ngClass]="{'w-8/12 mx-auto': companyId == 20}">
+                                        <label class="checkbox-container">
+                                            <div class="flex mb-4 items-center">
+                                                <input 
+                                                    id="terms-conditions" 
+                                                    type="checkbox"
+                                                    [(ngModel)]="agreeTerms" 
+                                                    [ngModelOptions]="{standalone: true}"
+                                                    [ngStyle]="{'color': agreeTerms ? 'text-blue-500' : 'text-gray-900'}"
+                                                    class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                                >
+                                                <label for="terms-conditions" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                                    {{ 'signup.ihavereadandaccepted' | translate }} 
+                                                    <button type="button" (click)="openTermsDialog()">
+                                                        <span class="font-bold text-blue-500">
+                                                        {{ 'sidebar.termsandconditions' | translate }}
+                                                        </span>
+                                                    </button> {{ 'signup.and' | translate }} <button type="button" (click)="openPrivacyDialog()">
+                                                        <span class="font-bold text-blue-500">
+                                                        {{ 'signup.privacypolicy' | translate }}
+                                                        </span>
+                                                    </button>
+                                                </label>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                                        <button
+                                            type="submit"
+                                            class="w-full inline-block h-[52px] text-sm px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                            [ngStyle]="{'background-color': buttonColor}"
+                                            [ngClass]="{'disabled:opacity-75': !agreeTerms}"
+                                            [disabled]="!agreeTerms"
+                                        >
+                                            {{ 'register.register' | translate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<div *ngIf="isOpenTerms || isOpenPrivacy" class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#0F172A] bg-opacity-90">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{isOpenTerms ? ('sidebar.termsandconditions' | translate) : ('signup.privacypolicy' | translate) }}
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" (click)="closeTermsPrivacyDialog()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <div class="h-[300px] overflow-y-auto text-sm leading-relaxed text-gray-500 dark:text-gray-400 p-2"
+                [innerHtml]="isOpenTerms ? termsAndConditions : privacyPolicy">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!isLoading && !event" class="center pt-16">
+    <app-no-access></app-no-access>
+</div>

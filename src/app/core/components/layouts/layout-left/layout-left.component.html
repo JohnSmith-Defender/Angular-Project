@@ -1,0 +1,13 @@
+<main class="container p-0 m-0 w-full h-full max-w-full">
+    <div class="flex grid-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 items-center justify-center h-full">
+        <div class="hidden md:block">
+            <img *ngIf="leftImage" [ngSrc]="leftImage" width="860" height="960" class="w-full max-w-full min-h-screen object-cover" />
+        </div>
+        <div 
+            class="relative min-h-full flex flex-col items-center justify-center"
+            [ngStyle]="{ 'background-color': primaryColor }"
+        >
+            <ng-content></ng-content>
+        </div>
+    </div>
+</main>

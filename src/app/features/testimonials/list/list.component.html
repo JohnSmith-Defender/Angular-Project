@@ -1,0 +1,83 @@
+<app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+<div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4" *ngIf="userId && !isCursoGeniusTestimonials">
+    <div>
+        <button 
+            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-evenly mt-4 transition duration-700 ease-in-out"
+            *ngIf="canCreateTestimonial" 
+            [ngStyle]="{
+                'background-color': buttonColor,
+                'opacity': createHover ? 1.5 : 1,
+                'filter': createHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (click)="handleCreateRoute()"
+            (mouseover)="toggleCreateHover(true)"
+            (mouseleave)="toggleCreateHover(false)"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+            </svg>
+            <span class="text-white text-md font-semibold uppercase">{{ 'dashboard.new' | translate }} {{ pageName }}</span>
+        </button>
+    </div>
+</div>
+<div class="pt-10">
+    <div class="flex flex-wrap items-center w-full max-w-full"
+        [ngClass]="{'justify-between': filterTypeControl == 'button'}">
+        <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+            <app-search
+                [searchText]="searchText"
+                [placeholderText]="placeholderText"
+                [buttonColor]="buttonColor"
+                (onEnterPressed)="handleSearchChanged($event)"
+                (doSearch)="handleSearchChanged($event)"
+            >
+            </app-search>
+        </div>
+        <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0" *ngIf="showFilters">
+            <ng-container *ngFor="let setting of filterSettings">
+                <ng-container *ngIf="setting?.field == 'category' && setting?.filter_type == 'dropdown'">
+                    <app-filter
+                        [mode]="'testimonials'"
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        [list]="list"
+                        [defaultActiveFilter]="defaultActiveFilter"
+                        [filterSettings]="filterSettings"
+                        (filterList)="filteredList($event)"
+                        (onButtonClick)="filteredType($event)"
+                        (onFilterClick)="filterViewChanged($event)"
+                    ></app-filter>
+                </ng-container>
+                <ng-container *ngIf="setting?.field == 'category' && setting?.active == 1 && setting?.filter_type != 'dropdown'">
+                    <app-button-group
+                        [buttonList]="buttonList"
+                        [buttonColor]="buttonColor"
+                        (onButtonClick)="filteredType($event)"
+                    ></app-button-group>
+                </ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:grid-cols-2 justify-evenly py-8">
+        <ng-container *ngFor="let testimonial of testimonials">
+            <app-testimonial-card
+                [id]="testimonial?.id"
+                [path]="testimonial?.path"
+                [date]="testimonial?.date_display"
+                [tag]="testimonial?.tags_display"
+                [shortdescription]="testimonial?.short_description"
+                [image]="testimonial?.image"
+                [buttonColor]="buttonColor"
+                [author]="testimonial?.author"
+                [socialMediaUrl]="testimonial?.social_media_url"
+                [page]="'list'"
+                [companyId]="companyId"
+                [video]="testimonial?.video"
+                [isCoverImage]="testimonial?.isCoverImage"
+            >
+            </app-testimonial-card>
+        </ng-container>
+    </div>
+</div>

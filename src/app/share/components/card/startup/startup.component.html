@@ -1,0 +1,24 @@
+<div class="w-full max-w-sm rounded-lg shadow w-full max-w-sm rounded-lg shadow py-7 px-2 hover:cursor-pointer"
+    [ngStyle]="{'background-color': '#F8F4F4', 'box-shadow': '0px 40px 54px -45px #00000099'}"
+    [routerLink]="[path]">
+    <div class="flex flex-col items-center">
+        <img class="w-24 h-24 mb-3 rounded-full shadow-lg" [src]="image" [alt]="name"/>
+        <h5 class="h-[56px] mb-1 text-center text-xl font-medium text-gray-900 dark:text-white">{{name}}</h5>
+    </div>
+    <div class="flex justify-center text-sm flex-wrap pb-6">
+        <span>{{city}}</span>
+        <span class="px-2">{{ projectStartYear ? '•' : '' }}</span>
+        <span>{{projectStartYear}}</span>
+    </div>
+    <div class="flex justify-center pb-4 flex-wrap"
+        [ngClass]="{'mb-[1.8rem]': sectors?.length == 0}">
+        <ng-container *ngFor="let sector of sectors; let i = index;">
+            <div class="types border border-black rounded-xl px-4 py-[3px] mr-2 mb-1" *ngIf="i < 2">
+                <div class="text-xs text-center max-w-[100px] overflow-hidden truncate"
+                title="{{sector?.category}}">
+                    {{ sector?.category }}
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>

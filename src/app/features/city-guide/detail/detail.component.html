@@ -1,0 +1,147 @@
+<div class="hidden sm:hidden md:block lg:block">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+</div>
+<div class="py-10">
+    <div class="w-full max-w-full">
+        <div class="text-4xl font-semibold pt-24 sm:pt-24 md:pt-4 lg:pt-4">{{ cityGuideTitle }}</div>
+        <div class="text-sm opacity-60 my-4">{{ cityGuideExcerpt }}</div>
+        <div *ngIf="superAdmin || cityGuideOwner || canCreate" class="flex mt-3 sm:mt-3 md:mt-0 lg:mt-0">
+            <button 
+                class="h-[52px] flex items-center p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4 mr-4"
+                (click)="handleEditRoute()" 
+                [ngStyle]="{
+                    'background-color': buttonColor,
+                    'opacity': editHover ? 1.5 : 1,
+                    'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+                }"
+                (mouseover)="toggleEditHover(true)"
+                (mouseleave)="toggleEditHover(false)"
+            >
+                <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                </svg>
+                <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+            </button>
+            <button 
+                class="flex items-center border p-3.5 px-8 sm:px-8 md:px-12 lg:px-12 rounded-[15px] justify-evenly mt-4"
+                (click)="handleDelete()" 
+                [ngStyle]="{
+                    'border-color': deleteHover ? 'transparent' : buttonColor,
+                    'background-color': deleteHover ? buttonColor : '#fff',
+                }"
+                (mouseover)="toggleDeleteHover(true)"
+                (mouseleave)="toggleDeleteHover(false)"
+            >
+                <svg [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="w-2 h-2 font-semibold dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                </svg>
+                <span [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" class="text-md font-semibold uppercase">{{ 'plan-details.delete' | translate }}</span>
+            </button>
+        </div>
+        <div class="flex items-center my-10">
+            <div class="flex" *ngFor="let like of cityGuideLikes; let i = index;">
+                <img 
+                    class="bg-slate-300 object-cover rounded-full w-[62px] h-[62px] max-w-[62px] max-h-[62px] rounded-full" 
+                    [ngClass]="{'-ml-8': i > 0}"
+                    width="62" 
+                    height="62" 
+                    [ngSrc]="like?.image">
+            </div>
+            <div class="text-xs ml-4">{{ cityGuideLikeText }}</div>
+        </div>
+        <img 
+            *ngIf="cityGuideImage"
+            class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[941px] md:max-w-[941px] lg:w-[941px] lg:max-w-[941px] sm:h-auto md:h-[382px] lg:h-[382px] max-h-auto md:max-h-[382px] lg:max-h-[382px]"
+            width="941"
+            height="382"
+            [ngSrc]="cityGuideImage"
+        />
+        <div class="mt-10 w-full max-w-full sm:w-full sm:max-w-full md:w-[941px] md:max-w-[941px] lg:w-[941px] lg:max-w-[941px]">
+            <div class="whitespace-pre-wrap text-bse" [innerHtml]="cityGuideDescription"></div>
+        </div>
+        <div class="pt-12">
+            <div *ngFor="let item of cityGuideItems; let i = index; odd as isOdd; even as isEven;"
+                [ngClass]="{'w-full max-w-full sm:w-full sm:max-w-full md:w-[941px] md:max-w-[941px] lg:w-[941px] lg:max-w-[941px]': !item?.image}"
+            >
+                <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row mb-24">
+                    <div *ngIf="item?.image && !isOdd" [ngClass]="{'mr-0 sm:mr-0 md:mr-[50px] lg:mr-[50px]': item?.image && !isOdd}">
+                        <img 
+                            *ngIf="item?.image"
+                            class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[345px] md:max-w-[345px] lg:w-[345px] lg:max-w-[345px] sm:h-auto md:h-[382px] lg:h-[382px] max-h-auto md:max-h-[382px] lg:max-h-[382px]"
+                            width="345"
+                            height="382"
+                            [ngSrc]="item?.image"
+                        />
+                    </div>
+                    <div class="mr-0 sm:mr-0 md:mr-[50px] lg:mr-[50px] text-9xl font-bold" [ngStyle]="{'color': buttonColor}">{{ i + 1 }}</div>
+                    <div [ngClass]="{'mr-0 sm:mr-0 md:mr-[50px] lg:mr-[50px]': item?.image && isOdd}">
+                        <div class="text-xl font-bold mb-6">{{ item?.title }}</div>
+                        <div class="text-base whitespace-pre-wrap" [innerHtml]="item?.description"></div>
+                        <div *ngIf="item?.distance_from_city" class="flex my-6 items-center">
+                            <svg class="mr-2 w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
+                            </svg>
+                            <span class="text-sm">{{'cityguide-details.distancefrom' | translate}}: {{item?.distance}} {{'cityguide-details.kilometers' | translate}}</span>
+                        </div>
+                        <div class="col-span-2 mt-8 sm:h-auto md:h-[382px] lg:h-[382px] max-h-auto md:max-h-[382px] lg:max-h-[382px]"
+                            *ngIf="item?.latitude && item?.longitude"
+                        >
+                            <google-map [height]="382" [center]="item?.center">
+                                <map-marker
+                                    #markerElem
+                                    *ngFor="let marker of item?.markers"
+                                    [position]="marker.position"
+                                    [label]="marker.label"
+                                    [title]="marker.title"
+                                    [options]="marker.options"
+                                >
+                                </map-marker>
+                            </google-map>
+                        </div>
+                    </div>
+                    <div class="pt-14" *ngIf="item?.image && isOdd">
+                        <img 
+                            *ngIf="item?.image"
+                            class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[345px] md:max-w-[345px] lg:w-[345px] lg:max-w-[345px] sm:h-auto md:h-[382px] lg:h-[382px] max-h-auto md:max-h-[382px] lg:max-h-[382px]"
+                            width="345"
+                            height="382"
+                            [ngSrc]="item?.image"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center mt-8">
+            <svg *ngIf="!reacted || !liked" (click)="thumbsUp()" class="hover:cursor-pointer w-6 h-6 mr-4 text-emerald-950 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.008 8.714c1-.097 1.96-.45 2.792-1.028a25.112 25.112 0 0 0 4.454-5.72 1.8 1.8 0 0 1 .654-.706 1.742 1.742 0 0 1 1.65-.098 1.82 1.82 0 0 1 .97 1.128c.075.248.097.51.065.767l-1.562 4.629M4.008 8.714H1v9.257c0 .273.106.535.294.728a.99.99 0 0 0 .709.301h1.002a.99.99 0 0 0 .71-.301c.187-.193.293-.455.293-.728V8.714Zm8.02-1.028h4.968c.322 0 .64.08.925.232.286.153.531.374.716.645a2.108 2.108 0 0 1 .242 1.883l-2.36 7.2c-.288.813-.48 1.354-1.884 1.354-2.59 0-5.39-1.06-7.504-1.66"/>
+            </svg>
+            <svg *ngIf="reacted && liked" (click)="removeThumbsUp()" class="hover:cursor-pointer w-6 h-6 mr-4 text-emerald-950 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                <path d="M3 7H1a1 1 0 0 0-1 1v8a2 2 0 0 0 4 0V8a1 1 0 0 0-1-1Zm12.954 0H12l1.558-4.5a1.778 1.778 0 0 0-3.331-1.06A24.859 24.859 0 0 1 6 6.8v9.586h.114C8.223 16.969 11.015 18 13.6 18c1.4 0 1.592-.526 1.88-1.317l2.354-7A2 2 0 0 0 15.954 7Z"/>
+            </svg>
+            <svg *ngIf="!reacted || liked" (click)="thumbsDown()" class="hover:cursor-pointer w-6 h-6 text-emerald-950 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.992 11.287c-1 .097-1.96.45-2.792 1.029a25.118 25.118 0 0 0-4.454 5.721 1.803 1.803 0 0 1-.655.705 1.742 1.742 0 0 1-1.648.096 1.786 1.786 0 0 1-.604-.457 1.874 1.874 0 0 1-.432-1.439l1.562-4.626m9.023-1.03H19V2.03c0-.273-.106-.535-.294-.728A.99.99 0 0 0 17.997 1h-1.002a.99.99 0 0 0-.71.301 1.042 1.042 0 0 0-.293.728v9.258Zm-8.02 1.03H3.003c-.322 0-.64-.08-.925-.233a2.022 2.022 0 0 1-.716-.645 2.108 2.108 0 0 1-.242-1.883l2.36-7.2C3.769 1.54 3.96 1 5.365 1c2.59 0 5.39 1.06 7.504 1.66"/>
+            </svg>
+            <svg *ngIf="reacted && !liked" (click)="removeThumbsDown()" class="hover:cursor-pointer w-6 h-6 text-emerald-950 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                <path d="M11.955 2.117h-.114C9.732 1.535 6.941.5 4.356.5c-1.4 0-1.592.526-1.879 1.316l-2.355 7A2 2 0 0 0 2 11.5h3.956L4.4 16a1.779 1.779 0 0 0 3.332 1.061 24.8 24.8 0 0 1 4.226-5.36l-.003-9.584ZM15 11h2a1 1 0 0 0 1-1V2a2 2 0 1 0-4 0v8a1 1 0 0 0 1 1Z"/>
+            </svg>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

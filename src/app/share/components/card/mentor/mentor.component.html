@@ -1,0 +1,27 @@
+<div [routerLink]="path" class="hover:cursor-pointer w-full max-w-md bg-white border border-gray-200 rounded-lg shadow p-6 dark:bg-gray-800 dark:border-gray-700">
+  <div class="flow-root">
+      <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+          <li>
+              <div class="flex items-center">
+                  <div class="flex-shrink-0">
+                      <img class="w-20 h-20 rounded-full object-cover" width="75" height="75" [src]="photo || image" alt="{{ name }}">
+                  </div>
+                  <div class="flex-1 min-w-0 ms-4">
+                      <p class="text-base text-gray2 font-bold text-gray-900 truncate dark:text-white">
+                          {{ name }}
+                      </p>
+                      <p class="font-medium text-gray3 truncate dark:text-gray-400">
+                          <span class="text-sm">{{location}}</span>
+                      </p>
+                      <p class="leading-4 truncate">
+                          <span class="text-xs uppercase">{{languages || ('tutors.spanish' | translate)}}</span>
+                      </p>
+                      <p class="leading-4 text-gray3 truncate dark:text-gray-400">
+                          <span class="font-medium text-xs">{{ major }}</span>
+                      </p>
+                  </div>
+              </div>
+          </li>
+      </ul>
+ </div>
+</div>

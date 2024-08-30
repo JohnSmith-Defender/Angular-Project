@@ -1,0 +1,13 @@
+<div id="remote-video-container" class="h-[calc(100vh_-_300px)] sm:h-[calc(100vh_-_300px)] md:h-screen lg:h-screen">
+    <ng-container #remoteVideoContainer class="h-full w-full mx-auto bg-black"></ng-container>
+</div>
+<div class="absolute left-1/2 transform -translate-x-1/2 top-12 sm:top-12 md:top-8 lg:top-8 rounded-[35px] bg-black p-2 px-4">
+    <div class="flex items-center">
+        <div class="mr-4">
+            <img class="object-cover rounded-full w-12 h-12" [src]="participantInfo.image" [alt]="participantInfo.name">
+        </div>
+        <div class="text-white text-sm font-semibold">
+            {{ participantInfo.name }}
+        </div>
+    </div>
+</div>

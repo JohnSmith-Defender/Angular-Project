@@ -1,0 +1,67 @@
+<ng-container *ngIf="!isLoading && hasAccess">
+    <app-page-title [title]="pageName" [subtitle]="pageDescription"></app-page-title>
+    <div class="pt-10">
+        <div class="flex flex-wrap items-center w-full max-w-full">
+            <div class="w-full sm:w-full md:w-1/4 lg:w-1/4">
+                <app-search
+                    [searchText]="searchText"
+                    [placeholderText]="placeholderText"
+                    [buttonColor]="buttonColor"
+                    (onEnterPressed)="handleSearchChanged($event)"
+                    (doSearch)="handleSearchChanged($event)"
+                >
+                </app-search>
+            </div>
+            <div class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 mt-4 sm:mt-4 md:mt-0 lg:mt-0 flex items-center" *ngIf="showFilters">
+                <ng-container *ngFor="let setting of filterSettings">
+                    <ng-container *ngIf="setting?.field == 'category'">
+                        <app-filter
+                            [mode]="'buddies'"
+                            [buttonList]="buttonList"
+                            [buttonColor]="buttonColor"
+                            [list]="list"
+                            [defaultActiveFilter]="defaultActiveFilter"
+                            [filterSettings]="filterSettings"
+                            (filterList)="filteredList($event)"
+                            (onButtonClick)="filteredType($event)"
+                            (onFilterClick)="filterViewChanged($event)"
+                        ></app-filter>
+                    </ng-container>
+                    <ng-container *ngIf="setting?.field != 'category' && setting?.active == 1">
+                        <ng-container *ngIf="defaultActiveFilter">
+                            <div class="ml-14" *ngIf="setting?.field == 'language'">
+                                <app-language-filter 
+                                    [mode]="'language'"
+                                    [languageList]="languageList"
+                                    (filterList)="filteredLanguageList($event)"
+                                >
+                                </app-language-filter>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div class="pt-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 py-2 pb-20 gap-4">
+            <ng-container *ngFor="let item of mentors; let even=even; let i = index;">
+                <app-mentor-card
+                    [id]="item.id"
+                    [name]="item.name"
+                    [path]="item.path"
+                    [image]="item.buddy_image"
+                    [photo]="item.buddy_photo"
+                    [location]="item.location"
+                    [languages]="item.languages"
+                    [major]="item.major"
+                    [buttonColor]="buttonColor"
+                >
+                </app-mentor-card>
+            </ng-container>
+        </div>
+    </div>
+</ng-container>
+<div class="flex h-screen justify-center items-center" *ngIf="!isLoading && !hasAccess">
+    <app-no-access></app-no-access>  
+</div>

@@ -1,0 +1,20 @@
+[  
+    {  
+        "language": "es",  
+        "namees": "Español", 
+        "nameen": "Spanish",
+        "namefr": "Espagnol"  
+    },  
+    {  
+        "language": "en",  
+        "namees": "Inglés", 
+        "nameen": "English",
+        "namefr": "Anglais"   
+    },  
+    {  
+        "language": "fr",  
+        "namees": "Francés", 
+        "nameen": "French",
+        "namefr": "Français"   
+    }
+  ]  

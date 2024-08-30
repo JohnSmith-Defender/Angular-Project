@@ -1,0 +1,202 @@
+<div class="relative">
+  <div class="z-0 relative hidden md:block">
+    <img class="w-full" src="/src/assets/images/ideal_home/header/back.png" />
+  </div>
+  <div
+    class="z-20 relative md:absolute w-full top-0 left-0 flex flex-col justify-between h-full space-y-14 md:space-y-0"
+  >
+    <div class="w-10 h-[150px] md:h-[347px]"></div>
+    <div class="flex w-full justify-center md:justify-end">
+      <div class="basis-full md:basis-1/2 px-4 md:px-0 ml-0 md:ml-[-48px]">
+        <p class="text-center md:text-left text-[#CEB05A] text-2xl md:text-xl xl:text-2xl 2xl:text-4xl">
+          {{ this.titleTranslator(banner_title) | uppercase }}
+        </p>
+      </div>
+    </div>
+    <div class="flex justify-center md:pb-[42px]">
+      <div
+        class="grid grid-rows-4 grid-cols-1 sm:grid-rows-2 sm:grid-cols-2 md:grid-rows-1 md:grid-cols-4 gap-x-16 text-white gap-y-16"
+      >
+        <div class="rounded-xl bg-[#1E1E1E] py-4 px-2 hover:cursor-pointer" (click)="navigateToPage('professionals')">
+          <div class="flex flex-col items-center">
+            <img src="/src/assets/images/ideal_home/header/img1.png" class="w-[93px] h-[93px] object-cover" loading="lazy" width="93" height="93" />
+            <p class="mt-2 xl:text-xl 2xl:text-2xl">
+              {{ "professionals.talktoatarotreader" | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="rounded-xl bg-[#1E1E1E] py-4 px-2 hover:cursor-pointer" (click)="navigateToPage('shop')">
+          <div class="flex flex-col items-center">
+            <img src="/src/assets/images/ideal_home/header/img2.png" class="w-[93px] h-[93px] object-contain" loading="lazy" width="93" height="93" />
+            <p class="mt-2 xl:text-xl 2xl:text-2xl">
+              {{ "professionals.bookyourritual" | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="rounded-xl bg-[#1E1E1E] py-4 px-2 hover:cursor-pointer" (click)="navigateToPage('plans')">
+          <div class="flex flex-col items-center">
+            <img src="/src/assets/images/ideal_home/header/img3.png" class="w-[93px] h-[93px] object-contain" loading="lazy" width="93" height="93" />
+            <p class="mt-2 xl:text-xl 2xl:text-2xl">
+              {{ "professionals.attendyourevent" | translate }}
+            </p>
+          </div>
+        </div>
+        <div class="rounded-xl bg-[#1E1E1E] py-4 px-2 hover:cursor-pointer" (click)="navigateToPage('courses')">
+          <div class="flex flex-col items-center">
+            <img src="/src/assets/images/ideal_home/header/img4.png" class="w-[93px] h-[93px] object-contain" loading="lazy" width="93" height="93" />
+            <p class="mt-2 xl:text-xl 2xl:text-2xl">
+              {{ "professionals.takeyourcourse" | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="absolute top-[42%] left-[6%] z-10 hidden md:block">
+      <img
+        class="w-[36.7vw]"
+        src="/src/assets/images/ideal_home/header/people.png"
+      />
+    </div>
+  </div>
+</div>
+
+<div class="pt-32 relative">
+  <div class="absolute top-0 z-0 w-full">
+    <img class="w-full" src="/src/assets/images/ideal_home/back.jpg" />
+  </div>
+  <div class="relative z-10 md:container md:mx-auto lg:px-0 xl:px-8 2xl:px-40">
+    <div class="mb-12 flex justify-center">
+      <p class="text-[40px] font-bold text-center">
+        {{ "professionals.meetourtarotreaders" | translate }}
+      </p>
+    </div>
+
+    <div
+      class="flex flex-col gap-y-4 items-center xl:flex-row xl:justify-between"
+    >
+      <ng-container *ngFor="let professional of professionals">
+        <app-tarot-card [cardData]="professional" [language]="language" (onClick)="handleOnClick($event)"></app-tarot-card>
+      </ng-container>
+    </div>
+
+    <div class="flex flex-col relative items-center mt-12 mr-6 md:mr-0 2xl:mr-[-116px]">
+      <div class="absolute right-0 flex space-x-2 items-center">
+        <p
+          class="text-[#6F30C7] font-semibold text-2xl relative transform -translate-y-1/2"
+        >
+          {{ "professionals.seealltarotreaders" | translate }}&nbsp;
+          <fa-icon
+            class="fa w-5 h-5 text-[#6F30C7]"
+            [icon]="arrowRightIcon"
+          ></fa-icon>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="relative z-10 md:container md:mx-auto lg:px-0 xl:px-8 2xl:px-24">
+    <div class="flex 2xl:flex-row flex-col mt-[150px]">
+      <div
+        class="2xl:basis-2/5 basis-full flex items-center 2xl:items-normal flex-col 2xl:block"
+      >
+        <p class="font-bold text-[40px] text-center 2xl:text-left">
+          {{ "professionals.holisticprofessionals" | translate }}
+        </p>
+        <p class="mt-3 text-xl mb-28 mx-4 md:mx-0">
+          Lorem ipsum dolor sit amet consectetur. Tortor purus scelerisque
+          faucibus gravida mus ultricies dignissim. Non platea vestibulum
+          laoreet adipiscing lobortis
+        </p>
+
+        <div class="flex flex-col space-y-8">
+          <ng-container *ngFor="let category of categories">
+            <app-category-card
+              [cardData]="{
+                title: this.titleTranslator(category),
+                image: '/src/assets/images/ideal_home/dollar.png'
+              }"
+            />
+          </ng-container>
+        </div>
+      </div>
+      <div
+        class="2xl:items-normal 2xl:block 2xl:basis-3/5 pr-15 pt-6 basis-full flex flex-col items-center"
+      >
+        <div class="flex">
+          <div
+            class="ml-0 2xl:ml-52 mt-9 bg-[#A77FE0] justify-center items-center w-20 h-20 rounded-md mr-7 hidden md:flex opacity-50"
+          >
+            <img src="/src/assets/images/ideal_home/snow.png" />
+          </div>
+          <div class="mr-1">
+            <app-tarot-card-portrait [cardData]="professionals[0]" [language]="language" [buttonColor]="buttonColor" (onClick)="handleOnClick($event)" />
+          </div>
+        </div>
+        <div class="flex mt-7">
+          <div
+            class="mt-16 bg-[#A77FE0] hidden md:flex justify-center items-center w-20 h-20 rounded-md mr-7 opacity-50"
+          >
+            <img src="/src/assets/images/ideal_home/human.png" />
+          </div>
+          <div class="mr-1">
+            <app-tarot-card-portrait [cardData]="professionals[1]" [language]="language" [buttonColor]="buttonColor" (onClick)="handleOnClick($event)" />
+          </div>
+        </div>
+        <div class="flex mt-5">
+          <div
+            class="ml-0 2xl:ml-52 mt-10 bg-[#A77FE0] hidden md:flex justify-center items-center w-20 h-20 rounded-md mr-10 opacity-50"
+          >
+            <img src="/src/assets/images/ideal_home/rune.png" />
+          </div>
+          <div class="mr-1">
+            <app-tarot-card-portrait [cardData]="professionals[2]" [language]="language" [buttonColor]="buttonColor" (onClick)="handleOnClick($event)" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="justify-center flex mt-[160px]">
+    <p class="font-semibold text-[35px] text-center">
+      {{ "professionals.gettoknowourfreeresources" | translate }}
+    </p>
+  </div>
+
+  <div class="mt-24 md:container md:mx-auto">
+    <div
+      class="grid gap-x-14 gap-y-6 grid-rows-4 grid-cols-1 md:grid-rows-2 md:grid-cols-2 xl:grid-rows-1 xl:grid-cols-4"
+    >
+
+      <ng-container *ngFor="let service of services">
+        <div class="flex justify-center">
+          <app-blog-card [cardData]="{ title: titleTranslator(service), description: descriptionTranslator(service) }" />
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="flex justify-center mt-20">
+    <div (click)="navigateToPage('/free-services')"
+      class="hover:cursor-pointer py-4 px-5 bg-gradient-to-r from-[#A77FE0] to-[#874FD5] text-2xl font-semibold text-white rounded-md"
+    >
+      {{ "professionals.seeallservices" | translate }}
+    </div>
+  </div>
+
+  <app-testimonial-card [cardData]="testimonial" />
+  <div class="justify-center flex mt-20 sm:mt-20 md:mt-0 lg:mt-0">
+    <p class="font-semibold text-[35px] text-center mb-20">
+      {{ "landing.followoninstagram" | translate }}
+    </p>
+  </div>
+  <div class="w-full max-w-full sm:w-full sm:max-w-full md:w-screen-2xl md:max-w-screen-2xl lg:w-screen-2xl lg:max-w-screen-2xl mx-auto h-[650px] overflow-y-auto mb-60">
+    <iframe
+      src="https://www.juicer.io/api/feeds/genelynancheta/iframe"
+      frameborder="0"
+      width="100%"
+      height="650"
+      style="display: block; margin: 0 auto"
+    ></iframe>
+  </div>
+</div>

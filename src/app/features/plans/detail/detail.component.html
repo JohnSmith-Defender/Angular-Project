@@ -1,0 +1,733 @@
+<ng-container *ngIf="plan?.status == 1 || (superAdmin || showOption)">
+    <div class="hidden sm:hidden md:block lg:block">
+        <app-breadcrumb
+            [level1Title]="level1Title"
+            [level2Title]="level2Title"
+            [level3Title]="level3Title"
+            [level4Title]="level4Title"
+            [buttonColor]="buttonColor"
+            (goBack)="handleGoBack()"
+        />
+    </div>
+    <app-page-title [title]="title" [subtitle]="subtitle"></app-page-title>
+    <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row pt-4" *ngIf="superAdmin || showOption">
+        <button 
+            class="h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+            (click)="duplicate()"
+            [ngStyle]="{
+                'background-color': buttonColor,
+                'opacity': duplicateHover ? 1.5 : 1,
+                'filter': duplicateHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (mouseover)="toggleDuplicateHover(true)"
+            (mouseleave)="toggleDuplicateHover(false)"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                <path d="M5 9V4.13a2.96 2.96 0 0 0-1.293.749L.879 7.707A2.96 2.96 0 0 0 .13 9H5Zm11.066-9H9.829a2.98 2.98 0 0 0-2.122.879L7 1.584A.987.987 0 0 0 6.766 2h4.3A3.972 3.972 0 0 1 15 6v10h1.066A1.97 1.97 0 0 0 18 14V2a1.97 1.97 0 0 0-1.934-2Z"/>
+                <path d="M11.066 4H7v5a2 2 0 0 1-2 2H0v7a1.969 1.969 0 0 0 1.933 2h9.133A1.97 1.97 0 0 0 13 18V6a1.97 1.97 0 0 0-1.934-2Z"/>
+            </svg>
+            <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.duplicate' | translate }}</span>
+        </button>
+        <button 
+            class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+            (click)="handleEditRoute()" 
+            [ngStyle]="{
+                'background-color': buttonColor,
+                'opacity': editHover ? 1.5 : 1,
+                'filter': editHover ? 'brightness(0.8)' : 'brightness(1)'
+            }"
+            (mouseover)="toggleEditHover(true)"
+            (mouseleave)="toggleEditHover(false)"
+        >
+            <svg class="w-3 h-3 text-white dark:text-white mr-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+            </svg>
+            <span class="text-white text-md font-semibold uppercase">{{ 'plan-details.edit' | translate }}</span>
+        </button>
+        <button 
+            class="ml-0 sm:ml-0 md:ml-4 lg:ml-4 border h-[52px] flex items-center p-3.5 px-8 rounded-[15px] justify-center mb-4 sm:mb-4 md:mb-0 lg:mb-0 transition duration-700 ease-in-out"
+            (click)="handleDelete()" 
+            [ngStyle]="{
+                'border-color': deleteHover ? 'transparent' : buttonColor,
+                'background-color': deleteHover ? buttonColor : '#fff',
+            }"
+            (mouseover)="toggleDeleteHover(true)"
+            (mouseleave)="toggleDeleteHover(false)"
+        >
+            <svg class="w-3 h-3 mr-1" [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+            </svg>
+            <span class="text-md font-semibold uppercase" 
+                [ngStyle]="{'color': deleteHover ? '#fff' : buttonColor}">
+                {{ 'plan-details.delete' | translate }}
+            </span>
+        </button>
+    </div>
+    <div class="my-10">
+        <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row mb-8">
+            <div class="relative mr-0 sm:mr-0 md:mr-[58px] lg:mr-[58px]">
+                <div *ngIf="plan?.credits == 1" class="absolute top-2 right-2  flex items-start justify-end pt-3 pr-4 text-sm text-white font-semibold">
+                    <div class="flex py-1.5 px-3 items-center rounded-lg" [ngStyle]="{'background-color': buttonColor}">
+                        <span class="text-xs text-white uppercase">{{ featuredTitle }}</span>
+                        <svg class="ml-2 w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6.072 10.072 2 2 6-4m3.586 4.314.9-.9a2 2 0 0 0 0-2.828l-.9-.9a2 2 0 0 1-.586-1.414V5.072a2 2 0 0 0-2-2H13.8a2 2 0 0 1-1.414-.586l-.9-.9a2 2 0 0 0-2.828 0l-.9.9a2 2 0 0 1-1.414.586H5.072a2 2 0 0 0-2 2v1.272a2 2 0 0 1-.586 1.414l-.9.9a2 2 0 0 0 0 2.828l.9.9a2 2 0 0 1 .586 1.414v1.272a2 2 0 0 0 2 2h1.272a2 2 0 0 1 1.414.586l.9.9a2 2 0 0 0 2.828 0l.9-.9a2 2 0 0 1 1.414-.586h1.272a2 2 0 0 0 2-2V13.8a2 2 0 0 1 .586-1.414Z"/>
+                        </svg>
+                    </div>
+                </div>
+                <ng-container *ngIf="plan?.default_cover != 'video'">
+                    <img 
+                        *ngIf="plan?.image"
+                        class="rounded-[30px] object-cover object-top w-full max-w-full sm:w-full sm:max-w-full md:w-[540px] md:max-w-[540px] lg:w-[540px] lg:max-w-[540px] sm:h-auto md:h-[510px] lg:h-[510px] max-h-auto md:max-h-[510px] lg:max-h-[510px]"
+                        [ngSrc]="apiPath + plan?.path + plan?.image" 
+                        [alt]="getEventTitle(plan)" 
+                        width="540" 
+                        height="510"
+                    >
+                </ng-container>
+                <ng-container *ngIf="plan?.video && plan?.default_cover == 'video'">
+                    <video class="object-fill w-full h-auto max-w-full border border-gray-200 rounded-lg dark:border-gray-700" controls>
+                        <source [src]="apiPath + '/get-ie-image-plan/' + plan?.video" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video> 
+                </ng-container>
+            </div>
+            <div class="w-full mr-0 sm:mr-0 md:mr-[80px] lg:mr-[80px]">
+                <div class="w-full max-w-full">
+                    <div class="text-3xl font-semibold flex items-center">
+                        <span>{{ planTitle }}</span>
+                        <ng-container *ngIf="plan?.status != 1">
+                            <svg class="ml-4 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z" clip-rule="evenodd"/>
+                            </svg>
+                        </ng-container>
+                    </div>
+                    <div class="flex flex-row flex-wrap items-center mt-2 mb-8">
+                        <div class="flex">
+                            <svg *ngIf="planDay" class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1v3m5-3v3m5-3v3M1 7h18M5 11h10M2 3h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/>
+                            </svg>
+                            <div class="capitalize font-semibold mr-8 notranslate">{{ planDay }}</div>
+                        </div>
+                        <div class="flex">
+                            <svg *ngIf="planTime" class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 6v4l3.276 3.276M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                            <div class="capitalize font-semibold notranslate">{{ planTime }}</div>
+                        </div>
+                        <ng-container *ngIf="showCanaryTime && plan?.hour_canary == 1">
+                            <span class="ml-2">
+                                <span class="capitalize font-semibold">{{ 'plan-details.canarytime' | translate }}:</span> 
+                                <span class="capitalize font-semibold ml-3">{{ planDateCanary }}</span>
+                            </span>
+                        </ng-container>
+                    </div>
+                    <div *ngIf="planTitle" class="flex justify-between flex-gap-row flex-col sm:flex-col md:flex-row lg:flex-row">
+                        <div *ngIf="showJoinButton && joinStatusChecked && !isExternalRegistration &&
+                            (
+                                pendingBizumConfirmation ||
+                                getRequestJoinStatus() ||
+                                getJoinStatus() ||
+                                (waitingListActive && plan?.waiting_list == 1 && activateWaitingList && !joinedParticipant)
+                            )
+                        " 
+                            class="w-full max-w-full flex justify-between items-center flex-gap-col">
+                            <ng-container *ngIf="!isExternalRegistration">
+                                <button
+                                    *ngIf="getRequestJoinStatus()"
+                                        class="btn w-full max-w-full h-[52px] text-white text-base uppercase font-semibold"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                    (click)="handleRequestJoin()"
+                                    [disabled]="pendingRequest || onSubmit"
+                                >
+                                    {{ 'plan-details.pending' | translate }}
+                                </button>
+                                <button
+                                    *ngIf="pendingBizumConfirmation"
+                                    class="btn w-full max-w-full h-[52px] text-white text-base uppercase font-semibold"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor
+                                    }"
+                                    disabled
+                                >
+                                    {{ 'plan-details.pending' | translate }}
+                                </button>
+                                <button
+                                    *ngIf="getJoinStatus() && !pendingBizumConfirmation"
+                                    class="btn w-full max-w-full h-[52px] text-white text-base uppercase font-semibold transition duration-700 ease-in-out"
+                                    [ngStyle]="{
+                                        'background-color': buttonColor,
+                                        'opacity': joinHover ? 1.5 : 1,
+                                        'filter': joinHover ? 'brightness(0.8)' : 'brightness(1)'
+                                    }"
+                                    (click)="handleJoin()"
+                                    (mouseover)="toggleJoinHover(true)"
+                                    (mouseleave)="toggleJoinHover(false)"
+                                >
+                                    {{ activityFeeEnabled && plan?.stripe_pay == 1 && plan?.price > 0 ? ((companyId == 35 ? ('service.reserve' | translate) : ('service.pay' | translate)) + ' ' + (plan?.price.replace('.00', '') + '€')) : ('plan-details.join' | translate) }}
+                                </button>
+                                <ng-container *ngIf="waitingListActive && plan?.waiting_list == 1">
+                                    <button
+                                        *ngIf="activateWaitingList && !joinedParticipant"
+                                        class="btn w-full max-w-full h-[52px] text-white text-base uppercase font-semibold"
+                                        [ngStyle]="{
+                                            'background-color': isInWaitingList ? '#dc3545' : buttonColor
+                                        }"
+                                        (click)="handleWaitingList()"
+                                    >
+                                        {{
+                                            !isInWaitingList ? 
+                                                (language == 'en' ? 
+                                                    (waitingListButtonTextEn ? waitingListButtonTextEn : ('plan-details.joinwaitinglist' | translate)) 
+                                                    : waitingListButtonTextEs ? waitingListButtonTextEs : ('plan-details.joinwaitinglist' | translate))
+                                                : 
+                                                    (language == 'en' ? 
+                                                        (waitingListCancelButtonTextEn ? waitingListCancelButtonTextEn : (('plan-details.pendingwaitinglist' | translate) + ' ' + ('plan-details.cancelrequest' | translate)))
+                                                        : waitingListCancelButtonTextEs ? waitingListCancelButtonTextEs : (('plan-details.pendingwaitinglist' | translate) + ' ' + ('plan-details.cancelrequest' | translate)))
+                                        }}
+                                    </button>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+                        <div class="ml-4 w-full max-w-full flex flex-col sm:flex-col md:flex-row lg:flex-row justify-between items-center" 
+                            *ngIf="joinedParticipant && (plan?.plan_date >= today || !isPastEvent)">
+                            <div class="w-[200px] flex items-center justify-center sm:justify-center md:justify-normal lg:justify-normal mr-4 bg-white rounded-lg">
+                                <img class="w-6 h-6 object-fit mr-4" src="./assets/images/new-design/icons/check.png">
+                                <span class="text-base uppercase font-semibold">{{ 'plan-details.youjoined' | translate }}</span>
+                            </div>
+                            <button
+                                class="px-4 btn text-base text-white uppercase p-0 h-[52px] transition duration-700 ease-in-out"
+                                (click)="handleLeave()"
+                                [disabled]="onSubmit"
+                                [ngStyle]="{
+                                    'background-color': buttonColor,
+                                    'opacity': leaveHover ? 1.5 : 1,
+                                    'filter': leaveHover ? 'brightness(0.8)' : 'brightness(1)'
+                                }"
+                                (mouseover)="toggleLeaveHover(true)"
+                                (mouseleave)="toggleLeaveHover(false)"
+                            >
+                                {{ 'plan-details.leaveplan' | translate }}
+                            </button>
+                        </div>
+                        <div class="w-full max-w-full flex-gap-col mt-4 sm:mt-4 md:mt-0 lg:mt-0 transition duration-700 ease-in-out"
+                            (mouseover)="toggleAddCalendarHover(true)"
+                            (mouseleave)="toggleAddCalendarHover(false)"
+                        >
+                            <div title="Add to Calendar" class="w-full max-w-full text-center addeventatc add-calendar rounded-lg" 
+                                [ngStyle]="{
+                                    'border-color': addCalendarHover ? 'transparent' : buttonColor,
+                                    'background-color': addCalendarHover ? buttonColor : '#fff',
+                                    'color': addCalendarHover ? '#fff' : buttonColor,
+                                }"
+                                *ngIf="userId">
+                                <span class="add text-base uppercase transition duration-700 ease-in-out"
+                                    [ngStyle]="{
+                                        'color': addCalendarHover ? '#fff' : buttonColor,
+                                    }"
+                                >{{ 'plan-details.addtocalendar' | translate }}</span>
+                                <span class="start">{{ calendarStartDate | date:'MM/d/yyyy'}} {{calendarStartDate | date:'HH:mm' }}</span>
+                                <span *ngIf="calendarEndDate" class="end">{{ calendarEndDate | date:'MM/d/yyyy'}} {{calendarEndDate | date:'HH:mm' }}</span>
+                                <span class="timezone">Europe/Madrid</span>
+                                <span class="title">{{ plan?.title }}</span>
+                                <span class="description" [innerHtml]="getEventDescription() | safeContentHtml: 'html'"></span>
+                                <span class="location" *ngIf="canShowAddress && plan && getAddress(plan)">{{ getAddress(plan) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="my-4" *ngIf="activateWaitingList && (superAdmin || showOption) && waitingList?.length > 0">
+                        <button
+                            class="btn w-[345px] max-w-[345px] h-[52px] text-white text-base uppercase font-semibold transition duration-700 ease-in-out"
+                            [ngStyle]="{
+                                'background-color': '#1e1e1e',
+                                'opacity': joinHover ? 1.5 : 1,
+                                'filter': joinHover ? 'brightness(0.8)' : 'brightness(1)'
+                            }"
+                            (click)="downloadWaitingList()"
+                            (mouseover)="toggleJoinHover(true)"
+                            (mouseleave)="toggleJoinHover(false)"
+                        >
+                        {{ 'edit-plan.downloadwaitinglist' | translate }} ({{ waitingList?.length }})
+                        </button>
+                    </div>
+                    <ng-container *ngIf="plan?.show_attendee && limitPlanParticipants?.length > 0">
+                        <div class="my-12">
+                            <div class="capitalize font-semibold mb-4">{{ getSeatsLabel() }}</div>
+                            <div class="px-8 flex items-center">
+                                <div class="mr-4 mb-4 sm:mb-4 md:mb-0 lg:mb-0">
+                                    <div class="flex flex-wrap">
+                                        <ng-container *ngFor="let member of limitPlanParticipants; let i = index">
+                                            <div [attr.data-popover-target]="'popover-member-profile-' + member.fk_user_id">
+                                                <img
+                                                    (click)="goToMemberProfilePage(member)"
+                                                    class="rounded-full min-w-[55px] max-w-[55px] min-h-[55px] max-h-[55px] object-cover object-top" 
+                                                    [ngClass]="{'-ml-6': i > 0, 'hover:cursor-pointer': hasMembers && member?.password}"
+                                                    width="55"
+                                                    height="55"
+                                                    [ngSrc]="apiPath + '/' + (member.image || 'empty_avatar.png')"
+                                                />
+                                            </div>
+                                            <div data-popover [attr.id]="'popover-member-profile-' + member.fk_user_id" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:bg-gray-800 dark:border-gray-600">
+                                                <div class="p-3">
+                                                    <div class="flex items-center justify-between mb-3">
+                                                        <a href="{{ hasMembers ? ('/members/details/' + member.fk_user_id) : 'javascript:;'}}">
+                                                            <img 
+                                                                class="max-w-[55px] max-h-[55px] rounded-full" 
+                                                                width="55"
+                                                                height="55"
+                                                                [ngSrc]="apiPath + '/' + (member.image || 'empty_avatar.png')" 
+                                                                alt="{{member?.name || (member?.first_name + ' ' + member?.last_name)}}">
+                                                        </a>
+                                                        <div>
+                                                            <button type="button" class="bg-white text-blue-600 border-2 border-blue-600 font-medium rounded-lg text-xs px-3 py-1.5">
+                                                                {{companyId == 12 ? (member?.password ? ('your-admin-area.member' | translate) : ('crm.guest' | translate)) : member?.type}}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <p class="text-base font-semibold leading-none text-gray-900 dark:text-white">
+                                                        <a href="javascript:;">{{member?.name || (member?.first_name + ' ' + member?.last_name)}}</a>
+                                                    </p>
+                                                    <p class="mb-3 text-xs font-normal">
+                                                        <a href="javascript:;" class="hover:underline">{{member?.email}}</a>
+                                                    </p>
+                                                </div>
+                                                <div data-popper-arrow></div>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="flex my-4" [ngClass]="{'my-8': !(plan?.show_attendee && limitPlanParticipants?.length > 0)}" *ngIf="getCategoryLabel()">
+                        <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+                            <path d="M15.045.007 9.31 0a1.965 1.965 0 0 0-1.4.585L.58 7.979a2 2 0 0 0 0 2.805l6.573 6.631a1.956 1.956 0 0 0 1.4.585 1.965 1.965 0 0 0 1.4-.585l7.409-7.477A2 2 0 0 0 18 8.479v-5.5A2.972 2.972 0 0 0 15.045.007Zm-2.452 6.438a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <div class="capitalize font-semibold">{{ getCategoryLabel() }}</div>
+                    </div>
+                    <div class="flex my-4" *ngIf="getAddress(plan)">
+                        <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 21">
+                            <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path d="M8 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                            <path d="M13.8 12.938h-.01a7 7 0 1 0-11.465.144h-.016l.141.17c.1.128.2.252.3.372L8 20l5.13-6.248c.193-.209.373-.429.54-.66l.13-.154Z"/>
+                            </g>
+                        </svg>
+                        <div class="capitalize font-semibold">{{ getAddress(plan) }}{{ plan?.meeting_point ? (', ' + plan?.meeting_point) : '' }}</div>
+                    </div>
+                    <div class="flex my-4" *ngIf="plan?.price > 0">
+                        <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M7 6c0-1.1.9-2 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-2v-4a3 3 0 0 0-3-3H7V6Z" clip-rule="evenodd"/>
+                            <path fill-rule="evenodd" d="M2 11c0-1.1.9-2 2-2h11a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-7Zm7.5 1a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z" clip-rule="evenodd"/>
+                            <path d="M10.5 14.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"/>
+                        </svg>
+                        <div class="capitalize font-semibold">€{{ plan?.price }}</div>
+                    </div>
+                    <ng-container *ngIf="plan?.zoom_link">
+                        <ng-container *ngIf="(companyId == 12 && (superAdmin || showOption || joinedParticipant)) || (companyId != 12 && (superAdmin || showOption || !plan?.private || (plan?.private && joinedParticipant)))">
+                            <div class="flex my-4">
+                                <svg class="w-6 h-6 mr-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 14">
+                                    <path d="M11 0H2a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm8.585 1.189a.994.994 0 0 0-.9-.138l-2.965.983a1 1 0 0 0-.685.949v8a1 1 0 0 0 .675.946l2.965 1.02a1.013 1.013 0 0 0 1.032-.242A1 1 0 0 0 20 12V2a1 1 0 0 0-.415-.811Z"/>
+                                </svg>
+                                <div class="font-semibold">
+                                    <a 
+                                        [href]="plan?.zoom_link" 
+                                        [ngStyle]="{'color': buttonColor, 'word-break': 'break-word'}"
+                                        target="_blank">
+                                        {{ plan?.zoom_link_text || plan?.zoom_link }}
+                                    </a>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="plan?.teams_link">
+                        <ng-container *ngIf="superAdmin || showOption || !plan?.private || (plan?.private && joinedParticipant)">
+                            <div class="flex my-4">
+                                <img class="mr-4 h-[24px]" width="24" height="24" src="./assets/images/teams.png" />
+                                <div class="font-semibold">
+                                    <a 
+                                        [href]="plan?.teams_link" 
+                                        [ngStyle]="{'color': buttonColor, 'word-break': 'break-word'}"
+                                        target="_blank">
+                                        {{ plan?.teams_link_text || plan?.teams_link }}
+                                    </a>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="plan?.youtube_link">
+                        <ng-container *ngIf="superAdmin || showOption || !plan?.private || (plan?.private && joinedParticipant)">
+                            <div class="flex my-4">
+                                <img class="mr-[10px] h-[24px]" width="30" height="24" src="./assets/images/youtube.png" />
+                                <div class="font-semibold">
+                                    <a 
+                                        [href]="plan?.youtube_link" 
+                                        [ngStyle]="{'color': buttonColor, 'word-break': 'break-word'}"
+                                        target="_blank">
+                                        {{ plan?.youtube_link_text || plan?.youtube_link }}
+                                    </a>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <ng-container *ngIf="hasSpeaker && selectedSpeaker && selectedSpeaker?.length > 0">
+                        <div class="flex my-4 items-center">
+                            <img class="mr-[10px] h-[32px]" width="30" height="24" src="./assets/images/speaker.jpg" />
+                            <div class="font-semibold">
+                                {{ selectedSpeaker?.first_name ? (selectedSpeaker?.first_name + ' ' + selectedSpeaker?.last_name) : selectedSpeaker?.name }}
+                            </div>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="hasGuestSpeaker && guestSpeaker && guestSpeaker != 'null'">
+                        <div class="flex my-4 items-center">
+                            <img class="mr-[10px] h-[32px]" width="30" height="24" src="./assets/images/guest-speaker.png" />
+                            <div class="font-semibold">
+                                {{ guestSpeaker == 'null' ? '' : guestSpeaker }}
+                            </div>
+                        </div>
+                    </ng-container>
+                    <div class="my-12 flex items-center" *ngIf="title">
+                        <div class="opacity-60 mr-4">{{ companyId == 12 ? ('plan-create.incharge' | translate) : ('plan-details.createdby' | translate) }}:</div>
+                        <div class="font-semibold">
+                            {{ createdBy || planCreator?.name || (planCreator?.first_name + ' ' + planCreator?.last_name) }}
+                        </div>
+                    </div>
+                    <div class="flex items-center" *ngIf="getShareStatus()">
+                        <div *ngIf="emailTo" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer">
+                            <div class="h-[36px]">
+                                <a [href]="emailTo" target="_blank">
+                                    <img width="36" height="36" class="object-contain" src="./assets/icons/link-chain.png"> 
+                                </a>
+                            </div>
+                            <div class="my-4 text-center opacity-60">
+                                <div class="flex items-center justify-center">
+                                    <div>
+                                        <a [href]="emailTo" target="_blank">
+                                            {{ 'plan-details.share' | translate }}
+                                        </a>
+                                    </div>
+                                    <svg data-popover-target="popover-default1" 
+                                        class="w-4 h-4 ml-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
+                                        fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                    </svg>
+                                    <div data-popover id="popover-default1" role="tooltip" 
+                                        (click)="openInstructionReference()" 
+                                        class="absolute w-3/12 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-black rounded-lg shadow-sm opacity-0 dark:bg-gray-700">
+                                        {{ 'landing.mailto' | translate }}
+                                        <div class="tooltip-arrow" data-popper-arrow></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div (click)="copyText()" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer">
+                            <div class="h-[36px]">
+                                <img width="36" height="36" class="object-contain h-[36px]" src="./assets/icons/copy-paste.png">
+                            </div>
+                            <div class="my-4 text-center opacity-60">{{ 'plan-details.copylink' | translate }}</div>
+                        </div>
+                        <!-- <div (click)="sendEmailInvite()" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer" *ngIf="hasEmailInvite && (superAdmin || showOption)">
+                            <img width="36" height="36" class="object-contain" src="./assets/icons/mail-send.png">
+                            <div class="w-[80px] max-w-[80px] mt-4 text-center opacity-60">{{ 'plan-details.sharebyemail' | translate }}</div>
+                        </div> -->
+                        <div (click)="shareByWhatsApp(whatsAppTemplate)" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer">
+                            <div class="h-[36px]">
+                                <img width="36" height="36" class="object-contain h-[36px]" src="./assets/icons/whatsapp.png">
+                            </div>
+                            <div class="my-4 text-center opacity-60">WhatsApp</div>
+                        </div>
+                        <div (click)="shareByTelegram(telegramTemplate)" class="flex flex-col items-center justify-center mr-12 hover:cursor-pointer">
+                            <div class="h-[36px]">
+                                <img width="36" height="36" class="object-contain h-[36px]" src="./assets/icons/telegram.png">
+                            </div>
+                            <div class="my-4 text-center opacity-60">Telegram</div>
+                        </div>
+                    </div>
+                    <ng-container *ngIf="(admin1 || superAdmin) && companyId == 12">
+                        <ng-container *ngIf="(admin1 || superAdmin) && companyId == 12">
+                            <div class="py-6" *ngIf="additionalInvitationLinks?.length > 0 && invitationLink">
+                                <div class="py-4">
+                                    <button
+                                        (click)="showAddNewLink()"
+                                        type="button"
+                                        class="w-[250px] inline-block h-[52px] text-base px-6 py-2 mt-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                    >
+                                        <div class="flex items-center">
+                                            <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.2 9.8a3.4 3.4 0 0 0-4.8 0L5 13.2A3.4 3.4 0 0 0 9.8 18l.3-.3m-.3-4.5a3.4 3.4 0 0 0 4.8 0L18 9.8A3.4 3.4 0 0 0 13.2 5l-1 1"/>
+                                            </svg>
+                                            <span class="ml-4">
+                                                {{ 'plan-details.generateanotherlink' | translate }}
+                                            </span>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div *ngIf="isAddNewLink">
+                                    <div class="flex items-center mb-4">
+                                        <div>{{ invitationLink }}</div>
+                                        <input 
+                                            [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !editLink }"
+                                            type="text" 
+                                            class="ml-4 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-[150px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                            [(ngModel)]="newLink"
+                                            [ngModelOptions]="{standalone: true}"
+                                        />
+                                        <svg (click)="linkAction('add')" [ngStyle]="{'color': buttonColor}" class="ml-4 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"/>
+                                        </svg>
+                                        <svg (click)="hideAdd()" [ngStyle]="{'color': buttonColor}" class="ml-4 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6m0 12L6 6"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="p-6 rounded-lg" [ngStyle]="{'background-color': '#F8F4F4', 'box-shadow': '0px 40px 54px -45px #00000099'}">
+                                    <div class="font-semibold pb-4">{{ 'plan-details.otherinvitationlinks' | translate }}:</div>
+                                    <div class="flex flex-col w-full max-w-full align-center justify-between items-center">
+                                        <div class="w-full max-w-full flex items-center pb-4" *ngFor="let link of additionalInvitationLinks">
+                                            <div *ngIf="!link.isEditLink">
+                                                <a href="{{ invitationLink + link?.link }}" target="_blank">{{ invitationLink + link?.link }}</a>
+                                            </div>
+                                            <div *ngIf="!link.isEditLink" class="flex items-center">
+                                                <div class="copy"><i class="fa fa-copy" aria-hidden="true" (click)="copyLink(invitationLink + link?.link)" [ngStyle]="{'color': buttonColor}"></i></div>
+                                                <svg (click)="showEditLink('show', link.aliasId)" [ngStyle]="{'color': buttonColor}" class="ml-4 hover:cursor-pointer mr-4 w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="m13.835 7.578-.005.007-7.137 7.137 2.139 2.138 7.143-7.142-2.14-2.14Zm-10.696 3.59 2.139 2.14 7.138-7.137.007-.005-2.141-2.141-7.143 7.143Zm1.433 4.261L2 12.852.051 18.684a1 1 0 0 0 1.265 1.264L7.147 18l-2.575-2.571Zm14.249-14.25a4.03 4.03 0 0 0-5.693 0L11.7 2.611 17.389 8.3l1.432-1.432a4.029 4.029 0 0 0 0-5.689Z"/>
+                                                </svg>
+                                                <svg (click)="linkAction('delete', link.aliasId)" [ngStyle]="{'color': buttonColor}" class="hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                                                    <path d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z"/>
+                                                </svg>
+                                            </div>
+                                            <div *ngIf="link.isEditLink">
+                                                <div class="flex items-center">
+                                                    {{ invitationLink }}
+                                                    <input 
+                                                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': !editLink }"
+                                                        type="text" 
+                                                        class="ml-4 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-[150px] py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                                        [(ngModel)]="editLink"
+                                                        [ngModelOptions]="{standalone: true}" 
+                                                        required>
+                                                    <svg (click)="linkAction('edit', link.aliasId)" [ngStyle]="{'color': buttonColor}" class="ml-4 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"/>
+                                                    </svg>
+                                                    <svg (click)="showEditLink('hide')" [ngStyle]="{'color': buttonColor}" class="ml-4 hover:cursor-pointer w-6 h-6 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6m0 12L6 6"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+        <div class="py-4" *ngIf="plan.show_description">
+            <div class="container mb-4 flex items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+                <h1 class="text-lg font-semibold">{{ 'plan-details.details' | translate }}</h1>
+            </div>
+            <div class="event-description-div1 whitespace-pre-wrap text-base w-full" [innerHTML]="eventDescription | safeContentHtml: 'html'"></div>
+        </div>
+        <div class="py-4" 
+            *ngIf="((userId && !showPastEvents) || (userId && showPastEvents && !isPastEvent)) && plan?.show_comments">
+            <div class="container mb-4 flex items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+                <h1 class="text-lg font-semibold">{{ 'plan-details.comments' | translate }}</h1>
+            </div>
+            <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row py-4"
+                [ngClass]="{'w-full max-w-full md:w-6/12 lg:w-6/12': planComments?.length == 0}">
+                <div class="mr-0 sm:mr-0 md:mr-8 lg:mr-8" 
+                    *ngIf="planComments?.length > 0">
+                    <div class="w-full sm:w-full md:w-[540px] lg:w-[540px] max-w-full md:max-w-full lg:max-w-[540px]">
+                        <div *ngFor="let comment of planComments" [ngClass]="{'ml-4 sm:ml-4 md:ml-20 lg:ml-20': comment?.parent_group_plan_comment_id > 0 || comment?.parent_plan_comment_id > 0}">
+                            <div class="border border-gray-300 border-b-1 border-t-0 border-l-0 border-r-0 mb-8">
+                                <div class="flex items-center">
+                                    <img
+                                        src="{{apiPath + '/' + (comment?.image || comment?.CompanyUser?.image)}} "
+                                        [alt]="comment?.first_name"
+                                        class="object-cover rounded-full w-16 h-16 mr-4"
+                                        width="30"
+                                    >
+                                    <div class="w-full">
+                                        <div class="flex justify-between">
+                                            <div class="w-full">
+                                                <div class="font-bold">{{ comment?.first_name || comment?.CompanyUser?.first_name || 'anonymous' }}</div>
+                                                <div class="text-sm">{{ formatDate(comment?.createdAt) }}</div>
+                                            </div>
+                                            <div class="flex">
+                                                <div *ngIf="companyId == 32 && superAdmin && comment?.approved != 1" class="hover:cursor-pointer p-2 px-4 h-8 rounded-lg mr-4" [ngStyle]="{'background-color': buttonColor}">
+                                                    <svg class="w-4 h-4 text-white dark:text-white" (click)="approveComment(comment)" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"/>
+                                                    </svg>
+                                                </div>
+                                                <div *ngIf="superAdmin || showOption" class="hover:cursor-pointer p-2 px-4 h-8 rounded-lg" (click)="confirmDeleteComment(comment)" [ngStyle]="{'background-color': buttonColor}">
+                                                    <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"></path>
+                                                    </svg>
+                                                </div>
+                                                <div class="flex items-center justify-center ml-4 bg-white rounded-lg p-2 px-6 h-8 hover:cursor-pointer">
+                                                    <img *ngIf="checkHeartReaction(comment) == false" class="w-5 h-5 mr-4" src="./assets/images/new-design/icons/heart-unselected.png" (click)="toggleHeart(comment, true)">
+                                                    <img *ngIf="checkHeartReaction(comment) == true" class="w-5 h-5 mr-4" src="./assets/images/new-design/icons/heart-selected.png" (click)="toggleHeart(comment, false)">
+                                                    <span>{{ getReactions(comment)?.length || 0 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4" [innerHTML]="comment?.comment"></div>
+                                <div 
+                                    *ngIf="!blockResponseToComments || (blockResponseToComments && (superAdmin || showOption))"
+                                    class="text-white flex items-center justify-center py-2 px-8 w-[130px] max-w-[130px] mt-4 mb-8 rounded-lg" 
+                                    [ngStyle]="{'background-color': buttonColor}"
+                                    (click)="toggleChildComment(comment?.id)"
+                                >
+                                    <img class="w-4 h-4 mr-2" src="./assets/images/new-design/icons/Respond.png">
+                                    <span class="text-xs">{{ 'club-details.comment' | translate }}</span>
+                                </div>
+                                <div *ngIf="showChildComment && selectedCommentId == comment?.id" class="mb-16">
+                                    <textarea name="" id="" cols="30" rows="3"
+                                        class="w-full rounded-lg p-4 border border-gray-300"
+                                        placeholder="{{ 'club-details.addanewcomment' | translate }}"
+                                        [(ngModel)]="childComment" >
+                                    </textarea>
+                                    <button (click)="addChildComment(comment)" 
+                                        class="btn text-white mb-8 float-right hover:cursor-pointer"
+                                        [ngStyle]="{'background-color': buttonColor}"
+                                    >
+                                        {{ 'club-details.addcomment' | translate }}
+                                    </button>
+                                </div>
+                                <div>
+                                    <div *ngFor="let child of comment?.CommentChild" class="mb-8 max-w-full">
+                                        <div class="flex justify-between items-center">
+                                            <img
+                                                src="{{apiPath + '/' + (child?.image || child?.CompanyUser?.image)}} "
+                                                [alt]="child.first_name"
+                                                class="object-cover rounded-full w-16 h-16 mr-4"
+                                                width="30"
+                                            >
+                                            <div class="name-date full w-5/6">
+                                                <div class="flex justify-between">
+                                                    <div class="w-full">
+                                                        <div class="font-bold">{{ child?.first_name || child?.CompanyUser?.first_name || 'anonymous' }}</div>
+                                                        <div class="text-sm">{{ formatDate(child?.createdAt) }}</div>
+                                                    </div>
+                                                    <div class="flex">
+                                                        <div *ngIf="superAdmin || showOption" class="hover:cursor-pointer p-2 px-4 h-8 rounded-lg" (click)="confirmDeleteComment(child)" [ngStyle]="{'background-color': buttonColor}">
+                                                            <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 20">
+                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h16M7 8v8m4-8v8M7 1h4a1 1 0 0 1 1 1v3H6V2a1 1 0 0 1 1-1ZM3 5h12v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5Z"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div class="flex items-center justify-center ml-4 bg-white rounded-lg p-2 px-6 h-8 hover:cursor-pointer">
+                                                            <img *ngIf="checkHeartReaction(child) == false" class="w-5 h-5 mr-4" src="./assets/images/new-design/icons/heart-unselected.png" (click)="toggleHeart(child, true)">
+                                                            <img *ngIf="checkHeartReaction(child) == true" class="w-5 h-5 mr-4" src="./assets/images/new-design/icons/heart-selected.png" (click)="toggleHeart(child, false)">
+                                                            <span>{{ getReactions(child)?.length || 0 }}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4" [innerHTML]="child?.comment"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full" 
+                    [ngClass]="{'pl-0 sm:pl-0 md:pl-24 lg:pl-24': planComments?.length > 0}" 
+                    *ngIf="userId">
+                    <textarea 
+                        name="comment" 
+                        id="comment" 
+                        cols="30" 
+                        rows="8"
+                        class="w-full p-4 rounded-lg border border-gray-300"
+                        placeholder="{{ 'plan-details.addanewcomment' | translate }}"
+                        [(ngModel)]="comment" 
+                    >
+                    </textarea>
+                    <div>
+                        <button
+                            (click)="addComment()"
+                            class="btn text-white px-12 mt-4 float-right hover:cursor-pointer uppercase"
+                            [ngStyle]="{
+                                'background-color': buttonColor,
+                                'opacity': addCommentHover ? 1.5 : 1,
+                                'filter': addCommentHover ? 'brightness(0.8)' : 'brightness(1)'
+                            }"
+                            (mouseover)="toggleAddCommentHover(true)"
+                            (mouseleave)="toggleAddCommentHover(false)"
+                        >
+                            {{ 'plan-details.comment' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+        &nbsp;
+    </button>
+    <div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="px-6 py-6 lg:px-8">
+                    <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                        {{ 'plan-details.emailinvite' | translate }}
+                    </h3>
+                    <form 
+                        class="space-y-6"
+                        (ngSubmit)="handleCloseInvite()"
+                    >
+                        <fieldset>
+                            <div *ngFor="let item of emailInviteQuestions" class="mb-6">
+                                <div class="mb-4">{{ item?.question }}</div>
+                                <div *ngFor="let choice of item?.options; let n = index;">
+                                    <div class="flex items-center mb-4 text-sm">
+                                        <input id="{{'question' + item.id }}" type="radio" name="{{'question' + item.id }}" [value]="choice.id" [(ngModel)]="item.answer" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="{{'question' + item.id }}" class="block ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                            {{ choice.option }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <button type="submit" class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            data-modal-hide="item-modal" 
+                            [ngStyle]="{
+                                'background-color': buttonColor
+                            }"
+                        >
+                            {{ 'company-settings.save' | translate }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-toast 
+        *ngIf="showConfirmationModal" 
+        [company]="company" 
+        [update]="false" 
+        [confirm]="true"
+        [title]="confirmDeleteItemTitle"
+        [description]="confirmDeleteItemDescription"
+        [acceptText]="acceptText"
+        [cancelText]="cancelText"
+        (onAccept)="confirm()"
+    ></app-toast>
+</ng-container>
+<ng-container *ngIf="!isloading && plan && plan?.status != 1 && !(superAdmin || showOption)">
+    <div class="center pt-16">
+        <app-no-access></app-no-access>
+    </div>
+</ng-container>

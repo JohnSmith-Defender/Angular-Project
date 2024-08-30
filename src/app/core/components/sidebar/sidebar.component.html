@@ -1,0 +1,288 @@
+<aside class="hidden sm:hidden md:block lg:block h-screen sticky top-0 pt-8 main-sidebar w-18 hover:w-64" 
+  [ngStyle]="{'background-color': primaryColor == '#ffffff' ? buttonColor : primaryColor}"
+  [ngClass]="{'whitespace-nowrap': !menuOpened,'whitespace-normal': menuOpened}"
+  (mouseover)="toggleHover(true)"
+  (mouseleave)="toggleHover(false)">
+  <div class="px-4 py-4 hover:cursor-pointer" [ngClass]="{'relative inset-0': !menuOpened}">
+    <img *ngIf="logoSource" class="w-[40px] max-w-[40px] h-[40px] max-h-[40px] object-left hover:w-[150px] hover:max-w-[150px]" 
+      [ngClass]="{'m-auto': !menuOpened, 'object-cover': company?.id == 32, 'object-contain': company?.id != 32}"
+      [src]="logoSource" />
+  </div>
+  <div class="my-3 px-4">
+    <div class="text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">{{ menuOpened ? ('landing.menu' | translate) : '&nbsp;' }}</div>
+  </div>
+  <ng-container *ngFor="let menu of menus$ | async" class="py-2 my-2 flex items-center">
+    <ng-container *ngIf="!menu?.course_wall && menu?.path != 'dashboard'">
+      <div class="px-4 py-2 hover:cursor-pointer" 
+        *ngIf="menu?.school_of_life_submenu != 1 || 
+          (menu?.school_of_life_submenu == 1 && menuOpened)">
+        <div 
+          class="flex items-center p-2 hover:rounded-lg"
+          [ngClass]="{'rounded-lg': selectedTab == menu.path, 'justify-center': !menuOpened}"
+          [ngStyle]="{'background-color': (menuHover && hoveredMenuPath == menu.path) || selectedTab == menu.path ? hoverColor : 'transparent'}"
+          (click)="navigateToPage(menu)"
+          (mouseover)="toggleMenuHover(true, menu)"
+          (mouseleave)="toggleMenuHover(false, menu)"
+        >
+          <img
+            [src]="menu?.new_button == 1 || (menu?.new_url == 1 && !menu?.original_path) ? 
+              (menuColor == '#000000' ? 
+                (menu?.new_button == 1 ? './assets/menu-icons/menu-icon-volunteering.png' : './assets/menu-icons/menu-icon-members-dark.png') : 
+                (menu?.new_button == 1 ? './assets/menu-icons/menu-icon-volunteering.png' : './assets/menu-icons/menu-icon-members.png')
+              ) : getMenuIcon(menu)"
+            class="cursor-pointer"
+            [ngClass]="{'invisible': menu?.school_of_life_submenu == 1, 
+              'w-[22px] max-w-[22px] h-[22px] max-h-[22px]': menu?.new_button != 1,
+              'w-[28px] max-w-[28px] h-[25px] max-h-[25px]': menu?.new_button == 1,
+            }"
+            alt=""
+          />
+          <svg [ngClass]="{'has-history': hasHistoryOfActivities, 'no-history': !hasHistoryOfActivities}" style="width:45px;color:#fff;position:absolute;" 
+            *ngIf="menu?.school_of_life_submenu == 1" 
+            class="DocSearch-Hit-Tree" viewBox="0 0 24 54">
+            <g stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6v42M20 27H8.3"></path>
+            </g>
+          </svg>
+          <span
+            *ngIf="menuOpened"
+            class="text-sm" 
+            [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}"
+            [ngClass]="{'ml-[36px]': menu?.new_button != 1,
+              'ml-[30px]': menu?.new_button == 1
+            }">
+            {{ getMenuTitle(menu) }}
+          </span>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="username && (isAdmin || canAccessPlatformSettings)">
+    <div class="px-4 py-2 hover:cursor-pointer" [routerLink]="['/settings']">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': settingsHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleSettingsHover(true)"
+        (mouseleave)="toggleSettingsHover(false)"
+      >
+        <img
+          [src]="menuColor == '#000000' ? './assets/menu-icons/menu-icon-settings-dark.png' : './assets/menu-icons/menu-icon-settings.png'"
+          class="cursor-pointer w-[22px] max-w-[22px] h-[22px] max-h-[22px]"
+          alt=""
+        />
+        <span *ngIf="menuOpened" class="ml-[36px] text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+          {{ 'company-settings.settings' | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="(company?.id == 42 || company?.id == 35 || company?.id == 65) && (superAdmin || isAdmin)">
+    <div class="px-4 py-2 hover:cursor-pointer" [routerLink]="['/support-tickets']">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': supportTicketsHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleSupportTicketsHover(true)"
+        (mouseleave)="toggleSupportTicketsHover(false)"
+      >
+        <img
+          [src]="menuColor == '#000000' ? './assets/menu-icons/menu-icon-support-tickets-dark.png' : './assets/menu-icons/menu-icon-support-tickets.png'"
+          class="cursor-pointer w-[22px] max-w-[22px] h-[22px] max-h-[22px]"
+          alt=""
+        />
+        <span *ngIf="menuOpened" class="ml-[36px] text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+          {{ 'landing.supporttickets' | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="company?.show_terms == 1">
+    <div class="px-4 py-2 hover:cursor-pointer" (click)="goToTerms()">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': termsHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleTermsHover(true)"
+        (mouseleave)="toggleTermsHover(false)"
+      >
+        <svg [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#000000' : '#ffffff'}" 
+          class="cursor-pointer w-[22px] max-w-[22px] h-[22px] max-h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 20">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.828 10h6.239m-6.239 4h6.239M6 1v4a1 1 0 0 1-1 1H1m14-4v16a.97.97 0 0 1-.933 1H1.933A.97.97 0 0 1 1 18V5.828a2 2 0 0 1 .586-1.414l2.828-2.828A2 2 0 0 1 5.828 1h8.239A.97.97 0 0 1 15 2Z"/>
+        </svg>
+        <span *ngIf="menuOpened" class="ml-[38px] text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+          {{ 'sidebar.termsandconditions' | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="company?.show_privacy_policy == 1">
+    <div class="px-4 py-2 hover:cursor-pointer" (click)="goToPrivacyPolicy()">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': privacyPolicyHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="togglePrivacyPolicyHover(true)"
+        (mouseleave)="togglePrivacyPolicyHover(false)"
+      >
+        <svg [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#000000' : '#ffffff'}"
+          class="cursor-pointer w-[22px] max-w-[22px] h-[22px] max-h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 21">
+          <path d="M6.167 9.833a3 3 0 0 1 1.946-2.809L13 5.191a3 3 0 0 1 2.107 0l.893.334V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h8.641A14.03 14.03 0 0 1 6.167 9.833Z"/>
+          <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Zm14.3 3.9-4.893-1.837a1.009 1.009 0 0 0-.7 0L8.815 8.9a1 1 0 0 0-.648.936 12.263 12.263 0 0 0 5.359 10.015 1 1 0 0 0 1.06 0 12.265 12.265 0 0 0 5.358-10.015A1 1 0 0 0 19.3 8.9Zm-5.236 8.866V9.068l3.866 1.45a10.241 10.241 0 0 1-3.871 7.245l.005.003Z"/>
+        </svg>
+        <span *ngIf="menuOpened" class="ml-[38px] text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+          {{ 'sidebar.privacypolicy' | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="company?.show_cookie_policy == 1">
+    <div class="px-4 py-2 hover:cursor-pointer" (click)="goToCookiePolicy()">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': cookiePolicyHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleCookiePolicyHover(true)"
+        (mouseleave)="toggleCookiePolicyHover(false)"
+      >
+        <svg [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#000000' : '#ffffff'}"
+          class="cursor-pointer w-[22px] max-w-[22px] h-[22px] max-h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 21 21">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.15 5.6h.01m3.337 1.913h.01m-6.979 0h.01M5.541 11h.01M15 15h2.706a1.957 1.957 0 0 0 1.883-1.325A9 9 0 1 0 2.043 11.89 9.1 9.1 0 0 0 7.2 19.1a8.62 8.62 0 0 0 3.769.9A2.013 2.013 0 0 0 13 18v-.857A2.034 2.034 0 0 1 15 15Z"/>
+        </svg>
+        <span *ngIf="menuOpened" class="ml-[38px] text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+          {{ 'sidebar.cookiespolicy' | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="hasGenericWallDropdown && !menuOpened">
+    <div class="px-4 py-2 hover:cursor-pointer">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': wallMenuHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleWallMenuHover(true)"
+        (mouseleave)="toggleWallMenuHover(false)"
+      >
+        <fa-icon *ngIf="!wallMenuOpened" 
+          class="fa flex items-center text-xl" 
+          [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff' }"
+          [icon]="graduationCapIcon">
+        </fa-icon>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="hasGenericWallDropdown && menuOpened">
+    <div *ngIf="genericWallDropdownMenu?.id > 0" class="py-2 my-2 flex items-center">
+      <div class="px-4 py-2 hover:cursor-pointer">
+        <div 
+          class="p-2 flex items-center hover:rounded-lg"
+          [ngClass]="{'rounded-lg min-w-[220px]': hoveredCourseWallPath == genericWallDropdownMenu?.path}"
+          [ngStyle]="{'background-color': (courseWallHover && hoveredCourseWallPath == genericWallDropdownMenu?.path) || hoveredCourseWallPath == genericWallDropdownMenu?.path ? hoverColor : 'transparent'}"
+          (click)="goToCourseWall(genericWallDropdownMenu)"
+          (mouseover)="toggleCourseWallHover(true, genericWallDropdownMenu)"
+          (mouseleave)="toggleCourseWallHover(false, genericWallDropdownMenu)"
+        >
+          <fa-icon 
+            class="fa flex items-center text-xl cursor-pointer" 
+            [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff' }"
+            [icon]="graduationCapIcon">
+          </fa-icon>
+          <span class="text-sm ml-[34px]" 
+            [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+            {{ getCourseWallName(genericWallDropdownMenu) }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div *ngIf="menuOpened && showCourseWallOptions" class="ml-4 -mb-2 bg-white divide-y divide-gray-100 rounded-lg shadow w-52 dark:bg-gray-700">
+    <ul class="max-h-48 overflow-y-auto py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="communities-button"
+      (mouseover)="toggleCourseWallItemHover(true)"
+      (mouseleave)="toggleCourseWallItemHover(false)">
+      <ng-container *ngFor="let item of courseWallDropdownMenu?.subs;let i = index;">
+        <li>
+          <button type="button" (click)="goToCourseWall(item)" class="inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">
+              <div class="inline-flex items-center">
+                <span class="text-left">{{ getCourseWallName(item) }}</span>
+              </div>
+          </button>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+  <ng-container *ngIf="hasCourseWallDropdown">
+    <div class="px-4 py-2 hover:cursor-pointer" [ngClass]="{'pt-0': showCourseWallOptions}">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': wallMenuHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleWallMenuHover(true)"
+        (mouseleave)="toggleWallMenuHover(false)"
+      >
+        <fa-icon *ngIf="!wallMenuOpened" 
+          class="fa flex items-center text-xl" 
+          [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff' }"
+          [icon]="graduationCapIcon">
+        </fa-icon>
+        <ng-container *ngIf="menuOpened">
+          <button id="communities-button" (click)="toggleCourseWallOptions()" 
+            class="w-52 flex items-center justify-between whitespace-normal py-2.5 px-4 text-sm font-medium" type="button"
+            [ngClass]="{'rounded-lg': menuOpened, 'text-white': menuColor != '#000000'}"
+            [ngStyle]="{'word-wrap': menuOpened ? 'break-word' : 'normal'}"
+          >
+            <span class="ml-4 text-sm text-left" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+              {{ getCourseWallMenuText() }}
+            </span>
+            <svg *ngIf="showCourseWallOptions" class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
+            </svg>
+            <svg *ngIf="!showCourseWallOptions" class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+            </svg>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="company?.id == 25 && superAdmin">
+    <div class="px-4 py-2 hover:cursor-pointer" (click)="goToCustomerOnboarding()">
+      <div class="p-2 flex items-center hover:rounded-lg"
+        [ngStyle]="{'background-color': customerOnboardingHover ? hoverColor : 'transparent'}"
+        [ngClass]="{'justify-center': !menuOpened}"
+        (mouseover)="toggleCustomerOnboardingHover(true)"
+        (mouseleave)="toggleCustomerOnboardingHover(false)"
+      >
+        <svg [ngStyle]="{'color': primaryColor == '#ffffff' || primaryColor == '#fff' ? '#000000' : '#ffffff'}"
+          class="cursor-pointer w-[22px] max-w-[22px] h-[22px] max-h-[22px]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 18">
+          <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10ZM17 13h-2v-2a1 1 0 0 0-2 0v2h-2a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0v-2h2a1 1 0 0 0 0-2Z"/>
+        </svg>
+        <span *ngIf="menuOpened" class="ml-[38px] text-sm" [ngStyle]="{'color': (primaryColor == '#ffffff' ? primaryColor : menuColor) || '#ffffff'}">
+          {{ 'sidebar.customeronboarding' | translate }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngFor="let lang of languages;let i = index;">
+    <div class="px-4 py-2 hover:cursor-pointer" [ngClass]="{'pt-0': showLanguageOptions}">
+      <div class="px-2 flex items-center hover:rounded-lg"
+        [ngClass]="{'justify-center py-2': !menuOpened}"
+        [ngStyle]="{'background-color': languageHover && hoveredLanguage == lang.code ? hoverColor : 'transparent'}"
+        (click)="useLanguage(lang.code)"
+        (mouseover)="toggleLanguageHover(true, lang)"
+        (mouseleave)="toggleLanguageHover(false, lang)"
+      >
+        <img
+          [src]="lang.code == 'en' ? './assets/menu-icons/menu-icon-en.png' : (
+            lang.code == 'eu' ? './assets/menu-icons/menu-icon-eu.png' : (
+              lang.code == 'it' ? './assets/menu-icons/menu-icon-it.png' : './assets/menu-icons/menu-icon-es.png')
+          )"
+          class="cursor-pointer w-[30px] max-w-[30px] h-[23px] max-h-[23px] rounded-[5px]"
+          [ngClass]="{'border border-2 border-white': language == lang.code}"
+          alt=""
+        />
+        <ng-container *ngIf="menuOpened">
+          <button id="countries-button"
+            class="w-52 flex items-center justify-between py-2.5 px-4 text-sm font-medium text-center" type="button"
+            [ngClass]="{'rounded-lg': menuOpened && languageHover, 'text-white': menuColor != '#000000'}"
+          >
+            <span class="ml-3 capitalize">{{ getLanguage(lang) }}</span>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</aside>

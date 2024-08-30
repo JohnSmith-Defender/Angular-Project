@@ -1,0 +1,17 @@
+<app-video-call-room
+    [isLoading]="isLoading"
+    [buttonColor]="buttonColor"
+    [statusText]="statusText"
+    [name]="name"
+    [image]="image"
+    [micMuted]="micMuted"
+    [showActions]="showActions"
+    [mode]="mode"
+    [caller]="caller"
+    [professional]="professional"
+    [existingVideoCallLog]="existingVideoCallLog"
+    (toggleMic)="handleToggleMic()"
+    (endCall)="handleEndCall()"
+    (joinChannel)="handleJoinChannel()"
+>
+</app-video-call-room>

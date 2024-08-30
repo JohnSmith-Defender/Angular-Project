@@ -1,0 +1,4 @@
+<app-page-title title="{{ 'sidebar.privacypolicy' | translate }}"></app-page-title>
+<div *ngIf="policy" class="pt-12 mr-0 sm:mr-0 md:mr-32 lg:mr-32">
+    <div [innerHtml]="policy"></div>
+</div>

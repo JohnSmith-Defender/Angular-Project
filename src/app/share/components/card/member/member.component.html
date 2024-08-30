@@ -1,0 +1,61 @@
+<div *ngIf="page == 'list' || page == 'detail'" 
+    [attr.disabled]="page == 'detail' ? true : null"
+    [ngClass]="{'w-full max-w-full': page == 'detail', 
+        'pointer-events-auto hover:cursor-pointer': page != 'detail',
+        'pointer-events-none': page == 'detail',
+        'box-shadow': page == 'list' ? '0px 40px 54px -45px #00000099' : 'none',
+    }"
+>
+    <div class="bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700 relative my-8 sm:my-8 md:mb-0 lg:my-0 rounded-[30px] h-full max-h-full sm:h-full sm:max-h-full md:h-[420px] md:max-h-[420px] lg:h-[420px] lg:max-h-[420px] flex flex-col">
+        <div *ngIf="city" 
+            class="px-4 absolute left-5 top-5 uppercase text-xs font-semibold max-w-[290px] overflow-hidden truncate h-[27px] mr-4 rounded-[10px] pt-[5px] text-center"
+            [ngStyle]="{'background-color': '#F6ECDF'}">
+            {{city}}
+        </div>
+        <div class="flex justify-center pt-16 pb-4">
+            <img class="object-cover rounded-full w-32 h-32 object-top" width="219" height="219" *ngIf="image" [ngSrc]="image" alt="">
+        </div>
+        <div class="text-center font-semibold" [routerLink]="[path]">{{name}}</div>
+        <div class="text-center text-sm pt-1 pb-4">
+            <figcaption class="flex items-center justify-center">
+                <img class="object-contain rounded-full w-12 h-12" width="48" height="48" [ngSrc]="logo" *ngIf="logo && logo?.indexOf('null') < 0" alt="">
+                <div class="space-y-0.5 font-medium dark:text-white text-left rtl:text-right ms-3">
+                    <div> {{sector || '&nbsp;'}}</div>
+                </div>
+            </figcaption> 
+        </div>
+        <div class="flex justify-evenly flex-wrap px-12 items-center align-center mb-12 sm:mb-12 md:mb-0 lg:mb-0">
+            <a [href]="linkedin" target="_blank" *ngIf="linkedin" [ngStyle]="{'background-color': buttonColor}" class="font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 15 15">
+                    <path fill-rule="evenodd" d="M7.979 5v1.586a3.5 3.5 0 0 1 3.082-1.574C14.3 5.012 15 7.03 15 9.655V15h-3v-4.738c0-1.13-.229-2.584-1.995-2.584-1.713 0-2.005 1.23-2.005 2.5V15H5.009V5h2.97ZM3 2.487a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" clip-rule="evenodd"/>
+                    <path d="M3 5.012H0V15h3V5.012Z"/>
+                </svg>                
+            </a>
+            <a [href]="email" target="_blank" *ngIf="email" [ngStyle]="{'background-color': buttonColor}" class="font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+                    <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                    <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                </svg>
+            </a>
+            <a [href]="phone" target="_blank" *ngIf="phone" [ngStyle]="{'background-color': buttonColor}" class="font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center">
+                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 19 18">
+                    <path d="M18 13.446a3.02 3.02 0 0 0-.946-1.985l-1.4-1.4a3.054 3.054 0 0 0-4.218 0l-.7.7a.983.983 0 0 1-1.39 0l-2.1-2.1a.983.983 0 0 1 0-1.389l.7-.7a2.98 2.98 0 0 0 0-4.217l-1.4-1.4a2.824 2.824 0 0 0-4.218 0c-3.619 3.619-3 8.229 1.752 12.979C6.785 16.639 9.45 18 11.912 18a7.175 7.175 0 0 0 5.139-2.325A2.9 2.9 0 0 0 18 13.446Z"/>
+                </svg>
+            </a>
+        </div>
+        <div class="rounded-b-[30px] w-full max-w-full p-6 py-4 md:absolute lg:absolute md:bottom-0 lg:bottom-0 h-full max-h-full sm:h-full sm:max-h-full md:h-[92px] md:max-h-[92px] lg:h-[92px] lg:max-h-[92px]">
+            <div class="flex justify-between align-center items-center">
+                <div class="flex flex-col">
+                    <div class="text-2xl font-bold">{{references}}</div>
+                    <div class="text-sm">{{'members.references' | translate}}</div>
+                </div>
+                <div class="uppercase text-black px-4 py-2 rounded-[10px] cursor-pointer w-auto inline-block text-center text-sm"
+                    [ngStyle]="{'background-color': buttonColor}">
+                    <div (click)="handleSendReference()" class="text-white flex items-center align-center font-semibold text-sm">
+                        {{'members.reference' | translate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="w-full max-w-full sm:w-full sm:max-w-full md:w-10/12 md:max-w-10/12 lg:w-10/12 lg:max-w-10/12 mx-auto mb-16">
+    <div *ngIf="data?.video_title || data?.video_file"
+        class="flex flex-col justify-center">
+        <div class="w-full max-w-full sm:w-full sm:max-w-full md:w-6/12 md:max-w-6/12 lg:w-6/12 lg:max-w-6/12 mx-auto">
+            <div class="text-3xl mb-5 font-semibold text-center" *ngIf="data?.video_title" [ngStyle]="{'color': '#E6583D'}">{{data?.video_title}}</div>
+            <div class="text-base whitespace-pre-wrap text-center mb-8" *ngIf="data?.video_description">{{data?.video_description}}</div>
+        </div>
+        <div class="mx-auto w-full max-w-full sm:w-full sm:max-w-full md:w-7/12 md:max-w-7/12 lg:w-7/12 lg:max-w-7/12">
+            <div class="rounded-lg" 
+                *ngIf="data?.video_file && data?.video_file?.indexOf('http') < 0 && data?.video_file && data?.video_file?.indexOf('iframe') < 0 && data?.video_file?.indexOf('youtube') < 0 && data?.video_file?.indexOf('vimeo') < 0">
+                <video controls controlsList="nodownload" width="100%" id="video" class="rounded-lg">
+                    <source [src]="getSafeVideoUrl(data?.video_file)" type="video/mp4" />
+                </video>
+            </div>
+            <div class="rounded-lg" *ngIf="data?.video_file && data?.video_file?.indexOf('iframe') < 0 && (data?.video_file?.indexOf('youtube') >= 0 || data?.video_file?.indexOf('vimeo') >= 0  || data?.video_file?.indexOf('http') >= 0)">
+                <iframe 
+                    class="iframe-ctrl rounded-lg"
+                    id="iframe"
+                    style="border:none;"
+                    [src]="getSafeVideoUrl(data?.video_file)" 
+                    width="100%" 
+                    height="420px"
+                    allowfullscreen="allowfullscreen" 
+                    mozallowfullscreen="mozallowfullscreen" 
+                    msallowfullscreen="msallowfullscreen" 
+                    oallowfullscreen="oallowfullscreen" 
+                    webkitallowfullscreen="webkitallowfullscreen"
+                    allow=autoplay
+                >
+                </iframe>
+            </div>
+            <div class="iframe-container rouded-lg" *ngIf="data?.video_file && data?.video_file?.indexOf('iframe') >= 0" [innerHtml]="data?.video_file | safeContentHtml: 'html'"></div>
+        </div>
+    </div>
+</div>

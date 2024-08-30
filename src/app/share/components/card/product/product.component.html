@@ -1,0 +1,35 @@
+<div class="bg-gray-200 rounded-xl hover:scale-[1.03] transition-all relative overflow-hidden">
+    <div>
+        <div
+            class="bg-gray-100 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer absolute top-4 right-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16px" class="fill-gray-800 inline-block" viewBox="0 0 64 64">
+            <path
+                d="M45.5 4A18.53 18.53 0 0 0 32 9.86 18.5 18.5 0 0 0 0 22.5C0 40.92 29.71 59 31 59.71a2 2 0 0 0 2.06 0C34.29 59 64 40.92 64 22.5A18.52 18.52 0 0 0 45.5 4ZM32 55.64C26.83 52.34 4 36.92 4 22.5a14.5 14.5 0 0 1 26.36-8.33 2 2 0 0 0 3.27 0A14.5 14.5 0 0 1 60 22.5c0 14.41-22.83 29.83-28 33.14Z"
+                data-original="#000000"></path>
+            </svg>
+        </div>
+        <div class="w-full h-[250px]">
+            <img (click)="handleDetailsRoute(id)" [src]="image" [alt]="title" alt="cream image" class="w-full h-full object-cover rounded-xl">
+        </div>
+    </div>
+    <div class="text-center bg-gray-100 p-4">
+        <div class="flex items-center justify-between">
+            <div class="">
+                <h6 class="font-medium text-lg leading-8 text-black mb-1 hover:cursor-pointer" 
+                    (click)="handleDetailsRoute(id)">{{ title }}</h6>
+                <h6 class="text-left font-semibold text-lg leading-8"
+                    [ngStyle]="{'color': primaryColor}">{{ price }}</h6>
+            </div>
+            <button (click)="handleAddToCart(id)"
+                class="p-2 min-[400px]:p-3 rounded-full bg-white border border-gray-300 flex items-center justify-center group shadow-sm shadow-transparent transition-all duration-500 hover:shadow-gray-200 hover:border-gray-400 hover:bg-gray-50">
+                <svg class="stroke-gray-900 transition-all duration-500 group-hover:stroke-black"
+                    xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26"
+                    fill="none">
+                    <path
+                        d="M12.6892 21.125C12.6892 22.0225 11.9409 22.75 11.0177 22.75C10.0946 22.75 9.34632 22.0225 9.34632 21.125M19.3749 21.125C19.3749 22.0225 18.6266 22.75 17.7035 22.75C16.7804 22.75 16.032 22.0225 16.032 21.125M4.88917 6.5L6.4566 14.88C6.77298 16.5715 6.93117 17.4173 7.53301 17.917C8.13484 18.4167 8.99525 18.4167 10.7161 18.4167H18.0056C19.7266 18.4167 20.587 18.4167 21.1889 17.9169C21.7907 17.4172 21.9489 16.5714 22.2652 14.8798L22.8728 11.6298C23.3172 9.25332 23.5394 8.06508 22.8896 7.28254C22.2398 6.5 21.031 6.5 18.6133 6.5H4.88917ZM4.88917 6.5L4.33203 3.25"
+                        stroke="" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,886 @@
+<app-page-title title="{{ 'settings.template' | translate }}"></app-page-title>
+<div class="container flex flex-col sm:flex-col md:flex-row lg:flex-row items-center justify-between center w-full max-w-full px-4 md:px-0 lg:px-0 mx-auto py-3">
+    <app-breadcrumb 
+        [level1Title]="level1Title"
+        [level2Title]="level2Title"
+        [level3Title]="level3Title"
+        [level4Title]="level4Title"
+        [buttonColor]="buttonColor"
+        (goBack)="handleGoBack()"
+    />
+    <div class="mt-3 sm:mt-3 md:mt-0 lg:mt-0 flex">
+        <button 
+            class="ml-4 inline-block h-[40px] text-sm px-6 py-2 font-semibold rounded-[10px] text-white focus:ring-4 focus:ring-offset-black focus:outline-none mb-3 sm:mtb-3 md:mb-0 lg:mb-0"
+            [ngStyle]="{'background-color': buttonColor}"
+            (click)="save()"
+        >
+            {{ 'plan-create.savechanges' | translate }}
+        </button>
+    </div>
+</div>
+<div class="pt-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-0 sm:gap-0 md:gap-12 lg:gap-12 py-8">
+        <div>
+            <div (click)="expandOption('theme')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'leads.themeoptions' | translate}}</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'theme'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('theme')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'theme'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('theme')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'theme'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="layout" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'leads.layout' | translate}}
+                            </label>
+                            <select
+                                id="layout"
+                                class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder
+                                [(ngModel)]="selectedLayout"
+                                [ngModelOptions]="{standalone: true}"
+                                (change)="handleChangeLayout($event)"
+                            >
+                                <option
+                                    *ngFor="let layout of layouts"
+                                    [value]="layout?.value"
+                                >
+                                    {{ layout?.text }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'leads.backgroundcolor' | translate}}
+                            </label>
+                            <div class="flex">
+                                <input 
+                                    type="text" 
+                                    class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="selectedBackgroundColor"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'leads.backgroundcolor' | translate }}*" 
+                                    required>
+                                <input 
+                                    class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                    [style.background]="selectedBackgroundColor" 
+                                    [(colorPicker)]="selectedBackgroundColor" 
+                                    (colorPickerOpen)="onEventLog('colorPickerOpen', $event)" 
+                                    (colorPickerClose)="onEventLog('colorPickerClose', $event)" 
+                                    (cpInputChange)="onEventLog('cpInputChange', $event)" 
+                                    (cpSliderDragStart)="onEventLog('cpSliderDragStart', $event)" 
+                                    (cpSliderDragEnd)="onEventLog('cpSliderDragEnd', $event)" 
+                                    style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                />        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-center relative">
+                        <div class="w-full max-w-full">
+                            <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'leads.textcolor' | translate}}
+                            </label>
+                            <div class="flex">
+                                <input 
+                                    type="text" 
+                                    class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="selectedTextColor"
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'leads.textcolor' | translate }}*" 
+                                    required>
+                                <input 
+                                    class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                    [style.background]="selectedTextColor" 
+                                    [(colorPicker)]="selectedTextColor" 
+                                    (colorPickerOpen)="onTextEventLog('colorPickerOpen', $event)" 
+                                    (colorPickerClose)="onTextEventLog('colorPickerClose', $event)" 
+                                    (cpInputChange)="onTextEventLog('cpInputChange', $event)" 
+                                    (cpSliderDragStart)="onTextEventLog('cpSliderDragStart', $event)" 
+                                    (cpSliderDragEnd)="onTextEventLog('cpSliderDragEnd', $event)" 
+                                    style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                />        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="expandOption('banner')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'settings.image_banner' | translate}}</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'banner'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('banner')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'banner'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('banner')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'banner'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-1"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-1"
+                                    name="setting-1"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateBanner" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                    <div *ngIf="activateBanner" class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                        <div class="w-full max-w-full">
+                            <label for="banner-image" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'plan-details.image' | translate}}
+                            </label>
+                            <div>
+                                <file-pond
+                                    #myPond
+                                    [options]="pondOptions"
+                                    [files]="pondFiles"
+                                    (oninit)="pondHandleInit()"
+                                    (onaddfile)="pondHandleAddFile($event)"
+                                    (onupdatefiles)="podHandleUpdateFiles($event)"
+                                    (onprocessfile)="podHandleProcessFile($event)"
+                                >
+                                </file-pond>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div (click)="expandOption('section1')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'course-lesson.section' | translate}} 1</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'section1'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('section1')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'section1'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('section1')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'section1'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-2"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-2"
+                                    name="setting-2"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateSection1" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <ng-container *ngIf="activateSection1">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="setion1-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-details.text' | translate}}
+                                </label>
+                                <quill-editor class="w-full max-w-full content-editor" 
+                                    [(ngModel)]="section1Text"
+                                    [ngModelOptions]="{standalone: true}">
+                                </quill-editor>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-between relative pt-4">
+                            <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'survey-create.question' | translate}} CTA
+                            </div>
+                            <label
+                                for="setting-1-1"
+                                class="flex items-center justify-between cursor-pointer"
+                            >
+                                <div class="relative mr-1">
+                                    <input
+                                        id="setting-1-1"
+                                        name="setting-1-1"
+                                        type="checkbox"
+                                        class="sr-only"
+                                        [(ngModel)]="activateSection1QuestionCTA" 
+                                        [ngModelOptions]="{standalone: true}"
+                                    />
+                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activateSection1QuestionCTA">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="section1ctatext" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'services.text' | translate}}
+                                </label>
+                                <input 
+                                    id="section1ctatext"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="section1QuestionCTAText" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'services.text' | translate }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-create.buttoncolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section1QuestionCTAColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'course-create.buttoncolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="section1QuestionCTAColor" 
+                                        [(colorPicker)]="section1QuestionCTAColor" 
+                                        (colorPickerOpen)="onSection1CTAEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onSection1CTAEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onSection1CTAEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onSection1CTAEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onSection1CTAEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.textcolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section1QuestionCTATextColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.textcolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="section1QuestionCTATextColor" 
+                                        [(colorPicker)]="section1QuestionCTATextColor" 
+                                        (colorPickerOpen)="onSection1CTATextEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onSection1CTATextEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onSection1CTATextEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onSection1CTATextEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onSection1CTATextEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-between relative pt-4">
+                            <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'leads.redirectcustomlink' | translate}}
+                            </div>
+                            <label for="setting-1-2" class="flex items-center justify-between cursor-pointer">
+                                <div class="relative mr-1">
+                                    <input id="setting-1-2" name="setting-1-2" type="checkbox" class="sr-only"
+                                        [(ngModel)]="activateSection1RedirectionLink" [ngModelOptions]="{standalone: true}" />
+                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activateSection1RedirectionLink">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.ctaLinkLabel' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section1CTALink"
+                                        [ngClass]="section1CTALink ? 'border-gray-200' : 'border-red-600'"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.ctaLinkPlaceholder' | translate }}*" 
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div (click)="expandOption('section2')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'course-lesson.section' | translate}} 2</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'section2'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('section2')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'section2'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('section2')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'section2'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-3"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-3"
+                                    name="setting-3"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateSection2" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <ng-container *ngIf="activateSection2">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="setion2-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-details.text' | translate}}
+                                </label>
+                                <quill-editor class="w-full max-w-full content-editor" 
+                                    [(ngModel)]="section2Text"
+                                    [ngModelOptions]="{standalone: true}">
+                                </quill-editor>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-between relative pt-4">
+                            <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'survey-create.question' | translate}} CTA
+                            </div>
+                            <label
+                                for="setting-2-1"
+                                class="flex items-center justify-between cursor-pointer"
+                            >
+                                <div class="relative mr-1">
+                                    <input
+                                        id="setting-2-1"
+                                        name="setting-2-1"
+                                        type="checkbox"
+                                        class="sr-only"
+                                        [(ngModel)]="activateSection2QuestionCTA" 
+                                        [ngModelOptions]="{standalone: true}"
+                                    />
+                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activateSection2QuestionCTA">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="section2ctatext" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'services.text' | translate}}
+                                </label>
+                                <input 
+                                    id="section2ctatext"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="section2QuestionCTAText" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'services.text' | translate }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-create.buttoncolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section2QuestionCTAColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'course-create.buttoncolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="section2QuestionCTAColor" 
+                                        [(colorPicker)]="section2QuestionCTAColor" 
+                                        (colorPickerOpen)="onSection2CTAEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onSection2CTAEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onSection2CTAEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onSection2CTAEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onSection2CTAEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.textcolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section2QuestionCTATextColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.textcolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="section2QuestionCTATextColor" 
+                                        [(colorPicker)]="section2QuestionCTATextColor" 
+                                        (colorPickerOpen)="onSection2CTATextEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onSection2CTATextEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onSection2CTATextEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onSection2CTATextEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onSection2CTATextEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-between relative pt-4">
+                            <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'leads.redirectcustomlink' | translate}}
+                            </div>
+                            <label for="setting-2-2" class="flex items-center justify-between cursor-pointer">
+                                <div class="relative mr-1">
+                                    <input id="setting-2-2" name="setting-2-2" type="checkbox" class="sr-only"
+                                        [(ngModel)]="activateSection2RedirectionLink" [ngModelOptions]="{standalone: true}" />
+                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activateSection2RedirectionLink">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.ctaLinkLabel' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section2CTALink"
+                                        [ngClass]="section2CTALink ? 'border-gray-200' : 'border-red-600'"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.ctaLinkPlaceholder' | translate }}*" 
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div (click)="expandOption('section3')" 
+                class="bg-[#F8F4F4] min-h-[24px] rounded-[10px] flex flex-row justify-between py-2 px-3 mb-[7px]">
+                <div class="font-semibold text-lg">{{'course-lesson.section' | translate}} 3</div>
+                <div class="hover:cursor-pointer">
+                    <ng-container *ngIf="expandedOption != 'section3'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}" 
+                            (click)="expandOption('section3')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 5.326 5.7a.909.909 0 0 0 1.348 0L13 1"/>
+                        </svg>
+                    </ng-container>
+                    <ng-container *ngIf="expandedOption == 'section3'">
+                        <svg
+                            [ngStyle]="{'color': buttonColor}"
+                            (click)="expandOption('section3')"
+                            class="mt-1 w-4 h-4 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 8">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7 7.674 1.3a.91.91 0 0 0-1.348 0L1 7"/>
+                        </svg>
+                    </ng-container>
+                </div>
+            </div>
+            <div class="px-4" *ngIf="expandedOption == 'section3'">
+                <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                    <div class="flex items-center justify-between relative pt-4">
+                        <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'guest-landing.activate' | translate}}
+                        </div>
+                        <label
+                            for="setting-4"
+                            class="flex items-center justify-between cursor-pointer"
+                        >
+                            <div class="relative mr-1">
+                                <input
+                                    id="setting-4"
+                                    name="setting-4"
+                                    type="checkbox"
+                                    class="sr-only"
+                                    [(ngModel)]="activateSection3" 
+                                    [ngModelOptions]="{standalone: true}"
+                                />
+                                <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <ng-container *ngIf="activateSection3">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="setion3-text" class="text-left block mt-4 mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-details.text' | translate}}
+                                </label>
+                                <quill-editor class="w-full max-w-full content-editor" 
+                                    [(ngModel)]="section3Text"
+                                    [ngModelOptions]="{standalone: true}">
+                                </quill-editor>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-between relative pt-4">
+                            <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'survey-create.question' | translate}} CTA
+                            </div>
+                            <label
+                                for="setting-3-1"
+                                class="flex items-center justify-between cursor-pointer"
+                            >
+                                <div class="relative mr-1">
+                                    <input
+                                        id="setting-3-1"
+                                        name="setting-3-1"
+                                        type="checkbox"
+                                        class="sr-only"
+                                        [(ngModel)]="activateSection3QuestionCTA" 
+                                        [ngModelOptions]="{standalone: true}"
+                                    />
+                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activateSection3QuestionCTA">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center mb-4 relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                            <div class="w-full max-w-full">
+                                <label for="section3ctatext" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'services.text' | translate}}
+                                </label>
+                                <input 
+                                    id="section3ctatext"
+                                    type="text" 
+                                    class="text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                    [(ngModel)]="section3QuestionCTAText" 
+                                    [ngModelOptions]="{standalone: true}"
+                                    placeholder="{{ 'services.text' | translate }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'course-create.buttoncolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section3QuestionCTAColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'course-create.buttoncolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="section3QuestionCTAColor" 
+                                        [(colorPicker)]="section3QuestionCTAColor" 
+                                        (colorPickerOpen)="onSection3CTAEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onSection3CTAEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onSection3CTAEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onSection3CTAEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onSection3CTAEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.textcolor' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section3QuestionCTATextColor"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.textcolor' | translate }}*" 
+                                        required>
+                                    <input 
+                                        class="rounded-full w-10 h-10 hover:cursor-pointer"
+                                        [style.background]="section3QuestionCTATextColor" 
+                                        [(colorPicker)]="section3QuestionCTATextColor" 
+                                        (colorPickerOpen)="onSection3CTATextEventLog('colorPickerOpen', $event)" 
+                                        (colorPickerClose)="onSection3CTATextEventLog('colorPickerClose', $event)" 
+                                        (cpInputChange)="onSection3CTATextEventLog('cpInputChange', $event)" 
+                                        (cpSliderDragStart)="onSection3CTATextEventLog('cpSliderDragStart', $event)" 
+                                        (cpSliderDragEnd)="onSection3CTATextEventLog('cpSliderDragEnd', $event)" 
+                                        style="box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);width:40px;height:40px;margin-top:3px;border-radius:20px !important;"
+                                    />        
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-between relative pt-4">
+                            <div class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                {{'leads.redirectcustomlink' | translate}}
+                            </div>
+                            <label for="setting-3-2" class="flex items-center justify-between cursor-pointer">
+                                <div class="relative mr-1">
+                                    <input id="setting-3-2" name="setting-3-2" type="checkbox" class="sr-only"
+                                        [(ngModel)]="activateSection3RedirectionLink" [ngModelOptions]="{standalone: true}" />
+                                    <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                    <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="activateSection3RedirectionLink">
+                    <div class="border border-b-2 border-l-0 border-r-0 border-t-0 pb-4 mb-4">
+                        <div class="flex items-center justify-center relative">
+                            <div class="w-full max-w-full">
+                                <label for="input-color" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    {{'leads.ctaLinkLabel' | translate}}
+                                </label>
+                                <div class="flex">
+                                    <input 
+                                        type="text" 
+                                        class="mr-8 text-base shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        [(ngModel)]="section3CTALink"
+                                        [ngClass]="section3CTALink ? 'border-gray-200' : 'border-red-600'"
+                                        [ngModelOptions]="{standalone: true}"
+                                        placeholder="{{ 'leads.ctaLinkPlaceholder' | translate }}*" 
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="col-span-3">
+            <div class="bg-[#f8f4f4] p-8 min-h-[540px]"
+                [ngClass]="{'px-40': selectedLayout == 'boxed'}">
+                <div *ngIf="activateBanner" [ngStyle]="{
+                    'background-color': selectedBackgroundColor,
+                    'color': selectedTextColor
+                }">
+                    <div class="relative flex flex-col">
+                        <div class="h-[240px] border border-2 border-dashed flex justify-center items-center font-semibold text-lg">
+                            <ng-container *ngIf="!bannerImage">{{'settings.image_banner' | translate}}</ng-container>
+                            <ng-container *ngIf="bannerImage">
+                                <img class="object-contain h-[240px] w-full max-w-full object-cover" src="{{ bannerImage }}" />
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="activateSection1" [ngStyle]="{
+                    'background-color': selectedBackgroundColor,
+                    'color': selectedTextColor
+                }">
+                    <div class="relative h-full max-h-full"
+                        [ngClass]="{'flex flex-col': !section1Text}">
+                        <div class="min-h-[130px] border border-2 border-dashed p-8"
+                        [ngClass]="{'flex justify-center items-center': !section1Text}">
+                            <ng-container *ngIf="section1Text">
+                                <span [innerHtml]="section1Text | safeContentHtml: 'html'"></span>
+                            </ng-container>
+                            <ng-container *ngIf="!section1Text">
+                                <span class="font-semibold text-lg">{{ 'course-lesson.section' | translate }} 1</span>
+                            </ng-container>
+                            <div *ngIf="activateSection1QuestionCTA && section1QuestionCTAText" class="text-center mt-2">
+                                <button type="button" class="rounded-lg h-[40px] px-16 font-semibold"
+                                    [ngStyle]="{'background-color': section1QuestionCTAColor, 'color': section1QuestionCTATextColor}"
+                                    (click)="redirectToCTALink('section1')">
+                                    {{section1QuestionCTAText}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="activateSection2" [ngStyle]="{
+                    'background-color': selectedBackgroundColor,
+                    'color': selectedTextColor
+                }">
+                    <div class="relative h-full max-h-full"
+                        [ngClass]="{'flex flex-col': !section2Text}">
+                        <div class="min-h-[130px] border border-2 border-dashed p-8"
+                        [ngClass]="{'flex justify-center items-center': !section2Text}">
+                            <ng-container *ngIf="section2Text">
+                                <span [innerHtml]="section2Text | safeContentHtml: 'html'"></span>
+                            </ng-container>
+                            <ng-container *ngIf="!section2Text">
+                                <span class="font-semibold text-lg">{{ 'course-lesson.section' | translate }} 2</span>
+                            </ng-container>
+                            <div *ngIf="activateSection2QuestionCTA && section2QuestionCTAText" class="text-center mt-2">
+                                <button type="button" class="rounded-lg h-[40px] px-16 font-semibold"
+                                    [ngStyle]="{'background-color': section2QuestionCTAColor, 'color': section2QuestionCTATextColor}"
+                                    (click)="redirectToCTALink('section2')">
+                                    {{section2QuestionCTAText}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="activateSection3" [ngStyle]="{
+                    'background-color': selectedBackgroundColor,
+                    'color': selectedTextColor
+                }">
+                    <div class="relative h-full max-h-full"
+                        [ngClass]="{'flex flex-col': !section3Text}">
+                        <div class="min-h-[130px] border border-2 border-dashed p-8"
+                        [ngClass]="{'flex justify-center items-center': !section3Text}">
+                            <ng-container *ngIf="section3Text">
+                                <span [innerHtml]="section3Text | safeContentHtml: 'html'"></span>
+                            </ng-container>
+                            <ng-container *ngIf="!section3Text">
+                                <span class="font-semibold text-lg">{{ 'course-lesson.section' | translate }} 3</span>
+                            </ng-container>
+                            <div *ngIf="activateSection3QuestionCTA && section3QuestionCTAText" class="text-center mt-2">
+                                <button type="button" class="rounded-lg h-[40px] px-16 font-semibold"
+                                    [ngStyle]="{'background-color': section3QuestionCTAColor, 'color': section3QuestionCTATextColor}"
+                                    (click)="redirectToCTALink('section3')">
+                                    {{section3QuestionCTAText}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

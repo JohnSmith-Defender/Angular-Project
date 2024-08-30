@@ -1,0 +1,555 @@
+<div *ngIf="isTutorUser">
+    <app-tutor-hourly-rate-banner>
+    </app-tutor-hourly-rate-banner>
+</div>
+<app-page-title [title]="pageTitle"></app-page-title>
+<ng-container *ngIf="profileForm && selectedFields?.length > 0">
+    <form [formGroup]="profileForm" (ngSubmit)="save()" class="profile-form" autocomplete="off">
+        <ng-container *ngIf="selectedFields && selectedFields?.length > 0">
+            <div *ngFor="let section of sectionFields; let n = index;">
+                <div class="section" *ngIf="section?.field_group_es">
+                    <div class="number">{{ n + 1 }}</div>
+                    <div class="title">{{ language == 'en' ? section?.field_group_en : (language == 'fr' ? (section?.field_group_fr || section?.field_group_es) : section?.field_group_es) }}</div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 pt-12 pb-4">
+                    <ng-container *ngFor="let field of section?.fields; let i = index;">
+                        <ng-container *ngIf="field.field != 'password'">
+                            <div class="text-center" 
+                                *ngIf="field.field_type == 'image' && field.field == 'image'"
+                                [ngClass]="{'col-span-2': (field.field == 'image' && !hasCompanyImageField) || isMobile}">
+                                <div class="container upload-btn-wrapper profile-image">
+                                    <div>
+                                        <div class="font-semibold mb-2">{{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} </div>
+                                        <div class="flex flex-col-reverse sm:flex-col-reverse md:flex-row lg:flex-row items-center justify-center mb-8 relative">
+                                            <div class="max-w-xl mr-0 sm:mr-0 md:mr-8 lg:mr-8">
+                                                <img width="160" height="192" src="./assets/images/640.png" />
+                                            </div>
+                                            <div class="relative">
+                                                <input 
+                                                    #file
+                                                    id="image"
+                                                    name="image" 
+                                                    type="file"
+                                                    style="display:none;"
+                                                    (change)="uploadPhoto($event)"
+                                                />
+                                                <div 
+                                                    class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                                    [ngClass]="{'p-6': !hasImage}"
+                                                >
+                                                    <div
+                                                        class="grid mb-8 place-items-center"
+                                                        [ngClass]="{'w-28 h-28 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300': !hasImage, 'w-40 h-40': hasImage}"
+                                                    >
+                                                        <img *ngIf="!hasImage" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                                        <img *ngIf="hasImage" class="w-[112px] h-[112px] rounded-full object-cover" src="{{ myImage }}" />
+                                                    </div>
+                                                </div>
+                                                <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                                    <label
+                                                        for="image"
+                                                        [ngStyle]="{'background-color': buttonColor}"
+                                                        class="btn text-white"
+                                                    >
+                                                        {{ 'club-create.uploadimage' | translate }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center" 
+                                *ngIf="field.field_type == 'image' && field.field == 'company_logo'"
+                                [ngClass]="{'col-span-2': (field.field == 'image' && !hasProfileImageField) || isMobile}">
+                                <div class="container upload-btn-wrapper profile-image">
+                                    <div>
+                                        <div class="font-semibold mb-2">{{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} </div>
+                                        <div class="flex items-center justify-center mb-8 relative">
+                                            <input 
+                                                #companylogofile
+                                                id="logo"
+                                                name="logo" 
+                                                type="file"
+                                                style="display:none;"
+                                                (change)="uploadCompanyLogo($event)"
+                                            />
+                                            <div 
+                                                class="grid max-w-xl text-center shadow-2xl bg-neutral-50 rounded-xl place-items-center bg-opacity-5 backdrop-filter backdrop-blur"
+                                                [ngClass]="{'p-6': !hasCompanyLogoImage}"
+                                            >
+                                                <div
+                                                    class="grid mb-8 place-items-center"
+                                                    [ngClass]="{'w-28 h-28 rounded-full bg-gradient-to-br from-neutral-900 to-indigo-300 ': !hasCompanyLogoImage, 'w-40 h-40': hasCompanyLogoImage}"
+                                                >
+                                                    <img *ngIf="!hasCompanyLogoImage" width="40" height="40" src="./assets/images/new-design/camera.png" />
+                                                    <img *ngIf="hasCompanyLogoImage" class="w-[112px] h-[112px] rounded-full object-cover" src="{{ myCompanyLogoImage }}" />
+                                                </div>
+                                            </div>
+                                            <div class="text-center absolute bottom-2 left-0 right-0 m-auto">
+                                                <label
+                                                    for="logo"
+                                                    [ngStyle]="{'background-color': buttonColor}"
+                                                    class="btn text-white"
+                                                >
+                                                    {{ 'club-create.uploadimage' | translate }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1" 
+                                *ngIf="field.field_type == 'text' || field.field_type == 'number' || (field?.field == 'country' && countryDropdown)">
+                                <label for="{{field?.field}}" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            {{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} {{field?.required ? '*' : ''}}
+                                        </div>
+                                        <ng-container *ngIf="showProfileFieldsInMembers && field?.field != 'first_name' && field?.field != 'last_name'">
+                                            <div class="flex items-center justify-between relative ml-4">
+                                                <label
+                                                    for="setting-status-{{i + 1}}"
+                                                    class="flex items-center w-full justify-between cursor-pointer"
+                                                >
+                                                    <div class="relative mr-1">
+                                                        <input
+                                                            id="setting-status-{{i + 1}}"
+                                                            name="setting-status"
+                                                            type="checkbox"
+                                                            class="sr-only"
+                                                            [checked]="field?.show"
+                                                            (change)="updateFieldShow($event, field)"
+                                                        />
+                                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </label>
+                                <ng-container *ngIf="field?.field != 'country' || (field?.field == 'country' && field.field_type == 'text' && !countryDropdown)">
+                                    <input 
+                                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get(field?.field)?.errors }"
+                                        type="{{field?.field_type}}" 
+                                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                                        formControlName="{{field?.field}}" 
+                                        placeholder="{{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} {{field?.required ? '*' : ''}}"
+                                        [required]="field?.required ? true : false">
+                                </ng-container>
+                                <ng-container *ngIf="field?.field == 'country' && countryDropdown">
+                                    <select
+                                        id="country"
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        formControlName="{{field?.field}}"
+                                    >
+                                        <option value="" selected>{{ 'profile-settings.country' | translate }}</option>
+                                        <option
+                                            *ngFor="let country of countries"
+                                            [value]="country.country_name"
+                                        >
+                                        {{ country.country_name }}
+                                        </option>
+                                    </select>
+                                </ng-container>
+                            </div>
+                            <div class="text-center relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1" 
+                                *ngIf="field.field_type == 'select'">
+                                <label for="{{field?.field}}" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            {{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} {{field?.required ? '*' : ''}}
+                                        </div>
+                                        <ng-container *ngIf="showProfileFieldsInMembers && field?.field != 'first_name' && field?.field != 'last_name'">
+                                            <div class="flex items-center justify-between relative ml-4">
+                                                <label
+                                                    for="setting-status-{{i + 1}}"
+                                                    class="flex items-center w-full justify-between cursor-pointer"
+                                                >
+                                                    <div class="relative mr-1">
+                                                        <input
+                                                            id="setting-status-{{i + 1}}"
+                                                            name="setting-status"
+                                                            type="checkbox"
+                                                            class="sr-only"
+                                                            [checked]="field?.show"
+                                                            (change)="updateFieldShow($event, field)"
+                                                        />
+                                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </label>
+                                <ng-container *ngIf="field.field != 'business_category'">
+                                    <select
+                                        id="sector"
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        formControlName="{{field?.field}}"
+                                    >
+                                        <option value="">{{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} </option>
+                                        <ng-container *ngIf="field.field == 'sector'">
+                                            <option
+                                                *ngFor="let sector of sectors"                                
+                                                [value] ="sector.name"
+                                            >{{sector.name}}</option>
+                                        </ng-container>
+                                        <ng-container *ngIf="field.field == 'area_group'">
+                                            <option
+                                                *ngFor="let group of areaGroups"                                
+                                                [value] ="group.title"
+                                            >{{group.title}}</option>
+                                        </ng-container>
+                                        <ng-container *ngIf="field.field == 'civil_status'">
+                                            <option
+                                                *ngFor="let item of civilStatus"                                
+                                                [value] ="item.status_es"
+                                            >{{ language == 'en' ? item.status : item.status_es }}</option>
+                                        </ng-container>
+                                        <ng-container *ngIf="field.field == 'wellbeing_activity'">
+                                            <option
+                                                *ngFor="let item of wellbeingActivities"                                
+                                                [value] ="item.activity_es"
+                                            >{{ language == 'en' ? item.activity : item.activity_es }}</option>
+                                        </ng-container>
+                                    </select>
+                                </ng-container>
+                                <ng-container *ngIf="field?.field == 'business_category' && companyId != 15">
+                                    <select
+                                        id="sector"
+                                        class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        formControlName="{{field?.field}}"
+                                    >
+                                        <option value="">{{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} </option>
+                                        <option
+                                            *ngFor="let businessCategory of businessCategories"                                
+                                            [value]="businessCategory.name"
+                                        >{{businessCategory.name}}</option>
+                                    </select>
+                                </ng-container>
+                            </div>
+                            <div class="text-center relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1" 
+                                *ngIf="field.field_type == 'textarea'">
+                                <label for="{{field?.field}}" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            {{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} {{field?.required ? '*' : ''}}
+                                        </div>
+                                        <ng-container *ngIf="showProfileFieldsInMembers && field?.field != 'first_name' && field?.field != 'last_name'">
+                                            <div class="flex items-center justify-between relative ml-4">
+                                                <label
+                                                    for="setting-status-{{i + 1}}"
+                                                    class="flex items-center w-full justify-between cursor-pointer"
+                                                >
+                                                    <div class="relative mr-1">
+                                                        <input
+                                                            id="setting-status-{{i + 1}}"
+                                                            name="setting-status"
+                                                            type="checkbox"
+                                                            class="sr-only"
+                                                            [checked]="field?.show"
+                                                            (change)="updateFieldShow($event, field)"
+                                                        />
+                                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </label>
+                                <quill-editor class="w-full max-w-full content-editor" formControlName="{{field?.field}}"></quill-editor>
+                            </div>
+                            <div class="-mb-5 signup-date text-center relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1"
+                                *ngIf="field.field_type == 'date'">
+                                <label for="{{field?.field}}" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            {{ language == 'en' ? field?.field_display_en : (language == 'fr' ? (field?.field_display_fr || field?.field_display_es) : field?.field_display_es) }} {{field?.required ? '*' : ''}}
+                                        </div>
+                                        <ng-container *ngIf="showProfileFieldsInMembers && field?.field != 'first_name' && field?.field != 'last_name'">
+                                            <div class="flex items-center justify-between relative ml-4">
+                                                <label
+                                                    for="setting-status-{{i + 1}}"
+                                                    class="flex items-center w-full justify-between cursor-pointer"
+                                                >
+                                                    <div class="relative mr-1">
+                                                        <input
+                                                            id="setting-status-{{i + 1}}"
+                                                            name="setting-status"
+                                                            type="checkbox"
+                                                            class="sr-only"
+                                                            [checked]="field?.show"
+                                                            (change)="updateFieldShow($event, field)"
+                                                        />
+                                                        <div class="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+                                                        <div class="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </label>
+                                <mat-form-field class="w-full">
+                                    <mat-label>{{ language == 'en' ? field?.field_display_en : field?.field_display_es }}</mat-label>
+                                    <input matInput [matDatepicker]="pickerdate" placeholder="{{language == 'en' ? field?.field_display_en : field?.field_display_es}}" formControlName="{{ field?.field }}">
+                                    <mat-datepicker-toggle matIconSuffix [for]="pickerdate"></mat-datepicker-toggle>
+                                    <mat-datepicker #pickerdate>
+                                        <mat-datepicker-actions>
+                                            <button mat-button matDatepickerCancel class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'settings.cancel' | translate }}</button>
+                                            <button mat-raised-button color="primary" matDatepickerApply class="uppercase mr-8 text-cyan-400 mb-6 font-semibold">{{ 'company-settings.apply' | translate }}</button>
+                                        </mat-datepicker-actions>
+                                    </mat-datepicker>
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <div class="mt-[6px]" *ngIf="me?.custom_member_type_id !== 144 && me?.custom_member_type_id !== 321 &&  me?.custom_member_type_id !== 243 && isTermsAccepted">
+                        <p class="text-sm mb-5" *ngIf="dateOfAcceptance">{{'footer.dateofacceptance' | translate}} : <span class="font-medium text-gray-900 dark:text-gray-300">{{dateOfAcceptance}}</span></p>
+                        <label class="checkbox-container">
+                            <div class="flex mb-4 align-center items-center">
+                                <input 
+                                    id="terms-conditions" 
+                                    type="checkbox"
+                                    [checked]="isTermsAccepted"
+                                    [disabled]="isTermsAccepted"
+                                    class="w-4 h-4 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                >
+                                <label for="terms-conditions" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300" >
+                                    {{ 'footer.i' | translate }} <span class="capitalize">{{userFullName ? userFullName : ''}}</span> {{ 'footer.acceptthe' | translate }}
+                                    <button type="button" (click)="openTermDialog()">
+                                        <span class="font-bold">
+                                           {{ 'register.termsandconditions' | translate }}
+                                        </span>
+                                    </button> 
+                                </label>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <div>
+            <div class="font-bold">{{ 'profile-settings.changepassword' | translate }}</div>
+            <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 my-4">
+                <div class="flex items-center justify-center relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                    <input 
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('password')?.errors || passwordMismatch }"
+                        [type]="fieldTextType ? 'text' : 'password'"
+                        class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="password" 
+                        placeholder="{{ 'profile-settings.password' | translate }}*">
+                    <fa-icon
+                        class="fa absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+                        [icon]="!fieldTextType ? eyeSlashIcon : eyeIcon"
+                        (click)="toggleFieldTextType()"
+                    ></fa-icon>
+                </div>
+                <div class="flex items-center justify-center relative col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                    <input 
+                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': profileForm.get('confirmPassword')?.errors || passwordMismatch }"
+                        [type]="fieldConfirmTextType ? 'text' : 'password'"
+                         class="text-sm shadow appearance-none border border-gray-200 rounded-[10px] w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-none" 
+                        formControlName="confirmPassword" 
+                        placeholder="{{ 'profile-settings.confirmpassword' | translate }}*">
+                    <fa-icon
+                        class="fa absolute inset-y-0 right-0 flex items-center px-4 text-gray-600"
+                        [icon]="!fieldConfirmTextType ? eyeSlashIcon : eyeIcon"
+                        (click)="toggleFieldConfirmTextType()"
+                    ></fa-icon>
+                </div>
+                <div *ngIf="tutorInfo?.user_id == userId" class="flex items-center justify-center relative mb-4 col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1">
+                    <div class="w-full max-w-full">
+                        <label for="tutortype" class="text-left block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            {{'tutors.tutortypes' | translate}}
+                        </label>
+                        <ng-multiselect-dropdown
+                            id="tutortype"
+                            placeholder="{{ 'tutors.tutortypes' | translate }}"
+                            [settings]="tutorTypeDropdownSettings"
+                            [data]="tutorTypes"
+                            [(ngModel)]="selectedCourseTutorType"
+                            [ngModelOptions]="{standalone: true}"
+                        >
+                        </ng-multiselect-dropdown>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-center mb-6 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+            <button
+                type="submit"
+                class="w-full inline-block h-[40px] text-sm px-6 py-2 my-6 font-semibold text-white rounded-[10px] hover:bg-black hover:text-white focus:ring-4 focus:ring-offset-black focus:outline-none"
+                [ngStyle]="{'background-color': buttonColor}"
+            >
+                {{ "profile-settings.saveandcontinue" | translate }}
+            </button>
+        </div>
+    </form>
+</ng-container>
+<div *ngIf="userMemberTypes?.length > 0">
+    <div class="font-bold mb-4">{{ 'profile-settings.memberships' | translate }}</div>
+    <div class="w-full max-w-full">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th scope="col" class="px-2 py-1">
+                        {{ 'member-type-registration.type' | translate }}
+                    </th>
+                    <th scope="col" class="px-2 py-1">
+                        {{ 'create-content.date' | translate }}
+                    </th>
+                    <th scope="col" class="px-2 py-1">
+                        {{ 'member-type-registration.action' | translate }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of userMemberTypes; let i = index;" 
+                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                    <th scope="row" class="text-xs px-2 py-1 max-w-[80px] font-medium text-gray-900 dark:text-white">
+                        {{getMemberTypeTitle(item)}}
+                    </th>
+                    <td class="text-xs px-2 py-1 max-w-[80px] capitalize">
+                        {{getMemberTypeDate(item)}}
+                    </td>
+                    <td>
+                        <div class="flex my-2 align-center items-center">
+                            <button *ngIf="hasCustomInvoice && me.subscription_id || (companyId == 15 && me?.subscription_id)" type="button" class="text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                [ngStyle]="{'background-color': buttonColor}" (click)="manageBilling()"
+                            >
+                                <svg class="w-4 h-4 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                                    <path d="M7 11H5v1h2v-1Zm4 3H9v1h2v-1Zm-4 0H5v1h2v-1ZM5 5V.13a2.98 2.98 0 0 0-1.293.749L.88 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                                    <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM13 16a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v6Zm-1-8H9a1 1 0 0 1 0-2h3a1 1 0 1 1 0 2Zm0-3H9a1 1 0 0 1 0-2h3a1 1 0 1 1 0 2Z"/>
+                                    <path d="M11 11H9v1h2v-1Z"/>
+                                </svg>
+                                <span class="sr-only">Icon description</span>
+                            </button>
+                            <button *ngIf="item?.cancelled != 1 && showCancelSubscription(item) && item?.plan_id && me.subscription_id" 
+                                type="button" class="text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                [ngStyle]="{'background-color': '#c24130'}" (click)="confirmCancelMembership(item)"
+                            >
+                                <svg class="w-4 h-4 text-whitedark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                                <span class="sr-only">Icon description</span>
+                            </button>
+                            <div [ngStyle]="{'color': item?.cancelled == 1 ? '#c24130' : '#1e1e1e'}" class="uppercase">
+                                {{ item?.cancelled == 1 ? ('company-settings.cancelled' | translate) : '' }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<button #modalbutton data-modal-target="item-modal" data-modal-toggle="item-modal" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'club-create.uploadimage' | translate }}
+                </h3>
+                <div class="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid:cols-2 mb-4">
+                    <div class="flex items-center relative">
+                        <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg mr-4 text-white fa flex items-center" [icon]="rotateLeftIcon"></fa-icon>
+                        <fa-icon [ngStyle]="{'background-color': buttonColor}" class="p-2 rounded-lg text-white fa flex items-center4" [icon]="rotateRightIcon"></fa-icon>
+                    </div>
+                    <div class="flex items-center relative">
+                        <a href="javascript:;" (click)="imageCropperModalSave()" [ngStyle]="{'background-color': buttonColor}" class="p-2 inline-flex justify-center w-full p-2 font-medium text-center text-white rounded-lg focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" data-modal-hide="item-modal">
+                            {{ 'image-cropper.save' | translate }}
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <ng-container *ngIf="companyId != 52">
+                        <image-cropper 
+                            [canvasRotation]="canvasRotation"
+                            [transform]="transform"
+                            [imageChangedEvent]="imageChangedEvent" 
+                            [maintainAspectRatio]="true"
+                            [containWithinAspectRatio]="true"
+                            [onlyScaleDown]="true"
+                            [roundCropper]="false"
+                            [aspectRatio]="16 / 9"
+                            [resizeToWidth]="256"
+                            [imageQuality]="100"
+                            [cropperMinWidth]="128"
+                            [alignImage]="'center'"
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="imageCropped($event)" 
+                            (imageLoaded)="imageLoaded()" 
+                            (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </ng-container>
+                    <ng-container *ngIf="companyId == 52">
+                        <image-cropper 
+                            [canvasRotation]="canvasRotation"
+                            [transform]="transform"
+                            [imageChangedEvent]="imageChangedEvent" 
+                            [maintainAspectRatio]="true"
+                            [cropperMinWidth]="360" 
+                            [cropperMinHeight]="320" 
+                            format="png" 
+                            outputType="both"
+                            (imageCropped)="imageCropped($event)" 
+                            (imageLoaded)="imageLoaded()" 
+                            (cropperReady)="cropperReady()"
+                            (loadImageFailed)="loadImageFailed()"
+                            output="base64">
+                        </image-cropper>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <div *ngIf="isOpenContact" class="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#0F172A] bg-opacity-90"
+ >
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                    {{'sidebar.termsandconditions' | translate}}
+                </h3>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" (click)="closeTermDialog()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4 md:p-5 space-y-4">
+                <div class="h-[300px] overflow-y-auto text-sm leading-relaxed text-gray-500 dark:text-gray-400 p-2"
+                [innerHtml]="contract">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showConfirmationModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="confirmDeleteItemTitle"
+    [description]="confirmDeleteItemDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>

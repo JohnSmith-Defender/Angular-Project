@@ -1,0 +1,306 @@
+<div class="mt-12 mx-auto max-w-full sm:max-w-full md:max-w-screen-2xl lg:max-w-screen-2xl pt-20 sm:pt-20 md:pt-0 lg:pt-0 relative p-6 md:pt-48 lg:pt-48">
+    <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row gap-20">
+        <div class="shrink-0 w-full sm:w-full md:w-96 lg:w-96">
+            <div class="flex flex-col justify-center">
+                <div class="pr-8">
+                    <div class="w-full">
+                        <img *ngIf="image" 
+                            width="320" height="320" 
+                            class="mx-auto w-80 h-80 object-cover rounded-full"
+                            [src]="image" 
+                            loading="lazy" />
+                    </div>
+                    <div class="mt-8 font-semibold text-3xl text-center">
+                        {{ professional?.first_name }} {{ professional?.last_name }}
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex flex-wrap gap-6 items-center justify-center">
+                            <div *ngFor="let specialty of specialties" class="text-base" [ngStyle]="{'color': buttonColor}">
+                                {{ specialty.text }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-full mt-3" *ngIf="userId">
+                        <button 
+                            class="flex items-center justify-center w-full max-w-full text-white rounded-lg py-3 font-semibold text-center text-lg" 
+                            [ngStyle]="{'background-color': buttonColor}"
+                            [ngClass]="{'opacity-75': follower?.id > 0}"
+                            [disabled]="follower?.id > 0"
+                            (click)="followProfessional()">
+                            <svg *ngIf="follower?.id > 0" class="w-6 h-6 text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ follower?.id > 0 ? ('members.following' | translate) : ('members.follow' | translate) }}
+                        </button>
+                    </div>
+                    <div class="mt-8">
+                        <div class="flex">
+                            <div class="w-1/3 shrink-0">
+                                Exp: {{ experience }}
+                            </div>
+                            <div>
+                                <span class="text-base"><b>{{ professional?.rate_currency }} {{ professional?.rate }}</b>/min</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="my-8" *ngIf="professional?.online_status == 1">
+                        <div class="mb-3" *ngIf="professional?.chat == 1">
+                            <button class="rounded-[3px] py-[2px] px-4 pl-2 cursor-pointer flex items-center bg-[#87d661]"
+                                (click)="handleStartChat(professional?.user_id)"
+                                data-drawer-target="drawer-right" 
+                                data-drawer-show="drawer-right" 
+                                data-drawer-placement="right"
+                                data-drawer-backdrop="false">
+                                <img src="./assets/professional-icons/comment.png" 
+                                    class="w-[20px] h-[20px] object-contain" />
+                                <div class="py-1 ml-2 text-white text-sm">{{ 'professionals.chatwithprofessional' | translate }}</div>
+                            </button>
+                        </div>
+                        <div class="mb-3" *ngIf="professional?.voice_call == 1">
+                            <button class="rounded-[3px] py-[2px] px-4 pl-2 cursor-pointer flex items-center bg-[#87d661]"
+                                (click)="handleStartCall(professional?.user_id)">
+                                <img src="./assets/professional-icons/phone.png" 
+                                    class="w-[20px] h-[20px] object-contain" />
+                                <div class="py-1 ml-2 text-white text-sm">{{ 'professionals.callprofessional' | translate }}</div>
+                            </button>
+                        </div>
+                        <div class="mb-3" *ngIf="professional?.video_call == 1">
+                            <button class="rounded-[3px] py-[2px] px-4 pl-2 cursor-pointer flex items-center bg-[#87d661]"
+                                (click)="handleStartVideoCall(professional?.user_id)">
+                                <img src="./assets/professional-icons/video.png" 
+                                    class="w-[20px] h-[20px] object-contain" />
+                                <div class="py-1 ml-2 text-white text-sm">{{ 'professionals.videocallprofessional' | translate }}</div>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="w-full max-w-full mt-12 mb-4 border border-1 border-[#d3d4d6] rounded-[15px] p-2 pr-6 pb-4">
+                        <div class="text-xs mb-2">{{ 'professionals.ratingandreview' | translate }}</div>
+                        <div class="flex items-center">
+                            <div class="w-1/3 shrink-0">
+                                <div class="leading-4 text-2xl text-[#667173] text-center">{{ professional?.rating || '-' }}</div>
+                                <star-rating 
+                                    [size]="'small'" 
+                                    [starType]="'svg'" 
+                                    [rating]="professional?.rating">
+                                </star-rating>
+                            </div>
+                            <div class="w-full max-w-full">
+                                <ng-container *ngFor="let item of professionalReviews">
+                                    <div>
+                                        <div class="flex items-center">
+                                            <div class="text-xs mr-2">{{ item?.rating > 0 ? item?.rating : '' }}</div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-purple-400 h-1.5 rounded-full" [ngStyle]="{'width': item.percentage + '%'}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ng-container *ngIf="specialtyCategories?.length > 0">
+                    <hr class="h-px mt-2 my-4 bg-gray-200 border-0">
+                    <div class="font-semibold text-base mb-4">{{ 'professionals.specialties' | translate }}</div>
+                    <div class="flex gap-2 items-center">
+                        <ng-container *ngFor="let item of specialtyCategories">
+                            <div class="opacity-50 rounded-lg p-2" [ngStyle]="{'background-color': buttonColor}">
+                                <img [src]="item.image" class="w-8 h-8 object-contain" width="56" height="56" loading="lazy" />
+                            </div>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div class="w-full max-w-full">
+            <div class="rounded-[15px] border border-1 border-[#d3d4d6] px-12 pt-16 pb-4 mb-4">
+                <div class="text-3xl font-semibold">{{ 'post-survey.hello' | translate }} {{ 'professionals.iam' | translate }} {{ professional?.first_name || professional?.name}}</div>
+                <hr class="h-px mt-2 my-4 bg-gray-200 border-0">
+                <div class="text-base pr-6" [innerHtml]="professional?.who_am_i"></div>
+                <div class="pt-6" *ngIf="images?.length > 0">
+                    <ng-image-slider 
+                        [images]="images" 
+                        #nav
+                        [infinite]="true"
+                        [lazyLoading]="true"
+                        [autoSlide]="0"
+                        [imageSize]="{width: '28%',height: '200px', space: 16}"
+                        [manageImageRatio]="true"
+                        slideImage="1"
+                    ></ng-image-slider>
+                </div>
+            </div>
+            <div class="rounded-[15px] border border-1 border-[#d3d4d6] px-6 p-4 mb-4">
+                <div class="font-semibold text-base">{{ 'professionals.similarconsultations' | translate }}</div>
+            </div>
+            <div class="rounded-[15px] border border-1 border-[#d3d4d6] px-6 p-4 mb-4">
+                <div class="font-semibold text-base mb-4">{{ 'professionals.customerreviews' | translate }}</div>
+                <div class="border border-1 border-[#d3d4d6] p-6 pb-4 mb-4 rounded-[15px] shadow-lg">
+                    <div class="flex items-center" *ngIf="userId">
+                        <img [src]="currentUserAvatarPath" width="12" height="12" class="w-12 h-12 object-cover rounded-full" />
+                        <div class="ml-4">
+                            <div class="text-sm text-[#677173] opacity-40">
+                                {{ 'professionals.addreview' | translate }}
+                            </div>
+                            <div class="w-24">
+                                <star-rating 
+                                    [size]="'medium'" 
+                                    [starType]="'svg'" 
+                                    [rating]="rating"
+                                    (starClickChange)="onRatingClick($event)"
+                                    (ratingChange)="onRatingChange($event)"
+                                    (hoverRatingChange)="onHoverRatingChange($event)"
+                                ></star-rating>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-col md:flex-row lg:flex-row items-center">
+                        <div class="w-full max-w-full">
+                            <div class="relative z-0 w-full mb-2 group">
+                                <textarea name="feedback" id="feedback" 
+                                    class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-200 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                                    placeholder=" " 
+                                    [(ngModel)]="feedback"
+                                    [ngModelOptions]="{standalone: true}">
+                                </textarea>
+                            </div>
+                            <div class="flex gap-2 items-center">
+                                <ng-container *ngFor="let item of categories">
+                                    <div class="rounded-lg p-1.5" [ngStyle]="{'background-color': buttonColor}">
+                                        <img [src]="item.image" class="w-4 h-4 object-contain" width="16" height="16" loading="lazy" />
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="shrink-0 ml-0 sm:ml-0 md:ml-16 lg:ml-16 mt-4 sm:mt-4 md:mt-16 lg:mt-16">
+                            <button class="text-sm bg-[#D9D9D9] border border-2 border-[#d3d4d6] py-1.5 px-4 rounded-lg font-semibold"
+                                [disabled]="!(rating && feedback)"
+                                [ngClass]="{'opacity-25': !rating || !feedback}"
+                                (click)="addReview()">
+                                {{ 'posts.post' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf="reviews?.length > 0">
+                    <div *ngFor="let item of reviews" class="border border-1 border-[#d3d4d6] p-6 mb-4 rounded-[15px] shadow-lg">
+                        <div class="flex items-center">
+                            <div class="shrink-0 w-12">
+                                <img [src]="defaultAvatarPath" width="12" height="12" class="w-12 h-12 object-cover rounded-full" />
+                            </div>
+                            <div class="ml-4">
+                                <div class="font-semibold text-sm">{{ item?.user_name }}</div>
+                                <div class="w-12 -mt-[2px]">
+                                    <star-rating 
+                                        [size]="'small'" 
+                                        [starType]="'svg'" 
+                                        [rating]="item?.rating">
+                                    </star-rating>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-sm mt-4" [innerHtml]="item.feedback"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="toast-message-cta" 
+        *ngIf="showToast" 
+        class="bg-[#ffffed] fixed top-1/3 md:translate-x-2/4 lg:translate-x-2/4 flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shadow" 
+        style="left:35%;"
+        role="alert">
+        <div class="flex">
+            <div class="relative inline-block shrink-0">
+                <img class="w-12 h-12 rounded-full object-cover" [src]="image" [alt]="professional.name"/>
+            </div>
+            <div class="ms-3 text-sm font-normal">
+                <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ professional.name }}</div>
+                <div class="text-sm font-normal">{{ toastMessage }}</div> 
+                <div>{{ display }}</div>
+                <a href="javascript:;" (click)="cancelCall()" class="mt-2 inline-flex px-2.5 py-1.5 text-xs font-medium text-center text-white bg-red-600 rounded-lg hover:bg-black focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">{{ 'wall.cancel' | translate }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<app-toast 
+    *ngIf="showRequiredMinimumBalanceModal" 
+    [company]="company" 
+    [update]="false" 
+    [confirm]="true"
+    [title]="toastTitle"
+    [description]="toastDescription"
+    [acceptText]="acceptText"
+    [cancelText]="cancelText"
+    (onAccept)="confirm()"
+></app-toast>
+<button #modalbutton2 data-modal-target="item-modal2" data-modal-toggle="item-modal2" class="hidden block text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">
+    &nbsp;
+</button>
+<div id="item-modal2" tabindex="-1" aria-hidden="true" class="fixed top-0 left-0 right-0 z-50 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-h-full max-w-lg">
+        <div class="relative bg-white rounded-lg shadow">
+            <button #closemodalbutton2 type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="item-modal2">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="px-6 py-6 lg:px-8">
+                <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">
+                    {{ 'plan-details.confirm' | translate }}
+                </h3>
+                <div>
+                    <label 
+                        for="phonenumber" 
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ 'category.phone' | translate }}
+                    </label>
+                    <input 
+                        type="text" 
+                        name="phonenumber" 
+                        id="phonenumber" 
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" 
+                        [ngClass]="{'bg-red-50 border border-red-500': !userPhone || !validatePhoneForE164() }"
+                        placeholder="{{ 'category.phone' | translate }}*" 
+                        [(ngModel)]="userPhone" 
+                        [ngModelOptions]="{standalone: true}"
+                        required>
+                </div>
+                <ng-container *ngIf="!validatePhoneForE164()">
+                    <div class="text-[#c24130] text-xs mt-1 font-medium text-center">{{ 'professionals.enteravalidphone' | translate }}</div>
+                </ng-container>
+                <div class="mt-8 w-full sm:w-full md:w-4/12 lg:w-4/12 mx-auto">
+                    <button 
+                        class="w-full text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                        [ngStyle]="{'background-color': !validatePhoneForE164() ? '#c7c7c7' : buttonColor}"
+                        [disabled]="!validatePhoneForE164()"
+                        (click)="proceedToCall()"
+                    >
+                        {{ 'customer-onboarding.proceed' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-chat-drawer 
+    [canChat]="canChat" 
+    [buttonColor]="buttonColor"
+    [companyId]="companyId"
+    [id]="id"
+    [image]="image"
+    [firstName]="firstName"
+    [userId]="userId"
+    [userName]="userName"
+    [userImage]="userImage"
+    [userData]="userData"
+    [senderBalance]="senderBalance"
+    [reloadData]="reloadData"
+    [currentUserImage]="currentUserImage"
+    [chatRole]="chatRole"
+    [chatTimer]="chatTimer"
+    [chatEnded]="chatEnded"
+    [insufficientBalanceTitle]="insufficientBalanceTitle"
+    [insufficientBalanceDescription]="insufficientBalanceDescription">
+</app-chat-drawer>
